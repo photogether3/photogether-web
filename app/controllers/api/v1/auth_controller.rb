@@ -27,17 +27,4 @@ class Api::V1::AuthController < Api::ApplicationApiController
 
   def logout
   end
-
-  private
-
-  def ensure_valid_email
-    email = params[:email]
-    raise ArgumentError unless email.match?(User::VALID_EMAIL_REGEX)
-  end
-
-  def ensure_valid_password
-    password = params[:password]
-    raise ArgumentError, "Password missing" if password.blank?
-    raise ArgumentError, "That's a weird password" if password.length <= 4 || password.length >= 30
-  end
 end
