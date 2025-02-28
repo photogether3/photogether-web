@@ -37,6 +37,7 @@ class User < ApplicationRecord
     user = User.find_by(email_address: params[:email])
     raise ActiveRecord::RecordNotFound, "User not found" unless user
     user.update!(otp: generate_otp, otp_expiry_date: 5.minutes.from_now)
+    UserMailer.send_otp_email(user).deliver_now
   end
 
   private

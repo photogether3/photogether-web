@@ -9,8 +9,8 @@ class Api::V1::AuthController < Api::ApplicationApiController
   end
 
   def register
-    user = User.register(params)
-    render json: { message: "회원가입 성공", user_id: user.id }, status: :created
+    User.register(params)
+    render json: { message: "회원가입 성공" }, status: :created
   end
 
   def generate_otp
@@ -19,7 +19,8 @@ class Api::V1::AuthController < Api::ApplicationApiController
     unless email.match?(User::VALID_EMAIL_REGEX)
       raise ArgumentError, "Invalid email format"
     end
-    user = User.generateOtp(params)
+    User.generateOtp(params)
+    render json: { message: "OTP 발급 성공" }, status: :created
   end
 
   def verify_otp
