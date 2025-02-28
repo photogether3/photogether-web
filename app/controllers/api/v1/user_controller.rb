@@ -1,6 +1,7 @@
 class Api::V1::UserController < Api::ApplicationApiController
   before_action :authenticate_user!, except: [ :is_email_taken, :update_password_by_otp ]
-  before_action :ensure_valid_email, only: [ :is_email_taken ]
+  before_action :ensure_valid_email, only: [ :is_email_taken, :update_password_by_otp ]
+  before_action :ensure_valid_password, only: [ :is_email_taken, :update_password_by_otp ]
 
   def is_email_taken
     user = User.find_by(email_address: params[:email])
@@ -21,7 +22,24 @@ class Api::V1::UserController < Api::ApplicationApiController
   end
 
   def update_password_by_otp
-    puts "User update password by otp"
+    otp       = params[:otp]
+    email     = params[:email]
+    password  = params[:password]
+
+    user = User.find_by(email_address: email)
+    raise ActiveRecord::RecordNotFound, "사용자를 찾을 수 없습니다." unless user
+
+    is_verify = user.verify_otp(otp)
+    raise CustomError, "OTP has expired" unless is_verify
+
+    user.update!(
+      password: password,
+      password_confirmation: password,
+      otp: nil,
+      otp_expiry_date: nil,
+    )
+
+    render_user_json(user)
   end
 
   def update_password
