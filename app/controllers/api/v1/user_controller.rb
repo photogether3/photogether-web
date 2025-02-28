@@ -8,13 +8,16 @@ class Api::V1::UserController < Api::ApplicationApiController
   end
 
   def show
-    puts "User show"
-    puts @current_user.as_json
-    render json: @current_user.as_json, status: :ok
+    render_user_json(@current_user)
   end
 
   def update
-    puts "User update"
+    nickname = params[:nickname]
+    bio      = params[:bio]
+    file     = params[:file]
+
+    user = @current_user.update_usecase(nickname, bio, file)
+    render_user_json(user)
   end
 
   def update_password_by_otp
@@ -31,5 +34,12 @@ class Api::V1::UserController < Api::ApplicationApiController
 
   def destroy
     puts "User destroy"
+  end
+
+  private
+
+  def render_user_json(user)
+    image_url = user.image.attached? ? url_for(user.image) : nil
+    render json: user.as_json.merge(image_url: image_url), status: :ok
   end
 end

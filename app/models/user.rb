@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
+  has_one_attached :image
   has_secure_password
   has_one :refresh_token, dependent: :destroy
   has_many :sessions, dependent: :destroy
@@ -82,6 +83,22 @@ class User < ApplicationRecord
     puts "OTP: #{self.otp}"
     is_invalid = self.otp == otp && self.otp_expiry_date > Time.now
     is_invalid
+  end
+
+  def update_usecase(nickname, bio, file)
+    # 전달된 값이 있다면 업데이트합니다.
+    self.nickname = nickname if nickname.present?
+    self.bio      = bio if bio.present?
+
+    if file.present?
+      # 기존 이미지 교체 또는 새로 첨부
+      self.image.purge if self.image.attached?
+      self.image.attach(file)
+    end
+
+    self.save
+
+    self
   end
 
   private
