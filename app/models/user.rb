@@ -69,6 +69,23 @@ class User < ApplicationRecord
     tokens
   end
 
+  def self.update_password_by_otp_usecase(email, otp, password)
+    user = User.find_by(email_address: email)
+    raise ActiveRecord::RecordNotFound, "사용자를 찾을 수 없습니다." unless user
+
+    is_verify = user.verify_otp(otp)
+    raise CustomError, "OTP has expired" unless is_verify
+
+    user.update!(
+      password: password,
+      password_confirmation: password,
+      otp: nil,
+      otp_expiry_date: nil,
+    )
+
+    user
+  end
+
   # instance methods ✨
 
   def as_json(options = {})

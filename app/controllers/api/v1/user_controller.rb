@@ -26,19 +26,7 @@ class Api::V1::UserController < Api::ApplicationApiController
     email     = params[:email]
     password  = params[:password]
 
-    user = User.find_by(email_address: email)
-    raise ActiveRecord::RecordNotFound, "사용자를 찾을 수 없습니다." unless user
-
-    is_verify = user.verify_otp(otp)
-    raise CustomError, "OTP has expired" unless is_verify
-
-    user.update!(
-      password: password,
-      password_confirmation: password,
-      otp: nil,
-      otp_expiry_date: nil,
-    )
-
+    user = User.update_password_by_otp_usecase(email, otp, password)
     render_user_json(user)
   end
 
