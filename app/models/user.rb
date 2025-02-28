@@ -70,6 +70,13 @@ class User < ApplicationRecord
 
   # instance methods ✨
 
+  def as_json(options = {})
+    super(only: [ :id, :nickname, :bio, :image_url, :created_at, :updated_at ]).tap do |hash|
+      # 원하는 필드명으로 재정의
+      hash["email"] = self.email_address
+    end
+  end
+
   def verify_otp(otp)
     puts "OTP_EXPIRY_DATE: #{self.otp_expiry_date}"
     puts "OTP: #{self.otp}"

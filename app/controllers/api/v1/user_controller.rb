@@ -9,7 +9,8 @@ class Api::V1::UserController < Api::ApplicationApiController
 
   def show
     puts "User show"
-    puts @current_user.inspect
+    puts @current_user.as_json
+    render json: @current_user.as_json, status: :ok
   end
 
   def update
