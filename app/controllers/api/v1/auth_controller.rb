@@ -1,13 +1,10 @@
 class Api::V1::AuthController < Api::ApplicationApiController
-  before_action :ensure_valid_email, only: [ :register, :generate_otp, :verify_otp ]
+  before_action :ensure_valid_email, only: [ :login, :register, :generate_otp, :verify_otp ]
+  before_action :ensure_valid_password, only: [ :login, :register ]
 
   def login
-    # 예제 토큰 값 생성 (실제 구현에서는 JWT 토큰 생성 로직을 추가해야 함)
-    access_token = "example_access_token"
-    refresh_token = "example_refresh_token"
-    expires_in = 3600 # 1시간 (초 단위)
-
-    render_auth_response(access_token, refresh_token, expires_in)
+    tokens = User.login_usecase(params[:email], params[:password])
+    render json: tokens, status: :ok
   end
 
   def register
@@ -35,9 +32,12 @@ class Api::V1::AuthController < Api::ApplicationApiController
 
   def ensure_valid_email
     email = params[:email]
-    raise ArgumentError, "Email missing" if email.blank?
-    unless email.match?(User::VALID_EMAIL_REGEX)
-      raise ArgumentError, "Invalid email format"
-    end
+    raise ArgumentError unless email.match?(User::VALID_EMAIL_REGEX)
+  end
+
+  def ensure_valid_password
+    password = params[:password]
+    raise ArgumentError, "Password missing" if password.blank?
+    raise ArgumentError, "That's a weird password" if password.length <= 4 || password.length >= 30
   end
 end

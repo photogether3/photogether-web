@@ -17,11 +17,23 @@ class User < ApplicationRecord
 
   # class methods ✨
 
+  def self.login_usecase(email, password)
+    user = self.find_by(email_address: email)
+
+    err_msg = "아이디 또는 비밀번호를 찾을 수 없습니다."
+    raise CustomError, err_msg unless user
+    raise CustomError, err_msg if !user.authenticate(password)
+    raise CustomError, "이메일 인증을 완료해주세요." unless user.is_email_verified
+
+    JwtUtil.generate_tokens(user.id)
+  end
+
   def self.register_usecase(email, password)
     transaction do
-      user = create!(
+      user = self.create!(
         email_address: email,
         password: password,
+        password_confirmation: password,
         role_id: 1,
         nickname: generate_random_nickname
       )
@@ -34,7 +46,7 @@ class User < ApplicationRecord
   end
 
   def self.generate_otp_usecase(email)
-    user = User.find_by(email_address: email)
+    user = self.find_by(email_address: email)
 
     raise ActiveRecord::RecordNotFound, "User not found" unless user
     user.update!(otp: generate_otp, otp_expiry_date: 5.minutes.from_now)
@@ -43,10 +55,12 @@ class User < ApplicationRecord
   end
 
   def self.verify_otp_usecase(email, otp)
-    user = User.find_by!(email_address: email)
+    user = self.find_by!(email_address: email)
 
     is_verify = user.verify_otp(otp)
     raise CustomError, "OTP has expired" unless is_verify
+
+    user.update!(otp: nil, otp_expiry_date: nil, is_email_verified: true)
 
     tokens = JwtUtil.generate_tokens(user.id)
     RefreshToken.create_or_update_usecase(user.id, tokens[:refresh_token])
