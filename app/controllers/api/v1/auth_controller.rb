@@ -21,6 +21,9 @@ class Api::V1::AuthController < Api::ApplicationApiController
   end
 
   def verify_otp
+    user = User.find_by!(email_address: params[:email])
+    is_verify = user.verify_otp(params[:otp])
+    raise CustomError, "OTP has expired" unless is_verify
   end
 
   def refresh

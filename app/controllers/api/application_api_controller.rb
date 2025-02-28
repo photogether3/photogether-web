@@ -46,6 +46,14 @@ class Api::ApplicationApiController < ActionController::API
         message: exception.message
       }, status: 400
 
+    when CustomError
+      # CustomError 처리 (예외 객체에 error_code가 있다고 가정)
+      render json: {
+        errorCode: 400,
+        code: "C_BAD_REQUEST",
+        message: exception.message
+      }, status: 400
+
     else
       # 그 외 모든 예외(범용 처리)
       render json: {

@@ -14,6 +14,8 @@ class User < ApplicationRecord
     format: { with: VALID_EMAIL_REGEX }
   validates :password, presence: true, length: { minimum: 8 }, if: -> { password.present? }
 
+  # class methods ✨
+
   def self.register(email, password)
     transaction do
       user = create!(
@@ -35,6 +37,15 @@ class User < ApplicationRecord
     raise ActiveRecord::RecordNotFound, "User not found" unless user
     user.update!(otp: generate_otp, otp_expiry_date: 5.minutes.from_now)
     UserMailer.send_otp_email(user).deliver_now
+  end
+
+  # instance methods ✨
+
+  def verify_otp(otp)
+    puts "OTP_EXPIRY_DATE: #{self.otp_expiry_date}"
+    puts "OTP: #{self.otp}"
+    is_invalid = self.otp == otp && self.otp_expiry_date > Time.now
+    is_invalid
   end
 
   private
