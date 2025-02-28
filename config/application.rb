@@ -17,6 +17,7 @@ module PhotogetherWeb
     config.autoload_lib(ignore: %w[assets tasks])
 
     config.autoload_paths << Rails.root.join("app", "errors")
+    config.autoload_paths << Rails.root.join("app", "services")
 
     # Configuration for the application, engines, and railties goes here.
     #
