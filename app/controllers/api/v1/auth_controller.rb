@@ -14,7 +14,12 @@ class Api::V1::AuthController < Api::ApplicationApiController
   end
 
   def generate_otp
-    user = User.generateOtp()
+    email = params[:email]
+    raise ArgumentError, "Email missing" if email.blank?
+    unless email.match?(User::VALID_EMAIL_REGEX)
+      raise ArgumentError, "Invalid email format"
+    end
+    user = User.generateOtp(params)
   end
 
   def verify_otp

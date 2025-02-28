@@ -7,8 +7,8 @@ Rails.application.routes.draw do
     namespace :v1 do
       post "auth/login", to: "auth#login"
       post "auth/register", to: "auth#register"
-      post "auth/generate-otp", to: "auth#generate_otp"
-      post "auth/verify-otp", to: "auth#verify_otp"
+      post "auth/otp/generate", to: "auth#generate_otp"
+      post "auth/otp/verify", to: "auth#verify_otp"
       post "auth/refresh", to: "auth#refresh"
       delete "auth/logout", to: "auth#logout"
     end

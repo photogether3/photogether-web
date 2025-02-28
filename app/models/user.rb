@@ -1,12 +1,18 @@
 class User < ApplicationRecord
+  VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
+
   has_secure_password
   has_many :sessions, dependent: :destroy
   has_many :collections, dependent: :destroy
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
-  validates :email_address, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
-  validates :password, presence: true, length: { minimum: 8 }
+  validates :email_address,
+    presence: true,
+    uniqueness: true,
+    length: { maximum: 50 },
+    format: { with: VALID_EMAIL_REGEX }
+  validates :password, presence: true, length: { minimum: 8 }, if: -> { password.present? }
 
   def self.register(params)
     transaction do
@@ -29,7 +35,8 @@ class User < ApplicationRecord
 
   def self.generateOtp(params)
     user = User.find_by(email_address: params[:email])
-    puts user
+    raise ActiveRecord::RecordNotFound, "User not found" unless user
+    user.update!(otp: generate_otp, otp_expiry_date: 5.minutes.from_now)
   end
 
   private
