@@ -14,27 +14,24 @@ class User < ApplicationRecord
     format: { with: VALID_EMAIL_REGEX }
   validates :password, presence: true, length: { minimum: 8 }, if: -> { password.present? }
 
-  def self.register(params)
+  def self.register(email, password)
     transaction do
       user = create!(
-        email_address: params[:email],
-        password: params[:password],
+        email_address: email,
+        password: password,
         role_id: 1,
         nickname: generate_random_nickname
       )
 
-      # 기본으로 생성될 Collection 예시
       user.collections.create!([
         { category_id: nil, type: "UNCATEGORIZED", title: "미분류" },
         { category_id: nil, type: "TRASH",        title: "휴지통" }
       ])
-
-      user
     end
   end
 
-  def self.generateOtp(params)
-    user = User.find_by(email_address: params[:email])
+  def self.generate_otp_with_send_mail(email)
+    user = User.find_by(email_address: email)
     raise ActiveRecord::RecordNotFound, "User not found" unless user
     user.update!(otp: generate_otp, otp_expiry_date: 5.minutes.from_now)
     UserMailer.send_otp_email(user).deliver_now

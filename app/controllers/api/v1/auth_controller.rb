@@ -1,4 +1,6 @@
 class Api::V1::AuthController < Api::ApplicationApiController
+  before_action :ensure_valid_email, only: [ :register, :generate_otp, :verify_otp ]
+
   def login
     # 예제 토큰 값 생성 (실제 구현에서는 JWT 토큰 생성 로직을 추가해야 함)
     access_token = "example_access_token"
@@ -9,17 +11,12 @@ class Api::V1::AuthController < Api::ApplicationApiController
   end
 
   def register
-    User.register(params)
+    User.register(params[:email], params[:password])
     render json: { message: "회원가입 성공" }, status: :created
   end
 
   def generate_otp
-    email = params[:email]
-    raise ArgumentError, "Email missing" if email.blank?
-    unless email.match?(User::VALID_EMAIL_REGEX)
-      raise ArgumentError, "Invalid email format"
-    end
-    User.generateOtp(params)
+    User.generate_otp_with_send_mail(params[:email])
     render json: { message: "OTP 발급 성공" }, status: :created
   end
 
@@ -30,5 +27,15 @@ class Api::V1::AuthController < Api::ApplicationApiController
   end
 
   def logout
+  end
+
+  private
+
+  def ensure_valid_email
+    email = params[:email]
+    raise ArgumentError, "Email missing" if email.blank?
+    unless email.match?(User::VALID_EMAIL_REGEX)
+      raise ArgumentError, "Invalid email format"
+    end
   end
 end
