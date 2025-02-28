@@ -11,19 +11,18 @@ class Api::V1::AuthController < Api::ApplicationApiController
   end
 
   def register
-    User.register(params[:email], params[:password])
+    User.register_usecase(params[:email], params[:password])
     render json: { message: "회원가입 성공" }, status: :created
   end
 
   def generate_otp
-    User.generate_otp_with_send_mail(params[:email])
+    User.generate_otp_usecase(params[:email])
     render json: { message: "OTP 발급 성공" }, status: :created
   end
 
   def verify_otp
-    user = User.find_by!(email_address: params[:email])
-    is_verify = user.verify_otp(params[:otp])
-    raise CustomError, "OTP has expired" unless is_verify
+    tokens = User.verify_otp_usecase(params[:email], params[:otp])
+    render json: tokens, status: :created
   end
 
   def refresh

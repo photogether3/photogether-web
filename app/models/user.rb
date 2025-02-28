@@ -2,6 +2,7 @@ class User < ApplicationRecord
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
   has_secure_password
+  has_one :refresh_token, dependent: :destroy
   has_many :sessions, dependent: :destroy
   has_many :collections, dependent: :destroy
 
@@ -16,7 +17,7 @@ class User < ApplicationRecord
 
   # class methods ✨
 
-  def self.register(email, password)
+  def self.register_usecase(email, password)
     transaction do
       user = create!(
         email_address: email,
@@ -32,11 +33,25 @@ class User < ApplicationRecord
     end
   end
 
-  def self.generate_otp_with_send_mail(email)
+  def self.generate_otp_usecase(email)
     user = User.find_by(email_address: email)
+
     raise ActiveRecord::RecordNotFound, "User not found" unless user
     user.update!(otp: generate_otp, otp_expiry_date: 5.minutes.from_now)
+
     UserMailer.send_otp_email(user).deliver_now
+  end
+
+  def self.verify_otp_usecase(email, otp)
+    user = User.find_by!(email_address: email)
+
+    is_verify = user.verify_otp(otp)
+    raise CustomError, "OTP has expired" unless is_verify
+
+    tokens = JwtUtil.generate_tokens(user.id)
+    RefreshToken.create_or_update_usecase(user.id, tokens[:refresh_token])
+
+    tokens
   end
 
   # instance methods ✨
