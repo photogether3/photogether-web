@@ -23,4 +23,12 @@ class JwtUtil
 
     { access_token: access_token, refresh_token: refresh_token, expires_in: exp }
   end
+
+  # 토큰을 디코딩하여 payload를 반환하는 메서드
+  def self.decode_token(token)
+    decoded = JWT.decode(token, APP_KEY, true, { algorithm: "HS256" })
+    decoded[0]  # [payload, header] 중 payload 반환
+  rescue JWT::DecodeError
+    nil
+  end
 end

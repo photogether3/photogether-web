@@ -5,6 +5,61 @@ class Api::ApplicationApiController < ActionController::API
   # 모든 예외를 한 메서드에서 처리
   rescue_from StandardError, with: :handle_api_error
 
+  protected
+
+  def ensure_valid_email
+    email = params[:email]
+    raise ArgumentError unless email.match?(User::VALID_EMAIL_REGEX)
+  end
+
+  def ensure_valid_password
+    password = params[:password]
+    raise ArgumentError, "Password missing" if password.blank?
+    raise ArgumentError, "That's a weird password" if password.length <= 4 || password.length >= 30
+  end
+
+  def authenticate_user!
+    auth_header = request.headers["Authorization"]
+    unless auth_header.present?
+      render json: {
+        errorCode: 401,
+        code: "UNAUTHORIZED_001",
+        message: "토큰이 유효하지 않습니다."
+      }, status: :unauthorized and return
+    end
+
+    token = auth_header.split("Bearer ").last
+    unless token.present?
+      render json: {
+        errorCode: 401,
+        code: "UNAUTHORIZED_002",
+        message: "토큰이 유효하지 않습니다."
+      }, status: :unauthorized and return
+    end
+
+    payload = JwtUtil.decode_token(token)
+    if payload.nil?
+      render json: {
+        errorCode: 401,
+        code: "UNAUTHORIZED_003",
+        message: "토큰이 유효하지 않습니다."
+      }, status: :unauthorized and return
+    end
+
+    puts "payload: #{payload}"
+
+    user = User.find_by(id: payload["sub"].to_i)
+    if user.nil?
+      render json: {
+        errorCode: 401,
+        code: "UNAUTHORIZED_004",
+        message: "사용자를 찾을 수 없습니다."
+      }, status: :unauthorized and return
+    end
+
+    @current_user = user
+  end
+
   private
 
   # JSON 응답의 모든 키를 camelCase로 변환
