@@ -31,7 +31,13 @@ class Api::V1::UserController < Api::ApplicationApiController
   end
 
   def update_password
-    puts "User update password"
+    current_password = params[:currentPassword]
+    new_password     = params[:newPassword]
+
+    raise CustomError, "기존의 비밀번호가 일치하지 않습니다." if !@current_user.authenticate(current_password)
+
+    @current_user.update(password: new_password, password_confirmation: new_password)
+    render_user_json(@current_user)
   end
 
   def reset_data
