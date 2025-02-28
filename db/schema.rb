@@ -87,6 +87,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_27_033655) do
     t.text "bio"
     t.string "otp", limit: 6
     t.datetime "otp_expiry_date"
+    t.boolean "is_email_verified", default: false, null: false
     t.string "image_url", limit: 255
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end

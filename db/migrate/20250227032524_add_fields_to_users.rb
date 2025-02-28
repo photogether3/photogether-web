@@ -6,6 +6,7 @@ class AddFieldsToUsers < ActiveRecord::Migration[8.0]
       t.text :bio
       t.string :otp, limit: 6
       t.timestamp :otp_expiry_date
+      t.boolean :is_email_verified, null: false, default: false
       t.string :image_url, limit: 255
     end
 
