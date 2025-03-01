@@ -24,7 +24,7 @@ Rails.application.routes.draw do
 
       # category group
       get "categories", to: "category#index"
-      get "categories/with-favorite-status", to: "category#index_with_favorite"
+      get "categories/with-favorite-status", to: "category#index_with_favorites"
 
       # favorite group
       get "favorites", to: "favorite#index"
