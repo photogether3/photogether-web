@@ -1,5 +1,6 @@
 class Api::V1::PostController < Api::ApplicationApiController
   before_action :authenticate_user!
+  before_action :pre_set_create_or_update_params, only: [ :create, :update ]
   before_action :get_collection_or_fail, only: [ :index, :create ]
   before_action :get_post_or_fail, only: [ :show, :update, :destroy ]
 
@@ -35,21 +36,18 @@ class Api::V1::PostController < Api::ApplicationApiController
   end
 
   def create
-    title         = params[:title]
-    content       = params[:content]
     file          = params[:file]
     metadata_list = JSON.parse(params[:metadataStringify] || "[]")
-
     raise CustomError, "파일은 필수값 입니다." if file.blank?
 
-    post = Post.create_usecase(@current_user.id, @collection.id, title, content, metadata_list, file)
-
-    image_url = post.image.attached? ? url_for(post.image) : nil
-    render json: post.as_json.merge(image_url: image_url), status: :ok
+    Post.create_usecase(@current_user.id, @collection.id, @title, @content, metadata_list, file)
+    render json: { message: "게시물이 생성되었습니다." }, status: :ok
   end
 
   def update
-    puts "Post update"
+    metadata_list = params[:metadataList] || []
+    @post.update_usecase(@title, @content, metadata_list)
+    render json: { message: "게시물이 수정되었습니다." }, status: :ok
   end
 
   def change_collection
@@ -71,6 +69,12 @@ class Api::V1::PostController < Api::ApplicationApiController
   # 게시물을 조회하고 없으면 예외를 발생시킵니다.
   def get_post_or_fail
     @post = Post.find_by(id: params[:id], user_id: @current_user.id)
+    puts @post.as_json
     raise ActiveRecord::RecordNotFound, "게시물을 찾을 수 없습니다." unless @post
+  end
+
+  def pre_set_create_or_update_params
+    @title         = params[:title]
+    @content       = params[:content]
   end
 end

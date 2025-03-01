@@ -8,6 +8,8 @@ class Post < ApplicationRecord
   validates :title, presence: true, length: { in: 2..20 }
   validates :content, presence: true, length: { in: 2..50 }
 
+  # class method ✨
+
   def self.create_usecase(user_id, collection_id, title, content, metadata_list, file)
     transaction do
       post = self.new(
@@ -30,6 +32,23 @@ class Post < ApplicationRecord
       post
     end
   end
+
+  # instance method ✨
+
+  def update_usecase(title, content, metadata_list)
+    transaction do
+      update!(title: title, content: content)
+
+      # 기존 메타데이터 삭제 (한 번의 SQL 실행으로 처리)
+      post_metadata.delete_all
+
+      # 새로운 메타데이터 추가 (배열을 한 번에 삽입)
+      post_metadata.create!(metadata_list.map { |metadata|
+        { content: metadata["content"], is_public: metadata["isPublic"] }
+      })
+    end
+  end
+
 
   def to_detail
     {
