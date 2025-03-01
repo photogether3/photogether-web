@@ -1,24 +1,12 @@
-# README
+# Photogether Web
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Goal
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+1. 포토게더 API 제공 / 95% 마이그레이션
+2. 모바일과 동일한 웹사이트용 컨텐츠 제공 / 0%
+3. 관리자 페이지 / 0%
+4. 인프라 구성
+    - VPC 환경설정 / 80%
+    - 도메인 구성 / ✅
+    - SSL 인증서 구성 / ✅
+    - 블루그린 무중단 배포 구성 / ✅
