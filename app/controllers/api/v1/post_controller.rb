@@ -1,4 +1,6 @@
 class Api::V1::PostController < Api::ApplicationApiController
+  before_action :authenticate_user!
+  before_action :get_collection_or_fail, only: [ :create ]
   def index
     puts "Post index"
   end
@@ -8,7 +10,17 @@ class Api::V1::PostController < Api::ApplicationApiController
   end
 
   def create
-    puts "Post create"
+    title         = params[:title]
+    content       = params[:content]
+    metadata_list = JSON.parse(params[:metadataStringify] || "[]")
+    file          = params[:file]
+
+    raise CustomError, "파일은 필수값 입니다." if file.blank?
+
+    post = Post.create_usecase(@current_user.id, @collection.id, title, content, metadata_list, file)
+
+    image_url = post.image.attached? ? url_for(post.image) : nil
+    render json: post.as_json.merge(image_url: image_url), status: :ok
   end
 
   def update
@@ -21,5 +33,13 @@ class Api::V1::PostController < Api::ApplicationApiController
 
   def destroys
     puts "Post destroys"
+  end
+
+  private
+
+  # 사진첩을 조회하고 없으면 예외를 발생시킵니다.
+  def get_collection_or_fail
+    @collection = Collection.find_by(id: params[:collectionId], user_id: @current_user.id)
+    raise ActiveRecord::RecordNotFound, "사진첩을 찾을 수 없습니다." unless @collection
   end
 end
