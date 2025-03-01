@@ -1,9 +1,14 @@
 class Api::V1::FavoriteController < Api::ApplicationApiController
+  before_action :authenticate_user!
+
   def index
-    puts "Favorite index"
+    render json: @current_user.favorite_categories, status: :ok
   end
 
   def creates_or_updates
-    puts "Favorite create or update"
+    category_ids = params[:categoryIds]
+    updated_categories = @current_user.update_favorites_usecase(category_ids)
+
+    render json: updated_categories, status: :ok
   end
 end
