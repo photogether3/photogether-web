@@ -16,7 +16,11 @@ WORKDIR /rails
 
 # Install base packages
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libjemalloc2 libvips sqlite3 && \
+    apt-get install --no-install-recommends -y \
+      curl \
+      libjemalloc2 \
+      libvips \
+      sqlite3 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Set production environment
@@ -29,9 +33,21 @@ ENV RAILS_ENV="production" \
 FROM base AS build
 
 # Install packages needed to build gems
+# 그리고 libyaml를 소스에서 직접 설치 (psych 빌드에 필요)
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git pkg-config && \
+    apt-get install --no-install-recommends -y \
+      build-essential \
+      git \
+      pkg-config && \
+    curl -LO https://github.com/yaml/libyaml/releases/download/0.2.5/yaml-0.2.5.tar.gz && \
+    tar -xzf yaml-0.2.5.tar.gz && \
+    cd yaml-0.2.5 && \
+    ./configure && make && make install && \
+    cd .. && rm -rf yaml-0.2.5 yaml-0.2.5.tar.gz && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+# Configure Bundler to build psych using system libraries
+RUN bundle config build.psych --use-system-libraries
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
@@ -47,9 +63,6 @@ RUN bundle exec bootsnap precompile app/ lib/
 
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
-
-
-
 
 # Final stage for app image
 FROM base

@@ -370,7 +370,6 @@ DEPENDENCIES
   jwt
   kamal
   propshaft
-  psych (= 5.2.2)
   puma (>= 5.0)
   rack-cors
   rails (~> 8.0.1)
