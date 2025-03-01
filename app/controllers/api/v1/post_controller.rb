@@ -1,8 +1,28 @@
 class Api::V1::PostController < Api::ApplicationApiController
   before_action :authenticate_user!
-  before_action :get_collection_or_fail, only: [ :create ]
+  before_action :get_collection_or_fail, only: [ :index, :create ]
+
   def index
-    puts "Post index"
+    # 기본값 설정
+    page       = params[:page] ||= 1
+    per_page   = params[:perPage] ||= 10
+    sort_order = params[:sortOrder] ||= "desc"
+    sort_by    = params[:sortBy] ||= "created_at"
+
+    # 게시물 조회
+    posts = Post.where(user_id: @current_user.id, collection_id: @collection.id)
+                .order(sort_by => sort_order)
+                .includes(:collection, :post_metadata)
+                .page(page).per(per_page)
+
+    # JSON 변환
+    render json: {
+      per_page: posts.limit_value,
+      total_item_count: posts.total_count,
+      total_page_count: posts.total_pages,
+      current_page: posts.current_page,
+      items: posts.map { |post| post.to_detail.merge(image_url: post.image.attached? ? url_for(post.image) : nil) }
+    }, status: :ok
   end
 
   def show
@@ -12,8 +32,8 @@ class Api::V1::PostController < Api::ApplicationApiController
   def create
     title         = params[:title]
     content       = params[:content]
-    metadata_list = JSON.parse(params[:metadataStringify] || "[]")
     file          = params[:file]
+    metadata_list = JSON.parse(params[:metadataStringify] || "[]")
 
     raise CustomError, "파일은 필수값 입니다." if file.blank?
 

@@ -9,5 +9,7 @@ class Collection < ApplicationRecord
   # ActiveRecord가 type 컬럼을 무시하도록 할 수 있습니다.
   self.inheritance_column = nil
 
+  belongs_to :category, optional: true
+
   validates :title, presence: true, length: { in: 2..50 }
 end
