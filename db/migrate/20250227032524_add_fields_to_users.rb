@@ -7,7 +7,6 @@ class AddFieldsToUsers < ActiveRecord::Migration[8.0]
       t.string :otp, limit: 6
       t.timestamp :otp_expiry_date
       t.boolean :is_email_verified, null: false, default: false
-      t.string :image_url, limit: 255
     end
 
     add_foreign_key :users, :roles, column: :role_id

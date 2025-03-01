@@ -5,8 +5,6 @@ class CreatePosts < ActiveRecord::Migration[8.0]
       t.integer :collection_id, null: false
       t.string :title, limit: 50, null: false
       t.string :content, limit: 100, null: false
-      t.string :image_url, limit: 255
-
       t.timestamps
     end
 

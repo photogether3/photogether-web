@@ -55,10 +55,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_28_151640) do
   end
 
   create_table "favorites", force: :cascade do |t|
-    t.integer "category_id", null: false
     t.integer "user_id", null: false
+    t.integer "category_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_favorites_on_category_id"
+    t.index ["user_id", "category_id"], name: "index_favorites_on_user_id_and_category_id", unique: true
+    t.index ["user_id"], name: "index_favorites_on_user_id"
   end
 
   create_table "post_metadata", force: :cascade do |t|
@@ -75,7 +78,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_28_151640) do
     t.integer "collection_id", null: false
     t.string "title", limit: 50, null: false
     t.string "content", limit: 100, null: false
-    t.string "image_url", limit: 255
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -116,7 +118,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_28_151640) do
     t.string "otp", limit: 6
     t.datetime "otp_expiry_date"
     t.boolean "is_email_verified", default: false, null: false
-    t.string "image_url", limit: 255
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 

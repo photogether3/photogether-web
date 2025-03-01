@@ -23,7 +23,6 @@ User.create!(
   otp: nil,
   otp_expiry_date: nil,
   is_email_verified: true,
-  image_url: nil
 )
 
 Category.create!([
