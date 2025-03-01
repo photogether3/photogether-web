@@ -6,6 +6,8 @@ class User < ApplicationRecord
   has_one :refresh_token, dependent: :destroy
   has_many :sessions, dependent: :destroy
   has_many :collections, dependent: :destroy
+  has_many :favorites, dependent: :destroy
+  has_many :favorite_categories, through: :favorites, source: :category
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
