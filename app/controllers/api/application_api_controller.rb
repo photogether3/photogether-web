@@ -68,17 +68,18 @@ class Api::ApplicationApiController < ActionController::API
     return if response.body.blank?
 
     begin
-      # 응답 본문을 JSON 객체로 변환
       json = JSON.parse(response.body)
-      # 모든 키를 camelCase로 변환
-      camelized_json = json.deep_transform_keys { |key| key.to_s.camelize(:lower) }
-      Rails.logger.info "camelized_json: #{camelized_json}"
-
+      camelized_json = if json.is_a?(Array)
+        json.map { |obj| obj.deep_transform_keys { |key| key.to_s.camelize(:lower) } }
+      else
+        json.deep_transform_keys { |key| key.to_s.camelize(:lower) }
+      end
       response.body = camelized_json.to_json
     rescue JSON::ParserError => e
       Rails.logger.error("JSON 파싱 에러: #{e.message}")
     end
   end
+
 
   # API 예외 처리
   def handle_api_error(exception)
