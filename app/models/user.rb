@@ -1,13 +1,16 @@
 class User < ApplicationRecord
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
-  has_one_attached :image
+  belongs_to :role
+
   has_secure_password
+  has_one_attached :image
   has_one :refresh_token, dependent: :destroy
   has_many :sessions, dependent: :destroy
   has_many :collections, dependent: :destroy
   has_many :favorites, dependent: :destroy
   has_many :favorite_categories, through: :favorites, source: :category
+  has_many :posts, dependent: :destroy
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
