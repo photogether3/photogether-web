@@ -1,7 +1,7 @@
 class Api::V1::PostController < Api::ApplicationApiController
   before_action :authenticate_user!
   before_action :pre_set_create_or_update_params, only: [ :create, :update ]
-  before_action :get_collection_or_fail, only: [ :index, :create ]
+  before_action :get_collection_or_fail, only: [ :index, :create, :change_collection ]
   before_action :get_post_or_fail, only: [ :show, :update, :destroy ]
 
   def index
@@ -51,7 +51,10 @@ class Api::V1::PostController < Api::ApplicationApiController
   end
 
   def change_collection
-    puts "Post change collection"
+    post_ids = params[:postIds] || []
+    posts = Post.where(id: post_ids)
+    posts.update_all(collection_id: @collection.id)
+    render json: { message: "게시물이 이동되었습니다." }, status: :ok
   end
 
   def destroys
