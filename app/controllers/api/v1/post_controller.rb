@@ -2,7 +2,8 @@ class Api::V1::PostController < Api::ApplicationApiController
   before_action :authenticate_user!
   before_action :pre_set_create_or_update_params, only: [ :create, :update ]
   before_action :get_collection_or_fail, only: [ :index, :create, :change_collection ]
-  before_action :get_post_or_fail, only: [ :show, :update, :destroy ]
+  before_action :get_post_or_fail, only: [ :show, :update ]
+  before_action :get_post_group, only: [ :change_collection, :destroys ]
 
   def index
     # 기본값 설정
@@ -51,14 +52,13 @@ class Api::V1::PostController < Api::ApplicationApiController
   end
 
   def change_collection
-    post_ids = params[:postIds] || []
-    posts = Post.where(id: post_ids)
-    posts.update_all(collection_id: @collection.id)
+    @posts.update_all(collection_id: @collection.id)
     render json: { message: "게시물이 이동되었습니다." }, status: :ok
   end
 
   def destroys
-    puts "Post destroys"
+    @posts.delete_all
+    render json: { message: "게시물이 삭제되었습니다." }, status: :ok
   end
 
   private
@@ -76,6 +76,14 @@ class Api::V1::PostController < Api::ApplicationApiController
     raise ActiveRecord::RecordNotFound, "게시물을 찾을 수 없습니다." unless @post
   end
 
+  # 게시물 그룹을 조회합니다.
+  def get_post_group
+    post_ids = params[:postIds] || []
+    @posts = Post.where(id: post_ids) || []
+    raise ActiveRecord::RecordNotFound, "게시물 그룹을 찾을 수 없습니다." if @posts.empty?
+  end
+
+  # 게시물 생성 또는 수정 시 필요한 파라미터를 미리 설정합니다.
   def pre_set_create_or_update_params
     @title         = params[:title]
     @content       = params[:content]
