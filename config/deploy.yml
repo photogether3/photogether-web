@@ -7,7 +7,7 @@ image: devgoraebap/photogether_web
 # Deploy to these servers.
 servers:
   web:
-    - 203.245.29.124
+    - localhost
   # job:
   #   hosts:
   #     - 192.168.0.1

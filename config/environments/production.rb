@@ -80,12 +80,6 @@ Rails.application.configure do
   # Only use :id for inspections in production.
   config.active_record.attributes_for_inspect = [ :id ]
 
-  # config.hosts << "203.245.29.124"
-  # config.hosts << "localhost"
-  # config.hosts << "0.0.0.0"
-  # config.hosts << "127.0.0.1"
-  # config.hosts << /\A203\.245\.29\.124-[0-9a-f]+\z/
-  # config.hosts << /\A.*\.yourdomain\.com\z/ # 필요하다면 와일드카드 서브도메인 허용
   # Enable DNS rebinding protection and other `Host` header attacks.
   # config.hosts = [
   #   "example.com",     # Allow requests from example.com
