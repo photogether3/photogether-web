@@ -31,7 +31,10 @@ class User < ApplicationRecord
     raise CustomError, err_msg if !user.authenticate(password)
     raise CustomError, "이메일 인증을 완료해주세요." unless user.is_email_verified
 
-    JwtUtil.generate_tokens(user.id)
+    tokens = JwtUtil.generate_tokens(user.id)
+    RefreshToken.create_or_update_usecase(user.id, tokens[:refresh_token])
+
+    tokens
   end
 
   def self.register_usecase(email, password)
