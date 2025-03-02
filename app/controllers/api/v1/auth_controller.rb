@@ -1,4 +1,5 @@
 class Api::V1::AuthController < Api::ApplicationApiController
+  before_action :authenticate_user!, only: [ :logout ]
   before_action :ensure_valid_email, only: [ :login, :register, :generate_otp, :verify_otp ]
   before_action :ensure_valid_password, only: [ :login, :register ]
 
@@ -42,7 +43,9 @@ class Api::V1::AuthController < Api::ApplicationApiController
     render json: tokens, status: :ok
   end
 
-
   def logout
+    refresh_token_model = @current_user.refresh_token
+    refresh_token_model.destroy if refresh_token_model
+    render json: { message: "로그아웃 성공" }, status: :ok
   end
 end
