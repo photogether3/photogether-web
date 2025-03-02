@@ -41,7 +41,12 @@ class Api::V1::UserController < Api::ApplicationApiController
   end
 
   def reset_data
-    puts "User update reset data"
+    otp = params[:otp]
+    is_verify = @current_user.verify_otp(otp)
+    raise CustomError, "OTP has expired" unless is_verify
+
+    @current_user.reset_data_usecase
+    render json: { message: "데이터가 초기화되었습니다." }, status: :ok
   end
 
   def destroy

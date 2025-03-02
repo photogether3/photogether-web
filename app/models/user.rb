@@ -142,6 +142,19 @@ class User < ApplicationRecord
     favorite_categories.reload
   end
 
+  def reset_data_usecase
+    transaction do
+      # 게시물 삭제
+      posts.destroy_all if posts.exists?
+      # 즐겨찾기 삭제
+      favorites.destroy_all if favorites.exists?
+      # 즐겨찾기 카테고리 삭제
+      favorite_categories.destroy_all if favorite_categories.exists?
+      # 사진첩 삭제
+      collections.where(type: "DEFAULT").destroy_all
+    end
+  end
+
   private
 
   def self.generate_random_nickname
