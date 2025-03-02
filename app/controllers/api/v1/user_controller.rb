@@ -50,7 +50,12 @@ class Api::V1::UserController < Api::ApplicationApiController
   end
 
   def destroy
-    puts "User destroy"
+    otp = params[:otp]
+    is_verify = @current_user.verify_otp(otp)
+    raise CustomError, "OTP has expired" unless is_verify
+
+    @current_user.destroy
+    render json: { message: "계정이 삭제되었습니다." }, status: :ok
   end
 
   private
