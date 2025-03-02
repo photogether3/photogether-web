@@ -9,7 +9,27 @@ class Collection < ApplicationRecord
   # ActiveRecord가 type 컬럼을 무시하도록 할 수 있습니다.
   self.inheritance_column = nil
 
+  belongs_to :user
   belongs_to :category, optional: true
 
+  has_many :posts, dependent: :destroy
+
   validates :title, presence: true, length: { in: 2..50 }
+
+  scope :with_posts_count, -> {
+    select("collections.*, (SELECT COUNT(*) FROM posts WHERE posts.collection_id = collections.id) AS posts_count")
+  }
+
+  def to_detail
+    {
+      id: id,
+      title: title,
+      type: type,
+      category: category ? { id: category.id, name: category.name } : nil,
+      post_count: attributes["posts_count"].to_i,
+      image_urls: [], # 컨트롤러에서 merge로 추가
+      created_at: created_at.iso8601(3),
+      updated_at: updated_at.iso8601(3)
+    }
+  end
 end

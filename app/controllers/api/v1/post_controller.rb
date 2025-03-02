@@ -13,10 +13,11 @@ class Api::V1::PostController < Api::ApplicationApiController
     sort_by    = params[:sortBy] ||= "created_at"
 
     # 게시물 조회
-    posts = Post.where(user_id: @current_user.id, collection_id: @collection.id)
-                .order(sort_by => sort_order)
-                .includes(:collection, :post_metadata)
-                .page(page).per(per_page)
+    posts = Post
+      .where(user_id: @current_user.id, collection_id: @collection.id)
+      .order(sort_by => sort_order)
+      .includes(:collection, :post_metadata)
+      .page(page).per(per_page)
 
     # JSON 변환
     render json: {

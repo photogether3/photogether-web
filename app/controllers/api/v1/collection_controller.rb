@@ -4,11 +4,42 @@ class Api::V1::CollectionController < Api::ApplicationApiController
   before_action :get_collection_or_fail, only: [ :show, :update, :destroy ]
 
   def index
-    puts "Collection index"
+    # 기본값 설정
+    page       = params[:page] ||= 1
+    per_page   = params[:perPage] ||= 10
+    sort_order = params[:sortOrder] ||= "desc"
+    sort_by    = params[:sortBy] ||= "created_at"
+
+    # 사진첩 목록 조회
+    collections = Collection
+      .where(user_id: @current_user.id)
+      .order(sort_by => sort_order)
+      .includes(:category, posts: [ :image_attachment ])
+      .with_posts_count
+      .page(page).per(per_page)
+
+    # JSON 변환
+    render json: {
+      per_page: collections.limit_value,
+      total_item_count: collections.total_count,
+      total_page_count: collections.total_pages,
+      current_page: collections.current_page,
+      items: collections.map { |collection|
+        collection.to_detail.merge(
+          image_urls: collection.posts.order(id: :desc).limit(3).map { |post|
+            post.image.attached? ? url_for(post.image) : nil
+          }.compact
+        )
+      }
+    }, status: :ok
   end
 
   def show
-    puts "Collection show"
+    render json: @collection.to_detail.merge(
+      image_urls: @collection.posts.order(id: :desc).limit(3).map { |post|
+        post.image.attached? ? url_for(post.image) : nil
+      }.compact
+    ), status: :ok
   end
 
   def create
@@ -51,7 +82,11 @@ class Api::V1::CollectionController < Api::ApplicationApiController
 
   # 사진첩을 조회하고 없으면 예외를 발생시킵니다.
   def get_collection_or_fail
-    @collection = Collection.find_by(id: params[:id], user_id: @current_user.id)
+    @collection = Collection
+      .where(id: params[:id], user_id: @current_user.id)
+      .includes(:category, posts: [ :image_attachment ])
+      .first
+    puts @collection.as_json
     raise ActiveRecord::RecordNotFound, "사진첩을 찾을 수 없습니다." unless @collection
   end
 end
