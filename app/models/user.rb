@@ -144,6 +144,8 @@ class User < ApplicationRecord
 
   def reset_data_usecase
     transaction do
+      # OTP 초기화
+      update!(otp: nil, otp_expiry_date: nil)
       # 게시물 삭제
       posts.destroy_all if posts.exists?
       # 즐겨찾기 삭제
