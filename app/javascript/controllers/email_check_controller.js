@@ -2,6 +2,7 @@ import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
   check() {
+    console.log('hello')
     const email = this.element.value.trim();
     document.getElementById("email-check-result").textContent = "로딩 중..";
 
