@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root "rails/health#show"
+  root "landing#index"
 
   resource :session
   resources :passwords, param: :token
