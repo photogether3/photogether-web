@@ -1,0 +1,30 @@
+<div class="flex flex-col h-screen p-5 sm:justify-center sm:items-center sm:p-0">
+  <h2 class="text-3xl font-bold">회원가입</h2>
+  <br/>
+  <div class="w-full sm:w-[500px] sm:border border-gray-200 sm:bg-white lg:rounded-3xl p-4">
+    <%= form_with model: @user, url: users_path, local: true, html: { class: "" } do |f|  %>
+      <div>
+        <%= f.label :email_address, "이메일" %>
+        <%= f.email_field :email_address, placeholder: "이메일" %>
+      </div>
+
+      <div>
+        <%= f.label :password, "비밀번호" %>
+        <%= f.password_field :password, placeholder: "비밀번호" %>
+      </div>
+
+      <div>
+        <%= f.label :password_confirmation, "비밀번호 확인" %>
+        <%= f.password_field :password_confirmation, placeholder: "비밀번호 확인" %>
+      </div>
+
+      <div>
+        <%= f.submit "회원가입" %>
+      </div>
+    <% end %>
+
+    <%= link_to "로그인", new_session_path, class: "text-blue-600 hover:text-blue-700" %>
+  </div>
+
+
+</div>
