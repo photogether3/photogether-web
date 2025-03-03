@@ -1,0 +1,9 @@
+<turbo-stream action="update" target="email-check-result">
+  <template>
+    <% if @user_exists %>
+      <p class="text-red-600">❌ 이미 사용 중인 이메일입니다.</p>
+    <% else %>
+      <p class="text-green-600">✅ 사용 가능한 이메일입니다.</p>
+    <% end %>
+  </template>
+</turbo-stream>

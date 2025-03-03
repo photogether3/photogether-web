@@ -5,7 +5,9 @@ Rails.application.routes.draw do
   resources :passwords, param: :token
   get "up" => "rails/health#show", as: :rails_health_check
 
-  resources :users, only: [ :new, :create ]
+  resources :users, only: [ :new, :create ] do
+    get :check_email, on: :collection
+  end
 
   namespace :api do
     namespace :v1 do

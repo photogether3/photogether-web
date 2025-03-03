@@ -14,6 +14,17 @@ class UsersController < ApplicationController
     end
   end
 
+  def check_email
+    # 3초대기
+    sleep 3
+    email = params[:email]
+    @user_exists = User.exists?(email_address: email)
+
+    respond_to do |format|
+      format.turbo_stream
+    end
+  end
+
   private
 
   def user_params
