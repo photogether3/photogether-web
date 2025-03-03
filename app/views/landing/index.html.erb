@@ -1,4 +1,4 @@
-<div class="bg-white">
+<div class="">
   <header class="absolute inset-x-0 top-0 z-50">
     <nav class="flex items-center justify-between p-6 mx-auto max-w-7xl lg:px-8" aria-label="Global">
       <div class="flex lg:flex-1">
@@ -9,70 +9,54 @@
         </a>
       </div>
       <div class="hidden lg:flex lg:gap-x-12">
-        <a href="#" class="font-semibold text-gray-900 text-sm/6">Features</a>
-        <a href="#" class="font-semibold text-gray-900 text-sm/6">Marketplace</a>
+        <a href="#" class="text-base font-semibold text-gray-900">Features</a>
+        <a href="#" class="text-base font-semibold text-gray-900">Marketplace</a>
       </div>
       <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-        <a href="#" class="font-semibold text-gray-900 text-sm/6">Log in <span aria-hidden="true">&rarr;</span></a>
+          <a href="/session/new" class="text-base font-semibold text-gray-900 transition hover:text-green-800">
+            Log in <span aria-hidden="true">&rarr;</span>
+          </a>
       </div>
     </nav>
   </header>
   <main>
-    <div class="relative isolate">
-      <svg class="absolute inset-x-0 top-0 -z-10 h-[64rem] w-full stroke-gray-200 [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)]" aria-hidden="true">
-        <defs>
-          <pattern id="1f932ae7-37de-4c0a-a8b0-a6e3b4d44b84" width="200" height="200" x="50%" y="-1" patternUnits="userSpaceOnUse">
-            <path d="M.5 200V.5H200" fill="none" />
-          </pattern>
-        </defs>
-        <svg x="50%" y="-1" class="overflow-visible fill-gray-50">
-          <path d="M-200 0h201v201h-201Z M600 0h201v201h-201Z M-400 600h201v201h-201Z M200 800h201v201h-201Z" stroke-width="0" />
-        </svg>
-        <rect width="100%" height="100%" stroke-width="0" fill="url(#1f932ae7-37de-4c0a-a8b0-a6e3b4d44b84)" />
-      </svg>
-      <div class="absolute top-0 right-0 -ml-24 overflow-hidden left-1/2 -z-10 transform-gpu blur-3xl lg:ml-24 xl:ml-48" aria-hidden="true">
-        <div class="aspect-[801/1036] w-[50.0625rem] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30" style="clip-path: polygon(63.1% 29.5%, 100% 17.1%, 76.6% 3%, 48.4% 0%, 44.6% 4.7%, 54.5% 25.3%, 59.8% 49%, 55.2% 57.8%, 44.4% 57.2%, 27.8% 47.9%, 35.1% 81.5%, 0% 97.7%, 39.2% 100%, 35.2% 81.4%, 97.2% 52.8%, 63.1% 29.5%)"></div>
-      </div>
-      <div class="overflow-hidden">
-        <div class="px-6 pb-32 mx-auto max-w-7xl pt-36 sm:pt-60 lg:px-8 lg:pt-32">
-          <div class="max-w-2xl mx-auto gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
-            <div class="relative w-full lg:max-w-xl lg:shrink-0 xl:max-w-2xl">
-              <h1 class="text-5xl font-semibold tracking-tight text-gray-900 text-pretty sm:text-7xl">
-                <span class="text-[#124734]">Photo</span><span class="text-[#00AC69]">gether</span>
-              </h1>
-              <p class="mt-8 text-lg text-gray-500 text-pretty sm:max-w-md sm:text-xl/8 lg:max-w-none">구매하기 위해 캡처한 사진, 포토게더를 통해 정리해보세요!</p>
-              <div class="flex items-center mt-10 gap-x-6">
-                <a href="#" class="rounded-3xl bg-[#00673F] px-6 py-4 text-sm font-semibold text-white shadow-sm">시작하기</a>
-                <a href="#" class="font-normal text-gray-900 text-sm/6">모바일에서 사용할래요.<span aria-hidden="true">→</span></a>
-              </div>
+    <div class="px-6 pb-32 mx-auto max-w-7xl pt-36 sm:pt-60 lg:px-8 lg:pt-32">
+      <div class="max-w-2xl mx-auto gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
+        <div class="relative w-full lg:max-w-xl lg:shrink-0 xl:max-w-2xl">
+          <h1 class="text-5xl font-extrabold tracking-tight text-gray-900 text-pretty sm:text-7xl">
+            <span class="text-primary">Photo</span><span class="text-primary-40">gether</span>
+          </h1>
+          <p class="mt-8 text-lg text-gray-500 text-pretty sm:max-w-md sm:text-xl/8 lg:max-w-none">구매하기 위해 캡처한 사진, 포토게더를 통해 정리해보세요!</p>
+          <div class="flex items-center mt-10 gap-x-6">
+            <a href="/session/new" class="px-6 py-4 text-sm font-semibold text-white shadow-sm rounded-3xl bg-primary">시작하기</a>
+            <a href="#" class="font-normal text-gray-900 text-sm/6">모바일에서 사용할래요.<span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+        <div class="flex justify-end gap-8 mt-14 sm:-mt-44 sm:justify-start sm:pl-20 lg:mt-0 lg:pl-0">
+          <div class="flex-none pt-32 ml-auto space-y-8 w-44 sm:ml-0 sm:pt-80 lg:order-last lg:pt-36 xl:order-none xl:pt-80">
+            <div class="relative">
+              <img src="<%= asset_path 'landing-item06.jpg' %>" class="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"/>
+              <div class="absolute inset-0 pointer-events-none rounded-xl ring-1 ring-inset ring-gray-900/10"></div>
             </div>
-            <div class="flex justify-end gap-8 mt-14 sm:-mt-44 sm:justify-start sm:pl-20 lg:mt-0 lg:pl-0">
-              <div class="flex-none pt-32 ml-auto space-y-8 w-44 sm:ml-0 sm:pt-80 lg:order-last lg:pt-36 xl:order-none xl:pt-80">
-                <div class="relative">
-                  <img src="<%= asset_path 'landing-item06.jpg' %>" class="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"/>
-                  <div class="absolute inset-0 pointer-events-none rounded-xl ring-1 ring-inset ring-gray-900/10"></div>
-                </div>
-              </div>
-              <div class="flex-none mr-auto space-y-8 w-44 sm:mr-0 sm:pt-52 lg:pt-36">
-                <div class="relative">
-                  <img src="<%= asset_path 'landing-item07.jpg' %>" class="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"/>
-                  <div class="absolute inset-0 pointer-events-none rounded-xl ring-1 ring-inset ring-gray-900/10"></div>
-                </div>
-                <div class="relative">
-                  <img src="<%= asset_path 'landing-item08.jpg' %>" class="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"/>
-                  <div class="absolute inset-0 pointer-events-none rounded-xl ring-1 ring-inset ring-gray-900/10"></div>
-                </div>
-              </div>
-              <div class="flex-none pt-32 space-y-8 w-44 sm:pt-0">
-                <div class="relative">
-                  <img src="<%= asset_path 'landing-item09.jpg' %>" class="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"/>
-                  <div class="absolute inset-0 pointer-events-none rounded-xl ring-1 ring-inset ring-gray-900/10"></div>
-                </div>
-                <div class="relative">
-                  <img src="<%= asset_path 'landing-item10.jpg' %>" class="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"/>
-                  <div class="absolute inset-0 pointer-events-none rounded-xl ring-1 ring-inset ring-gray-900/10"></div>
-                </div>
-              </div>
+          </div>
+          <div class="flex-none mr-auto space-y-8 w-44 sm:mr-0 sm:pt-52 lg:pt-36">
+            <div class="relative">
+              <img src="<%= asset_path 'landing-item07.jpg' %>" class="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"/>
+              <div class="absolute inset-0 pointer-events-none rounded-xl ring-1 ring-inset ring-gray-900/10"></div>
+            </div>
+            <div class="relative">
+              <img src="<%= asset_path 'landing-item08.jpg' %>" class="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"/>
+              <div class="absolute inset-0 pointer-events-none rounded-xl ring-1 ring-inset ring-gray-900/10"></div>
+            </div>
+          </div>
+          <div class="flex-none pt-32 space-y-8 w-44 sm:pt-0">
+            <div class="relative">
+              <img src="<%= asset_path 'landing-item09.jpg' %>" class="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"/>
+              <div class="absolute inset-0 pointer-events-none rounded-xl ring-1 ring-inset ring-gray-900/10"></div>
+            </div>
+            <div class="relative">
+              <img src="<%= asset_path 'landing-item10.jpg' %>" class="aspect-[2/3] w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"/>
+              <div class="absolute inset-0 pointer-events-none rounded-xl ring-1 ring-inset ring-gray-900/10"></div>
             </div>
           </div>
         </div>
@@ -81,7 +65,7 @@
   </main>
 </div>
 
-<footer class="mt-10 bg-white">
+<footer class="mt-10">
   <div class="px-6 py-12 mx-auto max-w-7xl md:flex md:items-center md:justify-between lg:px-8">
     <div class="flex justify-center gap-x-6 md:order-2">
       <a href="https://github.com/photogether3" target="_blank" class="text-gray-600 cursor-pointer hover:text-gray-800">
@@ -91,6 +75,6 @@
         </svg>
       </a>
     </div>
-    <p class="mt-8 text-center text-gray-600 text-sm/6 md:order-1 md:mt-0">&copy; 2024 AZA, Inc. All rights reserved.</p>
+    <p class="mt-8 text-center text-gray-600 text-sm/6 md:order-1 md:mt-0">&copy; 2025 AZA, Inc. All rights reserved.</p>
   </div>
 </footer>

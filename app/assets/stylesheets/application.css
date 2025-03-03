@@ -10,53 +10,41 @@
  * Consider organizing styles into separate files for maintainability.
  */
  @font-face {
-  font-family: 'GothicA1';
-  src: url('GothicA1-Light.ttf');
+  font-family: '42dotSans';
+  src: url('42dotSans-Light.ttf');
   font-weight: 300;
 }
 
 @font-face {
-  font-family: 'GothicA1';
-  src: url('GothicA1-Regular.ttf');
+  font-family: '42dotSans';
+  src: url('42dotSans-Regular.ttf');
   font-weight: 400;
 }
 
 @font-face {
-  font-family: 'GothicA1';
-  src: url('GothicA1-Bold.ttf');
+  font-family: '42dotSans';
+  src: url('42dotSans-Medium.ttf');
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: '42dotSans';
+  src: url('42dotSans-SemiBold.ttf');
   font-weight: 700;
 }
 
 @font-face {
-  font-family: 'GothicA1';
-  src: url('GothicA1-Black.ttf');
-  font-weight: 900;
+  font-family: '42dotSans';
+  src: url('42dotSans-Bold.ttf');
+  font-weight: 800;
 }
 
 @font-face {
-  font-family: 'OpenSans';
-  src: url('OpenSans-Light.ttf');
-  font-weight: 300;
-}
-
-@font-face {
-  font-family: 'OpenSans';
-  src: url('OpenSans-Regular.ttf');
-  font-weight: 400;
-}
-
-@font-face {
-  font-family: 'OpenSans';
-  src: url('OpenSans-Bold.ttf');
-  font-weight: 700;
-}
-
-@font-face {
-  font-family: 'OpenSans';
-  src: url('OpenSans-ExtraBold.ttf');
+  font-family: '42dotSans';
+  src: url('42dotSans-ExtraBold.ttf');
   font-weight: 900;
 }
 
 html {
-  font-family: 'OpenSans', 'GothicA1', sans-serif !important;
+  font-family: '42dotSans', sans-serif !important;
 }
