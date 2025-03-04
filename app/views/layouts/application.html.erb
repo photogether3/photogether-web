@@ -23,6 +23,14 @@
   </head>
 
   <body>
+    <% if notice %>
+      <p class="notice"><%= notice %></p>
+    <% end %>
+
+    <% if alert %>
+      <p class="alert"><%= alert %></p>
+    <% end %>
+    
     <div class="relative overflow-hidden bg-white isolate">
       <!-- Background 선, 그라데이션 효과 -->
       <svg class="absolute inset-x-0 top-0 -z-10 h-[64rem] w-full stroke-gray-200 [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)]" aria-hidden="true">

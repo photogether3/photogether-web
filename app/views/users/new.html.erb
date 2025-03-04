@@ -2,40 +2,26 @@
   <h2 class="text-3xl font-bold">회원가입</h2>
   <br/>
   <div class="w-full sm:w-[500px] sm:border border-gray-200 sm:bg-white sm:rounded-3xl p-4">
-    <%= form_with model: @user, url: users_path, local: true, html: { class: "flex flex-col gap-4" } do |f|  %>
-
-      <%= render "shared/input", 
-        id: "email", 
-        type: "email", 
-        name: "user[email_address]", 
-        label: "email", 
-        placeholder: "이메일을 입력해 주세요.",
-        data: { controller: "email-check", action: "input->email-check#check" }
-      %>
-      <div id="email-check-result"></div>
-  
-      <%= render "shared/input", 
-        id: "password", 
-        type: "password", 
-        name: "user[password]", 
-        label: "password", 
-        placeholder: "비밀번호를 입력해 주세요."
-      %>
-  
-      <%= render "shared/input", 
-        id: "password_confirmation", 
-        type: "password", 
-        name: "user[password_confirmation]", 
-        label: "password confirmation", 
-        placeholder: "비밀번호를 확인해 주세요."
-      %>
+    <%= form_with(model: @user, url: users_path, method: :post) do |form| %>
+      <div>
+        <%= form.label :email_address, "이메일" %>
+        <%= form.email_field :email_address %>
+      </div>
 
       <div>
-        <%= f.submit "회원가입" %>
+        <%= form.label :password, "비밀번호" %>
+        <%= form.password_field :password %>
+      </div>
+
+      <div>
+        <%= form.label :password_confirmation, "비밀번호 확인" %>
+        <%= form.password_field :password_confirmation %>
+      </div>
+
+      <div>
+        <%= form.submit "가입" %>
       </div>
     <% end %>
-
-    <%= link_to "로그인", new_session_path, class: "text-blue-600 hover:text-blue-700" %>
   </div>
 
 

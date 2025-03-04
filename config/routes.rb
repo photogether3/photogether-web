@@ -7,6 +7,8 @@ Rails.application.routes.draw do
 
   resources :users, only: [ :new, :create ] do
     get :check_email, on: :collection
+    get "otp", to: "users#otp", as: :otp
+    post "verify-otp", to: "users#verify_otp", as: :verify_otp
   end
 
   namespace :api do

@@ -157,8 +157,6 @@ class User < ApplicationRecord
     end
   end
 
-  private
-
   def self.generate_random_nickname
     prefixes = %w[
       멋진 든든한 귀여운 강력한 재빠른
