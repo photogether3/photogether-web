@@ -114,3 +114,6 @@ ssh:
 #     port: 6379
 #     directories:
 #       - data:/data
+post-deploy:
+  - bin/kamal app exec -- "bin/rails runner 'load Rails.root.join(\"db\", \"deploy.seeds.rb\")'"
+

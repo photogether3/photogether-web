@@ -1,7 +1,0 @@
-#!/bin/bash
-set -e
-
-echo "Running database seeds..."
-bin/kamal app exec -- "bin/rails runner 'load Rails.root.join(\"db\", \"deploy.seeds.rb\")'"
-
-echo "Seeding completed."
