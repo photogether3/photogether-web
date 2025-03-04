@@ -1,69 +1,32 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+# Role 생성
+Role.find_or_create_by!(name: 'User')
+Role.find_or_create_by!(name: 'Admin')
 
-Role.create!([
-  { name: 'User' },
-  { name: 'Admin' }
-])
+# User 생성
+User.find_or_create_by!(email_address: Rails.application.credentials.dig(:admin, :email)) do |user|
+  user.password = Rails.application.credentials.dig(:admin, :password)
+  user.password_confirmation = Rails.application.credentials.dig(:admin, :password)
+  user.role_id = 2
+  user.nickname = '관리자'
+  user.is_email_verified = true
+end
 
-User.create!(
-  email_address: Rails.application.credentials.dig(:admin, :email),
-  password: Rails.application.credentials.dig(:admin, :password),
-  password_confirmation: Rails.application.credentials.dig(:admin, :password),
-  role_id: 2,
-  nickname: '관리자',
-  bio: nil,
-  otp: nil,
-  otp_expiry_date: nil,
-  is_email_verified: true,
-)
+# Category 생성
+categories = [
+  { id: 1001, name: '기술' },
+  { id: 1002, name: '건강 & 웰니스' },
+  { id: 1003, name: '여행' },
+  { id: 1004, name: '금융' },
+  { id: 1005, name: '음식 & 요리' },
+  { id: 1006, name: '엔터테인먼트' },
+  { id: 1007, name: '교육' },
+  { id: 1008, name: '스포츠' },
+  { id: 1009, name: '비즈니스' },
+  { id: 1010, name: '라이프스타일' }
+]
 
-Category.create!([
-  {
-    id: 1001,
-    name: '기술'
-  },
-  {
-    id: 1002,
-    name: '건강 & 웰니스'
-  },
-  {
-    id: 1003,
-    name: '여행'
-  },
-  {
-    id: 1004,
-    name: '금융'
-  },
-  {
-    id: 1005,
-    name: '음식 & 요리'
-  },
-  {
-    id: 1006,
-    name: '엔터테인먼트'
-  },
-  {
-    id: 1007,
-    name: '교육'
-  },
-  {
-    id: 1008,
-    name: '스포츠'
-  },
-  {
-    id: 1009,
-    name: '비즈니스'
-  },
-  {
-    id: 1010,
-    name: '라이프스타일'
-  }
-])
+categories.each do |category|
+  Category.find_or_create_by!(id: category[:id]) do |c|
+    c.name = category[:name]
+  end
+end
