@@ -24,6 +24,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params_with_defaults)
 
     if @user.save
+      puts user_otp_path(@user.id)
       redirect_to user_otp_path(@user.id), notice: "회원가입이 완료되었습니다. 이메일 인증을 진행해주세요."
     else
       render :new, status: :unprocessable_entity
@@ -42,11 +43,11 @@ class UsersController < ApplicationController
   end
 
   def otp
-    @user = User.find(params[:id])
+    @user = User.find(params[:user_id])
   end
 
   def verify_otp
-    @user = User.find(params[:id])
+    @user = User.find(params[:user_id])
     if @user.otp == params[:otp]
       @user.update(is_email_verified: true)
       redirect_to root_path, notice: "이메일 인증이 완료되었습니다."

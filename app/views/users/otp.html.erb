@@ -1,8 +1,7 @@
 <h1>이메일 인증</h1>
 
 <p>이메일로 전송된 OTP 번호를 입력해주세요.</p>
-
-<%= form_with(url: verify_user_otp_path(@user), method: :post) do |form| %>
+<%= form_with(url: user_verify_otp_path(@user), method: :post) do |form| %>
   <div>
     <%= form.label :otp, "OTP 번호" %>
     <%= form.text_field :otp %>
