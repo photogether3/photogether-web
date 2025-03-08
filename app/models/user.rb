@@ -23,20 +23,6 @@ class User < ApplicationRecord
 
   # class methods ✨
 
-  def self.login_usecase(email, password)
-    user = self.find_by(email_address: email)
-
-    err_msg = "아이디 또는 비밀번호를 찾을 수 없습니다."
-    raise CustomError, err_msg unless user
-    raise CustomError, err_msg if !user.authenticate(password)
-    raise CustomError, "이메일 인증을 완료해주세요." unless user.is_email_verified
-
-    tokens = JwtUtil.generate_tokens(user.id)
-    RefreshToken.create_or_update_usecase(user.id, tokens[:refresh_token])
-
-    tokens
-  end
-
   def self.register_usecase(email, password)
     transaction do
       user = self.create!(
@@ -54,46 +40,6 @@ class User < ApplicationRecord
     end
   end
 
-  def self.generate_otp_usecase(email)
-    user = self.find_by(email_address: email)
-
-    raise ActiveRecord::RecordNotFound, "User not found" unless user
-    user.update!(otp: generate_otp, otp_expiry_date: 5.minutes.from_now)
-
-    UserMailer.send_otp_email(user).deliver_now
-  end
-
-  def self.verify_otp_usecase(email, otp)
-    user = self.find_by!(email_address: email)
-
-    is_verify = user.verify_otp(otp)
-    raise CustomError, "OTP has expired" unless is_verify
-
-    user.update!(otp: nil, otp_expiry_date: nil, is_email_verified: true)
-
-    tokens = JwtUtil.generate_tokens(user.id)
-    RefreshToken.create_or_update_usecase(user.id, tokens[:refresh_token])
-
-    tokens
-  end
-
-  def self.update_password_by_otp_usecase(email, otp, password)
-    user = User.find_by(email_address: email)
-    raise ActiveRecord::RecordNotFound, "사용자를 찾을 수 없습니다." unless user
-
-    is_verify = user.verify_otp(otp)
-    raise CustomError, "OTP has expired" unless is_verify
-
-    user.update!(
-      password: password,
-      password_confirmation: password,
-      otp: nil,
-      otp_expiry_date: nil,
-    )
-
-    user
-  end
-
   # instance methods ✨
 
   def as_json(options = {})
@@ -103,11 +49,20 @@ class User < ApplicationRecord
     end
   end
 
-  def verify_otp(otp)
+  # OTP가 유효한지 검증하고 실패시 예외를 발생시킵니다.
+  def verify_otp!(otp)
     puts "OTP_EXPIRY_DATE: #{self.otp_expiry_date}"
     puts "OTP: #{self.otp}"
     is_invalid = self.otp == otp && self.otp_expiry_date > Time.now
-    is_invalid
+    raise CustomError, "OTP has expired" unless is_invalid
+  end
+
+  def update_otp
+    self.update!(otp: generate_otp, otp_expiry_date: 5.minutes.from_now)
+  end
+
+  def reset_otp
+    self.update!(otp: nil, otp_expiry_date: nil, is_email_verified: true)
   end
 
   def update_usecase(nickname, bio, file)

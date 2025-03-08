@@ -22,11 +22,18 @@ class Api::V1::UserController < Api::ApplicationApiController
   end
 
   def update_password_by_otp
-    otp       = params[:otp]
-    email     = params[:email]
-    password  = params[:password]
+    user = User.find_by(email_address: params[:email])
+    raise ActiveRecord::RecordNotFound, "사용자를 찾을 수 없습니다." unless user
 
-    user = User.update_password_by_otp_usecase(email, otp, password)
+    user.verify_otp!(params[:otp])
+
+    user.update!(
+      password: params[:password],
+      password_confirmation: params[:password],
+      otp: nil,
+      otp_expiry_date: nil,
+    )
+
     render_user_json(user)
   end
 
