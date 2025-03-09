@@ -33,7 +33,9 @@ class Api::V1::AuthController < Api::ApplicationApiController
   def verify_otp
     raise ActiveRecord::RecordNotFound, "User not found" unless @user
 
-    @user.verify_otp!(params[:otp])
+    is_valid = @user.verify_otp(params[:otp])
+    raise CustomError, "OTP has expired" unless is_valid
+
     @user.reset_otp
 
     tokens = JwtUtil.generate_tokens(@user.id)

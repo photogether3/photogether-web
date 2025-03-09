@@ -24,7 +24,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params_with_defaults)
 
     if @user.save
-      puts user_otp_path(@user.id)
+      UserMailer.send_otp_email(@user).deliver_now
       redirect_to user_otp_path(@user.id), notice: "회원가입이 완료되었습니다. 이메일 인증을 진행해주세요."
     else
       render :new, status: :unprocessable_entity
@@ -32,8 +32,6 @@ class UsersController < ApplicationController
   end
 
   def check_email
-    # 3초대기
-    sleep 3
     email = params[:email]
     @user_exists = User.exists?(email_address: email)
 
@@ -48,9 +46,13 @@ class UsersController < ApplicationController
 
   def verify_otp
     @user = User.find(params[:user_id])
-    if @user.otp == params[:otp]
+
+    is_valid = @user.verify_otp(params[:otp])
+
+    if is_valid
       @user.update(is_email_verified: true)
-      redirect_to root_path, notice: "이메일 인증이 완료되었습니다."
+      start_new_session_for @user
+      redirect_to collections_path, notice: "이메일 인증이 완료되었습니다."
     else
       redirect_to user_otp_path(@user), alert: "OTP 번호가 일치하지 않습니다."
     end

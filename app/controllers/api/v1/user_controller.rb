@@ -25,7 +25,8 @@ class Api::V1::UserController < Api::ApplicationApiController
     user = User.find_by(email_address: params[:email])
     raise ActiveRecord::RecordNotFound, "사용자를 찾을 수 없습니다." unless user
 
-    user.verify_otp!(params[:otp])
+    is_valid = user.verify_otp!(params[:otp])
+    raise CustomError, "OTP has expired" unless is_valid
 
     user.update!(
       password: params[:password],
@@ -49,8 +50,8 @@ class Api::V1::UserController < Api::ApplicationApiController
 
   def reset_data
     otp = params[:otp]
-    is_verify = @current_user.verify_otp(otp)
-    raise CustomError, "OTP has expired" unless is_verify
+    is_valid = @current_user.verify_otp(otp)
+    raise CustomError, "OTP has expired" unless is_valid
 
     @current_user.reset_data_usecase
     render json: { message: "데이터가 초기화되었습니다." }, status: :ok
@@ -58,8 +59,8 @@ class Api::V1::UserController < Api::ApplicationApiController
 
   def destroy
     otp = params[:otp]
-    is_verify = @current_user.verify_otp(otp)
-    raise CustomError, "OTP has expired" unless is_verify
+    is_valid = @current_user.verify_otp(otp)
+    raise CustomError, "OTP has expired" unless is_valid
 
     @current_user.destroy
     render json: { message: "계정이 삭제되었습니다." }, status: :ok

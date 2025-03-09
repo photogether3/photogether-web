@@ -50,11 +50,11 @@ class User < ApplicationRecord
   end
 
   # OTP가 유효한지 검증하고 실패시 예외를 발생시킵니다.
-  def verify_otp!(otp)
+  def verify_otp(otp)
     puts "OTP_EXPIRY_DATE: #{self.otp_expiry_date}"
     puts "OTP: #{self.otp}"
-    is_invalid = self.otp == otp && self.otp_expiry_date > Time.now
-    raise CustomError, "OTP has expired" unless is_invalid
+    is_valid = self.otp == otp && self.otp_expiry_date > Time.now
+    is_valid
   end
 
   def update_otp
