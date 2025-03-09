@@ -11,6 +11,9 @@ Rails.application.routes.draw do
     post "verify-otp", to: "users#verify_otp", as: :verify_otp
   end
 
+  resources :posts
+  resources :collections
+
   namespace :api do
     namespace :v1 do
       # auth group
