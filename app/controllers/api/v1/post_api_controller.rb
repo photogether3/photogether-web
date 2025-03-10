@@ -1,4 +1,4 @@
-class Api::V1::PostController < Api::ApplicationApiController
+class Api::V1::PostApiController < Api::ApplicationApiController
   before_action :authenticate_user!
   before_action :pre_set_create_or_update_params, only: [ :create, :update ]
   before_action :get_collection_or_fail, only: [ :index, :create, :change_collection ]

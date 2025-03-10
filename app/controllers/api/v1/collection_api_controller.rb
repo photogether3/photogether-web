@@ -1,4 +1,4 @@
-class Api::V1::CollectionController < Api::ApplicationApiController
+class Api::V1::CollectionApiController < Api::ApplicationApiController
   before_action :authenticate_user!
   before_action :get_category_or_fail, only: [ :create, :update ]
   before_action :get_collection_or_fail, only: [ :show, :update, :destroy ]

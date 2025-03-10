@@ -1,4 +1,4 @@
-class Api::V1::AuthController < Api::ApplicationApiController
+class Api::V1::AuthApiController < Api::ApplicationApiController
   before_action :authenticate_user!, only: [ :logout ]
   before_action :ensure_valid_email, only: [ :login, :register, :generate_otp, :verify_otp ]
   before_action :ensure_valid_password, only: [ :login, :register ]
