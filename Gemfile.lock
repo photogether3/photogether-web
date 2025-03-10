@@ -293,6 +293,7 @@ GEM
       rubocop-rails (>= 2.30)
     ruby-progressbar (1.13.0)
     rubyzip (2.4.1)
+    scalar_ruby (1.1.0)
     securerandom (0.4.1)
     selenium-webdriver (4.29.1)
       base64 (~> 0.2)
@@ -395,6 +396,7 @@ DEPENDENCIES
   rack-cors
   rails (~> 8.0.1)
   rubocop-rails-omakase
+  scalar_ruby (~> 1.1)
   selenium-webdriver
   solid_cable
   solid_cache
