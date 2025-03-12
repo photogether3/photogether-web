@@ -10,6 +10,7 @@ services:
       - ./log:/rails/log
     networks:
       - my-network
+    container_name: photogether-web
 
 networks:
   my-network:
