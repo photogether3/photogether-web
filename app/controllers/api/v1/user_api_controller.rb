@@ -1,10 +1,14 @@
 class Api::V1::UserApiController < Api::ApplicationApiController
   before_action :authenticate_user!, except: [ :is_email_taken, :update_password_by_otp ]
-  before_action :ensure_valid_email, only: [ :is_email_taken, :update_password_by_otp ]
-  before_action :ensure_valid_password, only: [ :is_email_taken, :update_password_by_otp ]
 
   def is_email_taken
-    user = User.find_by(email_address: params[:email])
+    email = params[:email]
+
+    unless email.match?(User::VALID_EMAIL_REGEX)
+      return render json: { is_duplicated: false }, status: :ok
+    end
+
+    user = User.find_by(email_address: email)
     render json: { is_duplicated: !user.nil? }, status: :ok
   end
 
