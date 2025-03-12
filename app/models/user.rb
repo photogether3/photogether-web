@@ -1,9 +1,11 @@
 class User < ApplicationRecord
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
+  # 비밀번호 정규식: 최소 8자, 최대 50자, 소문자, 숫자, 특수문자를 각각 하나 이상 포함
+  VALID_PASSWORD_REGEX = /\A(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,50}\z/
 
   belongs_to :role
 
-  has_secure_password
+  has_secure_password validations: false
   has_one_attached :image
   has_one :refresh_token, dependent: :destroy
   has_many :sessions, dependent: :destroy
@@ -12,35 +14,47 @@ class User < ApplicationRecord
   has_many :favorite_categories, through: :favorites, source: :category
   has_many :posts, dependent: :destroy
 
-  normalizes :email_address, with: ->(e) { e.strip.downcase }
+  validate :validate_email_address
+  validate :validate_password
 
-  validates :email_address,
-    presence: true,
-    uniqueness: true,
-    length: { maximum: 50 },
-    format: { with: VALID_EMAIL_REGEX }
-  validates :password, presence: true, length: { minimum: 8 }, if: -> { password.present? }
+  # Domain Rules 🧀
 
-  # class methods ✨
+  def validate_email_address
+    if email_address.blank?
+      errors.add(:base, "이메일 주소를 입력해주세요.")
+      return
+    end
 
-  def self.register_usecase(email, password)
-    transaction do
-      user = self.create!(
-        email_address: email,
-        password: password,
-        password_confirmation: password,
-        role_id: 1,
-        nickname: generate_random_nickname
-      )
+    if User.where.not(id: id).exists?(email_address: email_address)
+      errors.add(:base, "이미 사용 중인 이메일 주소입니다.")
+      return
+    end
 
-      user.collections.create!([
-        { category_id: nil, type: "UNCATEGORIZED", title: "미분류" },
-        { category_id: nil, type: "TRASH",        title: "휴지통" }
-      ])
+    # in 범위를 사용하여 길이 검사
+    unless (6..50).include?(email_address.length)
+      errors.add(:base, "이메일 주소는 6자 이상 50자 이하여야 합니다.")
+      return
+    end
+
+    unless email_address.match?(VALID_EMAIL_REGEX)
+      errors.add(:base, "유효한 이메일 형식이 아닙니다.")
     end
   end
 
-  # instance methods ✨
+  def validate_password
+    if password.blank? && new_record?
+      errors.add(:base, "비밀번호를 입력해주세요.")
+      return
+    end
+
+    if password.present?
+      unless password.match?(VALID_PASSWORD_REGEX)
+        errors.add(:base, "비밀번호는 8-50자 사이이며, 소문자, 숫자, 특수문자를 각각 하나 이상 포함해야 합니다.")
+      end
+    end
+  end
+
+  # Utils 🍪
 
   def as_json(options = {})
     super(only: [ :id, :nickname, :bio, :image_url, :created_at, :updated_at ]).tap do |hash|
@@ -49,20 +63,12 @@ class User < ApplicationRecord
     end
   end
 
-  # OTP가 유효한지 검증하고 실패시 예외를 발생시킵니다.
+  # OTP가 유효한지 확인합니다.
   def verify_otp(otp)
     puts "OTP_EXPIRY_DATE: #{self.otp_expiry_date}"
     puts "OTP: #{self.otp}"
     is_valid = self.otp == otp && self.otp_expiry_date > Time.now
     is_valid
-  end
-
-  def update_otp
-    self.update!(otp: generate_otp, otp_expiry_date: 5.minutes.from_now)
-  end
-
-  def reset_otp
-    self.update!(otp: nil, otp_expiry_date: nil, is_email_verified: true)
   end
 
   def update_usecase(nickname, bio, file)
@@ -110,27 +116,5 @@ class User < ApplicationRecord
       # 사진첩 삭제
       collections.where(type: "DEFAULT").destroy_all
     end
-  end
-
-  def self.generate_random_nickname
-    prefixes = %w[
-      멋진 든든한 귀여운 강력한 재빠른
-      화려한 용감한 현명한 활기찬 유쾌한
-    ]
-
-    suffixes = %w[
-      고래밥 사자 호랑이 독수리 고양이
-      강아지 여우 팬더 토끼 공룡
-    ]
-
-    random_prefix = prefixes.sample
-    random_suffix = suffixes.sample
-
-    "#{random_prefix} #{random_suffix}"
-  end
-
-  def self.generate_otp
-    # 6자리 숫자 문자열 (100000~999999)
-    (100_000 + rand(900_000)).to_s
   end
 end

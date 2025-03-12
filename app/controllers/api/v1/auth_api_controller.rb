@@ -1,46 +1,70 @@
 class Api::V1::AuthApiController < Api::ApplicationApiController
   before_action :authenticate_user!, only: [ :logout ]
-  before_action :ensure_valid_email, only: [ :login, :register, :generate_otp, :verify_otp ]
-  before_action :ensure_valid_password, only: [ :login, :register ]
-  before_action :get_user_from_email, only: [ :login, :generate_otp, :verify_otp ]
 
   def login
-    err_msg = "아이디 또는 비밀번호를 찾을 수 없습니다."
-    raise CustomError, err_msg unless @user
-    raise CustomError, err_msg if !@user.authenticate(password)
-    raise CustomError, "이메일 인증을 완료해주세요." unless @user.is_email_verified
+    email = params[:email]
+    raise CustomError, "유효한 이메일을 입력해 주세요." unless email.match?(User::VALID_EMAIL_REGEX)
 
-    tokens = JwtUtil.generate_tokens(@user.id)
-    RefreshToken.create_or_update_usecase(@user.id, tokens[:refresh_token])
+    password = params[:password]
+    raise ArgumentError, "비밀번호를 입력해 주세요." if password.blank?
+
+    user = User.find_by(email_address: email)
+
+    err_msg = "아이디 또는 비밀번호를 찾을 수 없습니다."
+    raise CustomError, err_msg unless user
+    raise CustomError, err_msg if !user.authenticate(password)
+    raise CustomError, "이메일 인증을 완료해주세요." unless user.is_email_verified
+
+    tokens = create_tokens_with_save_effect(user.id)
 
     render json: tokens, status: :ok
   end
 
   def register
-    User.register_usecase(params[:email], params[:password])
+    ActiveRecord::Base.transaction do
+      user = User.create!(
+        email_address: params[:email],
+        password: params[:password],
+        password_confirmation: params[:password],
+        role_id: 1,
+        nickname: BaseUtil.generate_random_nickname,
+      )
+
+      user.collections.create!([
+        { category_id: nil, type: "UNCATEGORIZED", title: "미분류" },
+        { category_id: nil, type: "TRASH",         title: "휴지통" }
+      ])
+    end
     render json: { message: "회원가입 성공" }, status: :created
   end
 
   def generate_otp
-    raise ActiveRecord::RecordNotFound, "User not found" unless @user
-    @user.update_otp
+    email = params[:email]
+    raise CustomError, "유효한 이메일을 입력해 주세요." unless email.match?(User::VALID_EMAIL_REGEX)
 
-    UserMailer.send_otp_email(@user).deliver_now
+    user = User.find_by(email_address: email)
+    raise CustomError, "사용자를 찾을 수 없습니다." unless user
+
+    user.update!(otp: BaseUtil.generate_otp, otp_expiry_date: 5.minutes.from_now)
+
+    UserMailer.send_otp_email(user).deliver_now
 
     render json: { message: "OTP 발급 성공" }, status: :created
   end
 
   def verify_otp
-    raise ActiveRecord::RecordNotFound, "User not found" unless @user
+    email = params[:email]
+    raise CustomError, "유효한 이메일을 입력해 주세요." unless email.match?(User::VALID_EMAIL_REGEX)
 
-    is_valid = @user.verify_otp(params[:otp])
-    raise CustomError, "OTP has expired" unless is_valid
+    user = User.find_by(email_address: email)
+    raise CustomError, "사용자를 찾을 수 없습니다." unless user
 
-    @user.reset_otp
+    is_valid = user.verify_otp(params[:otp])
+    raise CustomError, "OTP가 유효하지 않습니다." unless is_valid
 
-    tokens = JwtUtil.generate_tokens(@user.id)
-    RefreshToken.create_or_update_usecase(@user.id, tokens[:refresh_token])
+    user.update!(otp: nil, otp_expiry_date: nil, is_email_verified: true)
 
+    tokens = create_tokens_with_save_effect(user.id)
     render json: tokens, status: :created
   end
 
@@ -58,21 +82,26 @@ class Api::V1::AuthApiController < Api::ApplicationApiController
     end
 
     user = refresh_token_model.user
-    tokens = JwtUtil.generate_tokens(user.id)
-    RefreshToken.create_or_update_usecase(user.id, tokens[:refresh_token])
+    tokens = create_tokens_with_save_effect(user.id)
 
     render json: tokens, status: :ok
   end
 
   def logout
-    refresh_token_model = @current_user.refresh_token
-    refresh_token_model.destroy if refresh_token_model
+    refresh_token = @current_user.refresh_token
+    refresh_token.destroy if refresh_token
     render json: { message: "로그아웃 성공" }, status: :ok
   end
 
   private
 
-  def get_user_from_email
-    @user = User.find_by(email_address: params[:email])
+  # - 사용자ID에 해당하는 토큰 리소스를 발급합니다.
+  # - 사용자 토큰에 리프레시 토큰 정보를 저장합니다.
+  # - 토큰 리소스를 반환합니다.
+  def create_tokens_with_save_effect(user_id)
+    tokens = JwtUtil.generate_tokens(user_id)
+    RefreshToken.create_or_update_usecase(user_id, tokens[:refresh_token])
+
+    tokens
   end
 end

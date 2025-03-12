@@ -7,17 +7,6 @@ class Api::ApplicationApiController < ActionController::API
 
   protected
 
-  def ensure_valid_email
-    email = params[:email]
-    raise ArgumentError unless email.match?(User::VALID_EMAIL_REGEX)
-  end
-
-  def ensure_valid_password
-    password = params[:password]
-    raise ArgumentError, "Password missing" if password.blank?
-    raise ArgumentError, "That's a weird password" if password.length <= 4 || password.length >= 30
-  end
-
   def authenticate_user!
     auth_header = request.headers["Authorization"]
     unless auth_header.present?
@@ -90,7 +79,7 @@ class Api::ApplicationApiController < ActionController::API
     when ActiveRecord::RecordInvalid
       # RecordInvalid(주로 유효성 검증 실패)
       record  = exception.record
-      message = record&.errors&.full_messages&.join(", ") || exception.message
+      message = record&.errors&.full_messages&.first || exception.message
 
       render json: {
         errorCode: 400,
