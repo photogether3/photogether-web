@@ -2,6 +2,8 @@ class User < ApplicationRecord
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   # 비밀번호 정규식: 최소 8자, 최대 50자, 소문자, 숫자, 특수문자를 각각 하나 이상 포함
   VALID_PASSWORD_REGEX = /\A(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,50}\z/
+  # OTP 정규식: 6자리 숫자
+  VALID_OTP_REGEX = /^\d{6}$/
 
   belongs_to :role
 
@@ -85,20 +87,5 @@ class User < ApplicationRecord
 
     # 업데이트 후 최신 즐겨찾기 목록을 반환
     favorite_categories.reload
-  end
-
-  def reset_data_usecase
-    transaction do
-      # OTP 초기화
-      update!(otp: nil, otp_expiry_date: nil)
-      # 게시물 삭제
-      posts.destroy_all if posts.exists?
-      # 즐겨찾기 삭제
-      favorites.destroy_all if favorites.exists?
-      # 즐겨찾기 카테고리 삭제
-      favorite_categories.destroy_all if favorite_categories.exists?
-      # 사진첩 삭제
-      collections.where(type: "DEFAULT").destroy_all
-    end
   end
 end

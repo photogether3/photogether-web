@@ -2,10 +2,10 @@ class Api::V1::AuthApiController < Api::ApplicationApiController
   before_action :authenticate_user!, only: [ :logout ]
 
   def login
-    email = params[:email]
-    raise CustomError, "유효한 이메일을 입력해 주세요." unless email.match?(User::VALID_EMAIL_REGEX)
-
+    email    = params[:email]
     password = params[:password]
+
+    raise CustomError, "유효한 이메일을 입력해 주세요." unless email.match?(User::VALID_EMAIL_REGEX)
     raise ArgumentError, "비밀번호를 입력해 주세요." if password.blank?
 
     user = User.find_by(email_address: email)
@@ -40,6 +40,7 @@ class Api::V1::AuthApiController < Api::ApplicationApiController
 
   def generate_otp
     email = params[:email]
+
     raise CustomError, "유효한 이메일을 입력해 주세요." unless email.match?(User::VALID_EMAIL_REGEX)
 
     user = User.find_by(email_address: email)
@@ -54,12 +55,15 @@ class Api::V1::AuthApiController < Api::ApplicationApiController
 
   def verify_otp
     email = params[:email]
+    otp   = params[:otp]
+
     raise CustomError, "유효한 이메일을 입력해 주세요." unless email.match?(User::VALID_EMAIL_REGEX)
+    raise CustomError, "OTP는 6자리 숫자여야 합니다." unless otp.to_s.match?(User::VALID_OTP_REGEX)
 
     user = User.find_by(email_address: email)
     raise CustomError, "사용자를 찾을 수 없습니다." unless user
 
-    is_valid = user.verify_otp(params[:otp])
+    is_valid = user.verify_otp(otp)
     raise CustomError, "OTP가 유효하지 않습니다." unless is_valid
 
     user.update!(otp: nil, otp_expiry_date: nil, is_email_verified: true)

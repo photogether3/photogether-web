@@ -36,15 +36,23 @@ class Api::V1::UserApiController < Api::ApplicationApiController
   end
 
   def update_password_by_otp
-    user = User.find_by(email_address: params[:email])
+    email    = params[:email]
+    otp      = params[:otp]
+    password = params[:password]
+
+    raise CustomError, "유효한 이메일을 입력해 주세요." unless email.match?(User::VALID_EMAIL_REGEX)
+    raise CustomError, "OTP는 6자리 숫자여야 합니다." unless otp.to_s.match?(User::VALID_OTP_REGEX)
+    raise CustomError, "비밀번호를 입력해 주세요." if password.blank?
+
+    user = User.find_by(email_address: email)
     raise ActiveRecord::RecordNotFound, "사용자를 찾을 수 없습니다." unless user
 
-    is_valid = user.verify_otp!(params[:otp])
-    raise CustomError, "OTP has expired" unless is_valid
+    is_valid = user.verify_otp(otp)
+    raise CustomError, "OTP가 유효하지 않습니다." unless is_valid
 
     user.update!(
-      password: params[:password],
-      password_confirmation: params[:password],
+      password: password,
+      password_confirmation: password,
       otp: nil,
       otp_expiry_date: nil,
     )
@@ -56,25 +64,48 @@ class Api::V1::UserApiController < Api::ApplicationApiController
     current_password = params[:currentPassword]
     new_password     = params[:newPassword]
 
-    raise CustomError, "기존의 비밀번호가 일치하지 않습니다." if !@current_user.authenticate(current_password)
+    err_msg = "비밀번호를 입력해 주세요."
+    raise CustomError, err_msg if current_password.blank?
+    raise CustomError, err_msg if new_password.blank?
 
-    @current_user.update(password: new_password, password_confirmation: new_password)
+    if !@current_user.authenticate(current_password)
+      raise CustomError, "기존의 비밀번호가 일치하지 않습니다."
+    end
+
+    @current_user.update!(password: new_password, password_confirmation: new_password)
+
     render_user_json(@current_user)
   end
 
   def reset_data
     otp = params[:otp]
-    is_valid = @current_user.verify_otp(otp)
-    raise CustomError, "OTP has expired" unless is_valid
+    raise CustomError, "OTP는 6자리 숫자여야 합니다." unless otp.to_s.match?(User::VALID_OTP_REGEX)
 
-    @current_user.reset_data_usecase
+    is_valid = @current_user.verify_otp(otp)
+    raise CustomError, "OTP가 유효하지 않습니다." unless is_valid
+
+    ActiveRecord::Base.transaction do
+      u = @current_user
+      # OTP 초기화
+      u.update!(otp: nil, otp_expiry_date: nil)
+      # 게시물 삭제
+      u.posts.destroy_all if u.posts.exists?
+      # 즐겨찾기 삭제
+      u.favorites.destroy_all if u.favorites.exists?
+      # 즐겨찾기 카테고리 삭제
+      u.favorite_categories.destroy_all if u.favorite_categories.exists?
+      # 일반 사진첩 삭제
+      u.collections.where(type: "DEFAULT").destroy_all
+    end
     render json: { message: "데이터가 초기화되었습니다." }, status: :ok
   end
 
   def destroy
     otp = params[:otp]
+    raise CustomError, "OTP는 6자리 숫자여야 합니다." unless otp.to_s.match?(User::VALID_OTP_REGEX)
+
     is_valid = @current_user.verify_otp(otp)
-    raise CustomError, "OTP has expired" unless is_valid
+    raise CustomError, "OTP가 유효하지 않습니다." unless is_valid
 
     @current_user.destroy
     render json: { message: "계정이 삭제되었습니다." }, status: :ok
