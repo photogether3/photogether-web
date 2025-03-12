@@ -46,6 +46,7 @@ class Api::ApplicationApiController < ActionController::API
       }, status: :unauthorized and return
     end
 
+    # 현재 사용자를 인스턴스 변수에 저장
     @current_user = user
   end
 

@@ -71,22 +71,6 @@ class User < ApplicationRecord
     is_valid
   end
 
-  def update_usecase(nickname, bio, file)
-    # 전달된 값이 있다면 업데이트합니다.
-    self.nickname = nickname if nickname.present?
-    self.bio      = bio if bio.present?
-
-    if file.present?
-      # 기존 이미지 교체 또는 새로 첨부
-      self.image.purge if self.image.attached?
-      self.image.attach(file)
-    end
-
-    self.save
-
-    self
-  end
-
   def update_favorites_usecase(category_ids)
     valid_category_ids = Category.where(id: category_ids).pluck(:id)
 

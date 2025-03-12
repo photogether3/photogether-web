@@ -21,8 +21,18 @@ class Api::V1::UserApiController < Api::ApplicationApiController
     bio      = params[:bio]
     file     = params[:file]
 
-    user = @current_user.update_usecase(nickname, bio, file)
-    render_user_json(user)
+    @current_user.nickname = nickname if nickname.present?
+    @current_user.bio      = bio if bio.present?
+
+    # 기존 이미지 교체 또는 새로 첨부
+    if file.present?
+      @current_user.image.purge if @current_user.image.attached?
+      @current_user.image.attach(file)
+    end
+
+    @current_user.save!
+
+    render_user_json(@current_user)
   end
 
   def update_password_by_otp
@@ -72,6 +82,7 @@ class Api::V1::UserApiController < Api::ApplicationApiController
 
   private
 
+  # 사용자 정보를 JSON으로 렌더링합니다.
   def render_user_json(user)
     image_url = user.image.attached? ? url_for(user.image) : nil
     render json: user.as_json.merge(image_url: image_url), status: :ok
