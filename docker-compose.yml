@@ -8,3 +8,8 @@ services:
       - ./config/master.key:/rails/config/master.key
       - ./tmp/storage:/rails/storage
       - ./log:/rails/log
+    networks:
+      - my-network
+
+networks:
+  my-network:
