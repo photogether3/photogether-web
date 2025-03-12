@@ -72,20 +72,4 @@ class User < ApplicationRecord
     is_valid = self.otp == otp && self.otp_expiry_date > Time.now
     is_valid
   end
-
-  def update_favorites_usecase(category_ids)
-    valid_category_ids = Category.where(id: category_ids).pluck(:id)
-
-    transaction do
-      # 기존 즐겨찾기 삭제
-      favorites.destroy_all if favorites.exists?
-      # 새 즐겨찾기 생성
-      valid_category_ids.each do |cat_id|
-        favorites.create!(category_id: cat_id)
-      end
-    end
-
-    # 업데이트 후 최신 즐겨찾기 목록을 반환
-    favorite_categories.reload
-  end
 end

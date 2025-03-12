@@ -795,7 +795,7 @@ paths:
             examples:
               '1':
                 value:
-                  categoriesIds:
+                  categoryIds:
                     - 1001
                     - 1002
                     - 1003
