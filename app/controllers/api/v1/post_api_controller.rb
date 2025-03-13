@@ -58,8 +58,23 @@ class Api::V1::PostApiController < Api::ApplicationApiController
   end
 
   def destroys
-    @posts.delete_all
-    render json: { message: "게시물이 삭제되었습니다." }, status: :ok
+    # 현재 사용자의 휴지통 컬렉션 찾기
+    trash_collection = Collection.find_by(user_id: @current_user.id, type: "TRASH")
+
+    if trash_collection.nil?
+      # 휴지통이 없으면 생성
+      trash_collection = Collection.create!(
+        user_id: @current_user.id,
+        type: "TRASH",
+        title: "휴지통",
+        category_id: nil
+      )
+    end
+
+    # 게시물의 컬렉션 ID를 휴지통 컬렉션 ID로 변경
+    @posts.update_all(collection_id: trash_collection.id)
+
+    render json: { message: "게시물이 휴지통으로 이동되었습니다." }, status: :ok
   end
 
   private
