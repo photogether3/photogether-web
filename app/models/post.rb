@@ -25,7 +25,8 @@ class Post < ApplicationRecord
         PostMetadatum.create!(
           post_id: post.id,
           content: metadata["content"],
-          is_public: metadata["isPublic"]
+          is_public: metadata["isPublic"],
+          has_link: metadata["hasLink"]
         )
       end
 
@@ -44,7 +45,7 @@ class Post < ApplicationRecord
 
       # 새로운 메타데이터 추가 (배열을 한 번에 삽입)
       post_metadata.create!(metadata_list.map { |metadata|
-        { content: metadata["content"], is_public: metadata["isPublic"] }
+        { content: metadata["content"], is_public: metadata["isPublic"], has_link: metadata["hasLink"] }
       })
     end
   end
@@ -66,7 +67,7 @@ class Post < ApplicationRecord
         created_at: collection.category.created_at,
         updated_at: collection.category.updated_at
       } : nil,
-      metadata_list: post_metadata.map { |meta| { content: meta.content, is_public: meta.is_public } }
+      metadata_list: post_metadata.map { |meta| { content: meta.content, is_public: meta.is_public, has_link: meta.has_link } }
     }
   end
 end

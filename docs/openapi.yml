@@ -1342,7 +1342,7 @@ paths:
                   type: string
                   description: 매타데이터 json.stringify 형식. example 참고 필수
                   example: >-
-                    [{"content":"hello","isPublic":true},{"content":"world","isPublic":true}]
+                    [{"content":"hello","isPublic":true, "hasLink": false},{"content":"world","isPublic":true, "hasLink": true}]
                 file:
                   format: binary
                   type: string
@@ -1410,9 +1410,6 @@ paths:
             schema:
               type: object
               properties:
-                postId:
-                  type: integer
-                  description: 게시물ID
                 title:
                   type: string
                   description: 제목
@@ -1430,6 +1427,9 @@ paths:
                       isPublic:
                         type: boolean
                         description: 공개여부
+                      hasLink:
+                        type: boolean
+                        description: 링크여부
                     required:
                       - content
                       - isPublic
