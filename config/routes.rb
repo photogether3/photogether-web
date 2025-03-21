@@ -13,8 +13,10 @@ Rails.application.routes.draw do
     post "verify-otp", to: "users#verify_otp", as: :verify_otp
   end
 
-  resources :posts
-  resources :collections
+  namespace :admin do
+    root "dashboard#index"
+    resources :users, only: [ :index, :new ]
+  end
 
   namespace :api do
     namespace :v1 do
