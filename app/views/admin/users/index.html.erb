@@ -1,1 +1,5 @@
 <h1>회원 관리</h1>
+
+<%= render partial: 'admin/users/user_list', locals: { users: @users } %>
+<br/>
+<%= render partial: 'admin/users/form', locals: { user: @user } %>

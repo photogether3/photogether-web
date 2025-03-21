@@ -1,0 +1,40 @@
+  <form
+    id="user_form"
+    method="post"
+    action="/admin/users"
+    data-turbo="true"
+    class="flex flex-col gap-4 w-52">
+
+    <% if user.errors.any? %>
+      <% user.errors.full_messages.each do |msg| %>
+        <p class="text-red-500"><%= msg %></p>
+      <% end %>
+    <% end %>
+
+    <input 
+      type="email" 
+      name="email_address" 
+      value="<%= user[:email_address] %>"
+      placeholder="이메일"
+      class="border">
+
+    <input 
+      type="password" 
+      name="password"
+      placeholder="비밀번호"
+      class="border">
+
+    <input 
+      type="password" 
+      name="password_confirmation"
+      placeholder="비밀번호 확인"
+      class="border">
+
+    <textarea 
+      name="bio"
+      placeholder="자기소개"
+      class="border"
+    ><%= user[:bio] %></textarea>
+
+    <button>저장</button>
+  </form>

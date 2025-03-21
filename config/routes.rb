@@ -15,7 +15,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root "dashboard#index"
-    resources :users, only: [ :index, :new ]
+    resources :users, only: [ :index, :new, :create ]
   end
 
   namespace :api do
