@@ -59,6 +59,9 @@ Rails.application.routes.draw do
       put "posts/:id", to: "post_api#update"
       patch "posts/move", to: "post_api#change_collection"
       delete "posts", to: "post_api#destroys"
+
+      # vision group
+      post "vision/preview", to: "vision_api#preview"
     end
   end
 end
