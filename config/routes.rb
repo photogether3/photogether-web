@@ -3,15 +3,7 @@ Rails.application.routes.draw do
 
   mount Scalar::UI, at: "/docs"
 
-  resource :session
-  resources :passwords, param: :token
   get "up" => "rails/health#show", as: :rails_health_check
-
-  resources :users, only: [ :new, :create ] do
-    get :check_email, on: :collection
-    get "otp", to: "users#otp", as: :otp
-    post "verify-otp", to: "users#verify_otp", as: :verify_otp
-  end
 
   namespace :admin do
     root "dashboard#index"
