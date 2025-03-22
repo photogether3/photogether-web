@@ -1,4 +1,6 @@
 class Api::V1::VisionApiController < Api::ApplicationApiController
+  before_action :authenticate_user!
+
   def preview
     file = params[:file]
     raise CustomError, "파일은 필수값 입니다." if file.blank?
