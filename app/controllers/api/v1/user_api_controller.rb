@@ -21,17 +21,26 @@ class Api::V1::UserApiController < Api::ApplicationApiController
     bio      = params[:bio]
     file     = params[:file]
 
+    puts "file: #{file.inspect}"
+
     @current_user.nickname = nickname if nickname.present?
     @current_user.bio      = bio if bio.present?
 
-    # 기존 이미지 교체 또는 새로 첨부
-    if file.present?
-      @current_user.image.purge if @current_user.image.attached?
-      @current_user.image.attach(file)
+    if params.key?(:file)
+      case
+      when file.nil?, file == "null"
+        puts "파일 제거 요청으로 판단함"
+        @current_user.image.purge if @current_user.image.attached?
+      when file.respond_to?(:content_type)
+        puts "파일 전달 됨!"
+        @current_user.image.purge if @current_user.image.attached?
+        @current_user.image.attach(file)
+      else
+        puts "file 형식이 유효하지 않음, 무시함"
+      end
     end
 
     @current_user.save!
-
     render_user_json(@current_user)
   end
 
