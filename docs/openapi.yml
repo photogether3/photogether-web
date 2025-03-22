@@ -1573,6 +1573,52 @@ paths:
           headers: {}
       security:
         - bearer: []
+  /v1/vision/preview:
+    post:
+      summary: 이미지 텍스트 미리보기
+      description: 이미지에서 텍스트를 추출하여 줄 단위 배열(string[])로 반환합니다.
+      tags:
+        - Vision
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: 업로드할 이미지 파일
+              required:
+                - file
+      responses:
+        '200':
+          description: 추출된 텍스트 배열
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  lines:
+                    type: array
+                    items:
+                      type: string
+              examples:
+                '1':
+                  summary: Success
+                  value:
+                    lines:
+                      - 무설탕
+                      - Point.
+                      - √ 1일,
+                      - 3.5kcal
+                      - 샤인머스켓
+                      - 자일리톨 함량
+                      - 98% 이상
+                      - (핀란드산 100% 자일리톨)
+                      - 천연향료 사용
+                      - (콜라와 샤인머스켓은 원료 특성상 합성향료 사용)
 components:
   schemas: {}
   securitySchemes:
