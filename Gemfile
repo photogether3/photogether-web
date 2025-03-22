@@ -68,3 +68,5 @@ end
 gem "tailwindcss-rails", "~> 4.2"
 
 gem "scalar_ruby", "~> 1.1"
+
+gem "pg"
