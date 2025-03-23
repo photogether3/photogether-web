@@ -1573,12 +1573,12 @@ paths:
           headers: {}
       security:
         - bearer: []
-  /v1/vision/preview:
+  /v1/images/preview:
     post:
       summary: 이미지 텍스트 미리보기
       description: 이미지에서 텍스트를 추출하여 줄 단위 배열(string[])로 반환합니다.
       tags:
-        - Vision
+        - 이미지
       requestBody:
         required: true
         content:

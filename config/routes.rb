@@ -53,7 +53,7 @@ Rails.application.routes.draw do
       delete "posts", to: "post_api#destroys"
 
       # vision group
-      post "vision/preview", to: "vision_api#preview"
+      post "images/preview", to: "image_api#preview"
     end
   end
 end
