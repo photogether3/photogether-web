@@ -15,7 +15,7 @@
       포토게더 관리
     </header>
     <main class="flex flex-1 bg-gray-100">
-      <aside class="h-full p-2 bg-white border-r border-gray-300 w-52">
+      <aside class="flex-shrink-0 h-full p-2 bg-white border-r border-gray-300 w-52">
         <ul>
           <li><a href="/admin" class="flex items-center justify-center h-10 rounded-lg <%= current_page?(admin_root_path) ? ' bg-secondary-40 text-white' : '' %>">대시보드</a></li>
           <li><a href="/admin/users" class="flex items-center justify-center h-10 rounded-lg <%= current_page?(admin_users_path) ? ' bg-secondary-40 text-white' : '' %>">회원 관리</a></li>
@@ -23,7 +23,7 @@
           <li><a href="#" class="flex items-center justify-center h-10 rounded-lg ">게시물 관리</a></li>
         </ul>
       </aside>
-      <section class="h-full p-4">
+      <section class="w-full h-full p-4">
         <%= yield %>
       </section>
     </main>

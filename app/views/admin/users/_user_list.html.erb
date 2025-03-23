@@ -1,18 +1,20 @@
-<table>
-  <thead>
-    <tr>
-      <th>No</th>
-      <th>회원 ID</th>
-      <th>닉네임</th>
-      <th>이메일</th>
-      <th>이메일 확인 여부</th>
-      <th>생성일</th>
-      <th>관리</th>
-    </tr>
-  </thead>
-  <tbody id="user_list">
-    <% users.each do |user| %>
-      <%= render partial: 'admin/users/user_part', locals: { user: user } %>
-    <% end %>
-  </tbody>
-</table>
+<turbo-frame id="user_list">
+  <table class="w-full">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>회원 ID</th>
+        <th>닉네임</th>
+        <th>이메일</th>
+        <th>이메일 확인 여부</th>
+        <th>생성일</th>
+        <th>관리</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% users.each do |user| %>
+        <%= render partial: 'admin/users/user_part', locals: { user: user } %>
+      <% end %>
+    </tbody>
+  </table>
+</turbo-frame>

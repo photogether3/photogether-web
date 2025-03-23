@@ -1,7 +1,24 @@
 class Admin::UsersController < Admin::AdminController
   def index
-    @users = User.order(created_at: :desc)
-    @user = User.new
+    page     = params[:page] ||= 1
+    per_page = params[:per_page] ||= 5
+    order    = params[:order] ||= "desc"
+    order_by = params[:order_by] ||= "created_at"
+    keyword  = params[:keyword] ||= ""
+
+    @users = User.all
+    @users = @users.where("email_address LIKE :q OR nickname LIKE :q", q: "%#{keyword}%") if keyword.present?
+    @users = @users
+      .order("#{order_by} #{order}")
+      .page(page)
+      .per(per_page)
+
+    if turbo_frame_request?
+      puts "turbo_frame_request"
+      render partial: "admin/users/user_list", locals: { users: @users }
+    else
+      render :index
+    end
   end
 
   def new
@@ -21,7 +38,7 @@ class Admin::UsersController < Admin::AdminController
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.remove("dialog"),
-            turbo_stream.prepend("user_list", partial: "admin/users/user_part", locals: { user: @user })
+            turbo_stream.action(:replace, "user_list", "<turbo-frame id='user_list' src='#{admin_users_path(request.query_parameters)}'></turbo-frame>")
           ]
         end
       end
