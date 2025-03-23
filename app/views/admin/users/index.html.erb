@@ -1,5 +1,10 @@
 <h1>회원 관리</h1>
 
+<button 
+  data-url="/admin/users/new"
+  data-action="dialog#open">
+  새 회원 생성
+</button>
+
+
 <%= render partial: 'admin/users/user_list', locals: { users: @users } %>
-<br/>
-<%= render partial: 'admin/users/form', locals: { user: @user } %>
