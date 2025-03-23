@@ -6,14 +6,7 @@ class Admin::UsersController < Admin::AdminController
 
   def new
     @user = User.new
-
-    respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: [
-          turbo_stream.replace("dialog", partial: "admin/users/form", locals: { user: @user })
-        ]
-      end
-    end
+    render partial: "admin/users/new", locals: { user: @user }
   end
 
   def create
