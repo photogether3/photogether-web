@@ -2,8 +2,8 @@ class Api::V1::AuthApiController < Api::ApplicationApiController
   before_action :authenticate_user!, only: [ :logout ]
 
   def login
-    email    = params[:email]
-    password = params[:password]
+    email    = params[:email] ||= ""
+    password = params[:password] ||= ""
 
     raise CustomError, "유효한 이메일을 입력해 주세요." unless email.match?(User::VALID_EMAIL_REGEX)
     raise ArgumentError, "비밀번호를 입력해 주세요." if password.blank?
@@ -39,7 +39,7 @@ class Api::V1::AuthApiController < Api::ApplicationApiController
   end
 
   def generate_otp
-    email = params[:email]
+    email = params[:email] ||= ""
 
     raise CustomError, "유효한 이메일을 입력해 주세요." unless email.match?(User::VALID_EMAIL_REGEX)
 
@@ -54,8 +54,8 @@ class Api::V1::AuthApiController < Api::ApplicationApiController
   end
 
   def verify_otp
-    email = params[:email]
-    otp   = params[:otp]
+    email = params[:email] ||= ""
+    otp   = params[:otp] ||= ""
 
     raise CustomError, "유효한 이메일을 입력해 주세요." unless email.match?(User::VALID_EMAIL_REGEX)
     raise CustomError, "OTP는 6자리 숫자여야 합니다." unless otp.to_s.match?(User::VALID_OTP_REGEX)
