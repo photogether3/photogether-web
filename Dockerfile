@@ -32,6 +32,9 @@ RUN bundle install && \
 
 COPY . .
 
+# 👉 vision-key.json 복사 (여기서 이미지에 포함됨)
+COPY config/vision-key.json config/vision-key.json
+
 RUN if [ -f yarn.lock ]; then \
     yarn install; \
     elif [ -f package-lock.json ]; then \
