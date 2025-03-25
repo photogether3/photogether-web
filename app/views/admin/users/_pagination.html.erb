@@ -1,0 +1,32 @@
+<div id="pagination" class="flex gap-2 justify-center mt-4" data-query-target="pagination">
+  <% total_pages = users.total_pages %>
+  <% current_page = users.current_page %>
+
+  <% if current_page > 1 %>
+    <button
+      type="button"
+      data-action="click->query#goToPage"
+      data-page-number="<%= current_page - 1 %>">
+      ◀ 이전
+    </button>
+  <% end %>
+
+  <% (1..total_pages).each do |page| %>
+    <button
+      type="button"
+      class="<%= 'font-bold underline' if page == current_page %>"
+      data-action="click->query#goToPage"
+      data-page-number="<%= page %>">
+      <%= page %>
+    </button>
+  <% end %>
+
+  <% if current_page < total_pages %>
+    <button
+      type="button"
+      data-action="click->query#goToPage"
+      data-page-number="<%= current_page + 1 %>">
+      다음 ▶
+    </button>
+  <% end %>
+</div>

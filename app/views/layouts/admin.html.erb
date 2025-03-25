@@ -9,7 +9,7 @@
   <%= javascript_importmap_tags %>
   <%= csrf_meta_tags %>
 </head>
-<body data-controller="custom-dialog">
+<body data-controller="modal">
   <div class="flex flex-col h-screen">
     <header class="flex items-center justify-start h-16 px-6 text-xl font-bold text-white bg-primary-60">
       포토게더 관리
@@ -28,9 +28,6 @@
       </section>
     </main>
   </div>
-
-  <div data-custom-dialog-target="dialogPortal">
-    <!-- CustomDialogController를 통해 동적으로 엘리먼트 주입 -->
-  </div>
+  <div id="modal_portal"></div>
 </body>
 </html>

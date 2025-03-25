@@ -1,72 +1,45 @@
-<div class="max-w-5xl">
-  <div class="flex justify-between">
-    <h1>회원 관리</h1>
+<form>
 
-    <button 
-      data-url="/admin/users/new"
-      data-action="custom-dialog#open">
-      새 회원 생성
-    </button>
-  </div>
+</form>
 
-  <br/>
+<button data-action="click->modal#open" data-url="/admin/users/new">회원 생성</button>
 
-  <form 
-    action="/admin/users"
-    method="get"
+<div class="flex flex-col gap-4 max-w-5xl">
+  <form
+    id="user_query_form"
     data-controller="query"
+    action="/admin/users"
     data-turbo-frame="user_list"
-    class="flex justify-between">
-    <input
-      name="keyword"
-      data-action="keyup->query#search"
-      type="text"
-      class="border"/>
-
+    method="get"
+    class="flex justify-between items-center">
     <div>
-      <input 
-        type="hidden" 
-        name="order" 
-        value="<%= params[:order] %>"
-        data-query-target="order"/>
-      <button 
-        data-action="click->query#toggleOrder"
-        type="button">
-        <%= params[:order] == "asc" ? "오래된순" : "최신순" %>
-      </button>
-
-      <select 
-        name="order_by" 
-        data-action="change->query#changeOrderBy">
-        <option value="created_at" <%= "selected" if params[:order_by] == "created_at" %>>생성일</option>
-        <option value="nickname"   <%= "selected" if params[:order_by] == "nickname" %>>닉네임</option>
-      </select>
+      <label>
+        <input
+          data-query-target="keyword"
+          data-action="keyup->query#search"
+          name="keyword"
+          placeholder="닉네임 또는 이메일"
+          value="<%= params[:keyword] %>"
+          class="border rounded-xl p-2"/>
+      </label>
+      <label>
+        <select name="order" data-action="change->query#changeOrder">
+          <option value="desc" <%= 'selected' if params[:order] == 'desc' %>>최신순</option>
+          <option value="asc" <%= 'selected' if params[:order] == 'asc' %>>오래된순</option>
+        </select>
+      </label>
+      <label>
+        <select name="order_by" data-action="change->query#changeOrderBy">
+          <option value="created_at" <%= 'selected' if params[:order_by] == 'created_at' %>>생성일</option>
+          <option value="email_address" <%= 'selected' if params[:order_by] == 'email_address' %>>이메일</option>
+          <option value="nickname" <%= 'selected' if params[:order_by] == 'nickname' %>>닉네임</option>
+        </select>
+      </label>
     </div>
-
-    <div class="flex gap-4">
-      <button 
-        type="text" 
-        data-page="<%= params[:page] - 1 %>"
-        data-action="click->query#movePage">
-        이전
-      </button>
-      <input 
-        name="page"
-        type="number"
-        value="<%= params[:page] %>"
-        data-query-target="page"
-        class="w-10"
-        readonly/>
-      <button
-        type="text" 
-        data-page="<%= params[:page] + 1 %>"
-        data-action="click->query#movePage">
-        다음
-      </button>
+    <div>
+      <%= render partial: 'admin/users/pagination', locals: { users: @users } %>
     </div>
   </form>
 
-  <br/>
-  
-  <%= render partial: 'admin/users/user_list', locals: { users: @users } %> 
+  <%= render partial: 'admin/users/user_list', locals: { users: @users } %>
 </div>

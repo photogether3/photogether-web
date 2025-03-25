@@ -1,40 +1,30 @@
 <form
   id="user_form"
-  method="post"
   action="/admin/users"
-  data-turbo="true"
-  class="flex flex-col w-full gap-4">
+  method="post"
+  class="flex flex-col gap-4">
 
-  <% if user.errors.any? %>
-    <% user.errors.full_messages.each do |msg| %>
-      <p class="text-red-500"><%= msg %></p>
-    <% end %>
+  <% if @user.errors.any? %>
+    <div class="bg-red-50 p-2 text-xs">
+      <% @user.errors.full_messages.each do |msg| %>
+        <div class="">- <%= msg %></div>
+      <% end %>
+    </div>
   <% end %>
 
-  <input 
-    type="email" 
-    name="email_address" 
-    value="<%= user[:email_address] %>"
-    placeholder="이메일"
-    class="border">
+  <input
+      name="email_address"
+      type="email"
+      placeholder="이메일"
+      value="<%= @user.email_address %>"
+      class="border p-4 rounded-xl"/>
 
-  <input 
-    type="password" 
+  <input
     name="password"
+    type="password"
     placeholder="비밀번호"
-    class="border">
+    value="<%= @user.email_address %>"
+    class="border p-4 rounded-xl"/>
 
-  <input 
-    type="password" 
-    name="password_confirmation"
-    placeholder="비밀번호 확인"
-    class="border">
-
-  <textarea 
-    name="bio"
-    placeholder="자기소개"
-    class="border"
-  ><%= user[:bio] %></textarea>
-
-  <button>저장</button>
+  <button class="p-4 bg-blue-500 rounded-xl text-white">생성</button>
 </form>

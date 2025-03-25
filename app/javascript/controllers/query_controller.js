@@ -1,45 +1,67 @@
-import { Controller } from "@hotwired/stimulus";
+import { Controller } from '@hotwired/stimulus'
 
-/**
- * 조회에 관련된 헬퍼 클래스
- */
 export default class extends Controller {
-  static targets = ["order", "page"];
-  static values = {
-    debounce: { type: Number, default: 500 },
-  };
+    static targets = ['keyword', 'pagination']
 
-  connect() {
-    console.debug("QueryController connected");
-    this.timeout = null;
-  }
+    static values = {
+        debounceTime: { default: 500 }
+    }
 
-  search(event) {
-    clearTimeout(this.timeout);
+    connect() {
+        console.log('query controller connected')
+    }
 
-    // 디바운스 후 실행
-    this.timeout = setTimeout(() => {
-      this.element.requestSubmit();
-    }, this.debounceValue);
-  }
+    search(event) {
+        clearTimeout(this.debounceId)
+        this.debounceId = setTimeout(() => {
+            this.#submit({ resetPage: true })
+            document.addEventListener("turbo:load", () => {
+                const input = document.querySelector("input[name='keyword']")
+                input.focus()
+                input.setSelectionRange(input.value.length, input.value.length)
+            }, { once: true })
+        }, this.debounceTimeValue)
+    }
 
-  toggleOrder(event) {
-    const button = event.target;
-    button.innerText = this.orderTarget.value === "asc" ? "최신순" : "오래된순";
-    this.orderTarget.value = this.orderTarget.value === "asc" ? "desc" : "asc";
+    changeOrder() {
+        this.#submit({ resetPage: true })
+    }
 
-    this.element.requestSubmit();
-  }
+    changeOrderBy() {
+        this.#submit({ resetPage: true })
+    }
 
-  changeOrderBy() {
-    this.element.requestSubmit();
-  }
+    goToPage(event) {
+        const page = event.target.dataset.pageNumber
+        this.#submit({ overridePage: page })
+    }
 
-  movePage(event) {
-    const page = event.target.dataset.page;
-    console.log(page);
-    console.log(this.pageTarget.value);
-    this.pageTarget.value = page;
-    this.element.requestSubmit();
-  }
+    async #submit({ resetPage = false, overridePage = null } = {}) {
+        const formData = new FormData(this.element)
+        const url = new URL(this.element.action)
+
+        for (const [key, value] of formData.entries()) {
+            url.searchParams.set(key, value)
+        }
+
+        if (overridePage !== null) {
+            url.searchParams.set("page", overridePage)
+        } else if (resetPage) {
+            url.searchParams.set("page", "1")
+        }
+
+        history.pushState({}, "", url)
+
+        const response = await fetch(url.toString(), {
+            method: "GET",
+            headers: {
+                Accept: "text/vnd.turbo-stream.html"
+            }
+        })
+
+        if (response.ok) {
+            const streamHtml = await response.text()
+            window.Turbo.renderStreamMessage(streamHtml)
+        }
+    }
 }

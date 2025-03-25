@@ -1,0 +1,7 @@
+<turbo-stream action="replace" target="modal_portal">
+  <template>
+    <%= render layout: 'shared/modal', formats: [:html] do %>
+      <%= render partial: 'admin/users/form', formats: [:html], locals: { user: @user } %>
+    <% end %>
+  </template>
+</turbo-stream>
