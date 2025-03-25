@@ -2,6 +2,8 @@ import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
 
+    static targets = ['modal'];
+
     connect() {
         console.log('modal controller connected!');
     }
@@ -19,6 +21,15 @@ export default class extends Controller {
         if (!response.ok) throw new Error('무언가 잘못되었어요.');
 
         const streamHtml = await response.text();
+        console.log(streamHtml);
         window.Turbo.renderStreamMessage(streamHtml);
+    }
+
+    close() {
+        console.log(this.modalTarget);
+        this.modalTarget.classList.add('motion-custom-fade-out');
+        this.modalTarget.addEventListener('animationend', () => {
+            this.modalTarget.remove();
+        }, { once: true });
     }
 }

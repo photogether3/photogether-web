@@ -1,6 +1,6 @@
-<turbo-stream action="replace" target="modal_portal">
+<turbo-stream action="prepend" target="modal_portal">
   <template>
-    <%= render layout: 'shared/modal', formats: [:html] do %>
+    <%= render layout: 'shared/modal', formats: [:html], locals: { anims: 'motion-preset-focus' } do %>
       <%= render partial: 'admin/users/form', formats: [:html], locals: { user: @user } %>
     <% end %>
   </template>
