@@ -1,0 +1,48 @@
+<%
+  order_list ||= [
+    { label: '최신순', value: 'desc' },
+    { label: '오래된순', value: 'asc' },
+  ]
+  order_by_list ||= [
+    { label: '생성일', value: 'created_at' }
+  ]
+%>
+
+<form
+  id="user_query_form"
+  action="/admin/users"
+  data-query-target="form"
+  method="get"
+  class="flex justify-between items-center">
+  <label>
+    <input
+      data-query-target="keyword"
+      data-action="keyup->query#search"
+      name="keyword"
+      placeholder="닉네임 또는 이메일"
+      value="<%= params[:keyword] %>"
+      class="border rounded-xl p-2"/>
+  </label>
+  <div>
+    <label>
+      <select
+        name="order"
+        data-action="change->query#changeOrder"
+        class="p-2 border rounded-xl">
+        <%= order_list.each do |item| %>
+          <option value="<%= item[:value] %>" <%= 'selected' if params[:order] == item[:value] %>><%= item[:label] %></option>
+        <% end %>
+      </select>
+    </label>
+    <label>
+      <select
+        name="order_by"
+        data-action="change->query#changeOrderBy"
+        class="p-2 border rounded-xl">
+        <%= order_by_list.each do |item| %>
+          <option value="<%= item[:value] %>" <%= 'selected' if params[:order_by] == item[:value] %>><%= item[:label] %></option>
+        <% end %>
+      </select>
+    </label>
+  </div>
+</form>

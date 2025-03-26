@@ -1,0 +1,8 @@
+<%= turbo_frame_tag :modal_portal do %>
+  <%= render layout: 'shared/modal',
+             formats: [:html],
+             locals: { title: '회원 생성', class_addons: 'motion-preset-fade' } do %>
+    <%= render partial: 'admin/users/form', formats: [:html], locals: { user: @user } %>
+  <% end %>
+<% end %>
+

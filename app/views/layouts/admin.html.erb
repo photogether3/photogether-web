@@ -9,7 +9,7 @@
   <%= javascript_importmap_tags %>
   <%= csrf_meta_tags %>
 </head>
-<body data-controller="modal">
+<body>
   <div class="flex flex-col h-screen">
     <header class="flex items-center justify-start h-16 px-6 text-xl font-bold text-white bg-primary-60">
       포토게더 관리
@@ -28,6 +28,6 @@
       </section>
     </main>
   </div>
-  <div id="modal_portal"></div>
+  <%= turbo_frame_tag :modal_portal %>
 </body>
 </html>

@@ -7,7 +7,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root "dashboard#index"
-    resources :users, only: [ :index, :new, :create ]
+    resources :users, only: [ :index, :show, :new, :create, :edit, :update, :destroy ]
   end
 
   namespace :api do

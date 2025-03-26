@@ -1,30 +1,26 @@
-<form
-  id="user_form"
-  action="/admin/users"
-  method="post"
-  class="flex flex-col gap-4">
-
+<%= form_with model: @user,
+              url: @user.persisted? ? admin_user_path(@user) : admin_users_path,
+              local: true,
+              html: { id: "user_form", class: "flex flex-col gap-4" } do |f| %>
   <% if @user.errors.any? %>
     <div class="bg-red-50 p-2 text-xs">
       <% @user.errors.full_messages.each do |msg| %>
-        <div class="">- <%= msg %></div>
+        <div>- <%= msg %></div>
       <% end %>
     </div>
   <% end %>
 
-  <input
-      name="email_address"
-      type="email"
-      placeholder="이메일"
-      value="<%= @user.email_address %>"
-      class="border p-4 rounded-xl"/>
+  <%= f.email_field :email_address,
+                    placeholder: "이메일",
+                    class: "border p-2 rounded-xl" %>
 
-  <input
-    name="password"
-    type="password"
-    placeholder="비밀번호"
-    value="<%= @user.email_address %>"
-    class="border p-4 rounded-xl"/>
+  <%= f.password_field :password,
+                       placeholder: "비밀번호",
+                       class: "border p-2 rounded-xl" %>
 
-  <button class="p-4 bg-blue-500 rounded-xl text-white">생성</button>
-</form>
+  <%= f.text_field :nickname,
+                       placeholder: "닉네임",
+                       class: "border p-2 rounded-xl" %>
+
+  <%= f.submit (@user.new_record? ? "생성" : "수정"), class: "p-2 bg-primary rounded-xl text-white" %>
+<% end %>

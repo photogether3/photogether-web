@@ -1,45 +1,17 @@
-<form>
 
-</form>
 
-<button data-action="click->modal#open" data-url="/admin/users/new">회원 생성</button>
+<div class="flex flex-col gap-4 max-w-5xl" data-controller="query">
+  <div class="flex justify-between items-center w-full">
+    <h1 class="text-2xl">회원 관리</h1>
+    <%= link_to '회원 생성', new_admin_user_path, data: { turbo_frame: 'modal_portal' }, class: 'bg-primary text-white rounded-lg p-2' %>
+  </div>
 
-<div class="flex flex-col gap-4 max-w-5xl">
-  <form
-    id="user_query_form"
-    data-controller="query"
-    action="/admin/users"
-    data-turbo-frame="user_list"
-    method="get"
-    class="flex justify-between items-center">
-    <div>
-      <label>
-        <input
-          data-query-target="keyword"
-          data-action="keyup->query#search"
-          name="keyword"
-          placeholder="닉네임 또는 이메일"
-          value="<%= params[:keyword] %>"
-          class="border rounded-xl p-2"/>
-      </label>
-      <label>
-        <select name="order" data-action="change->query#changeOrder">
-          <option value="desc" <%= 'selected' if params[:order] == 'desc' %>>최신순</option>
-          <option value="asc" <%= 'selected' if params[:order] == 'asc' %>>오래된순</option>
-        </select>
-      </label>
-      <label>
-        <select name="order_by" data-action="change->query#changeOrderBy">
-          <option value="created_at" <%= 'selected' if params[:order_by] == 'created_at' %>>생성일</option>
-          <option value="email_address" <%= 'selected' if params[:order_by] == 'email_address' %>>이메일</option>
-          <option value="nickname" <%= 'selected' if params[:order_by] == 'nickname' %>>닉네임</option>
-        </select>
-      </label>
-    </div>
-    <div>
-      <%= render partial: 'admin/users/pagination', locals: { users: @users } %>
-    </div>
-  </form>
-
-  <%= render partial: 'admin/users/user_list', locals: { users: @users } %>
+  <%= render partial: 'admin/users/query', locals: {
+    order_by_list: [
+      { label: '생성일', value: 'created_at' },
+      { label: '닉네임', value: 'nickname' },
+      { label: '이메일', value: 'email_address' },
+    ]
+  } %>
+  <%= render partial: 'admin/users/user_list' %>
 </div>

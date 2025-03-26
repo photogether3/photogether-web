@@ -11,36 +11,81 @@ class Admin::UsersController < Admin::AdminController
     @users = @users.order("#{order_by} #{order}")
 
     respond_to do |format|
-      format.turbo_stream { render "query" }
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace('user_list', partial: "admin/users/user_list")
+      end
       format.html
     end
+  end
+
+  def show
+    @user = User.find(params[:id])
   end
 
   def new
+    @anims = "motion-preset-focus"
     @user = User.new
-    respond_to do |format|
-      format.turbo_stream { render "new" }
-      format.html
-    end
   end
 
   def create
-    email_address         = params[:email_address] ||= ""
-    password              = params[:password] ||= ""
-    password_confirmation = password
+    user_params = params.require(:user).permit(:email_address, :password, :nickname)
+    nickname = user_params[:nickname].presence || BaseUtil.generate_random_nickname
 
-    @user = User.new
-    @user.email_address = email_address
-    @user.password = password
-    @user.password_confirmation = password_confirmation
-    @user.role_id = 1
-    @user.nickname = BaseUtil.generate_random_nickname
-    @user.is_email_verified = true
-
-    @user.save
+    @user = User.new(user_params.merge(
+      password_confirmation: user_params[:password],
+      role_id: 1,
+      is_email_verified: true,
+      nickname: nickname
+    ))
 
     respond_to do |format|
-      format.turbo_stream
+      if @user.save
+        format.html { redirect_to admin_users_url, notice: "사용자가 성공적으로 생성되었습니다." }
+        format.json { render :show, status: :created, location: @user }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @user.errors, status: :unprocessable_entity }
+      end
     end
   end
+
+
+  def edit
+    @user = User.find(params[:id])
+  end
+
+  def update
+    user_params = params.require(:user).permit(:email_address, :password, :nickname)
+    nickname = user_params[:nickname].presence || BaseUtil.generate_random_nickname
+
+    @user = User.find(params[:id])
+    @user.assign_attributes(user_params.except(:password))
+    @user.nickname = nickname
+
+    if user_params[:password].present?
+      @user.password = user_params[:password]
+      @user.password_confirmation = user_params[:password]
+    end
+
+    respond_to do |format|
+      if @user.save
+        format.html { redirect_to admin_users_url, notice: "사용자가 성공적으로 수정되었습니다." }
+        format.json { render :show, status: :ok, location: @user }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: @user.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def destroy
+    @user = User.find(params[:id])
+    @user.destroy
+
+    respond_to do |format|
+      format.turbo_stream { render turbo_stream: turbo_stream.remove("user_#{@user.id}") }
+      format.html { redirect_to admin_users_path, notice: "사용자가 삭제되었습니다." }
+    end
+  end
+
 end
