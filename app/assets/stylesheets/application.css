@@ -55,3 +55,11 @@ input:-webkit-autofill {
   box-shadow: 0 0 0px 1000px transparent inset !important;
   transition: background-color 5000s ease-in-out 0s !important;
 }
+
+input:focus {
+  outline: none;
+}
+
+.soft-shadow {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}

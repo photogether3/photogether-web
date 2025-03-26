@@ -72,3 +72,5 @@ gem "scalar_ruby", "~> 1.1"
 gem "pg"
 
 gem "google-cloud-vision"
+
+gem "heroicon", "~> 1.0"

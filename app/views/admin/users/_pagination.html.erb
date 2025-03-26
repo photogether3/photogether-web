@@ -1,50 +1,41 @@
-<div id="pagination" class="flex justify-center mt-4 [&_button]:cursor-pointer" data-query-target="pagination">
+<div id="pagination" class="flex justify-between mt-4 [&_button]:cursor-pointer" data-query-target="pagination">
   <% total_pages = @users.total_pages %>
   <% current_page = @users.current_page %>
 
   <button
     type="button"
     data-action="click->query#goToPage"
-    data-page-number="<%= 1 %>"
-    class="p-2 border rounded-l-xl bg-secondary-10 <%= 'opacity-50' if current_page === 1 %>"
-    <%= 'disabled' if current_page === 1 %>>
-    맨앞
-  </button>
-
-  <button
-    type="button"
-    data-action="click->query#goToPage"
     data-page-number="<%= current_page - 1 %>"
-    class="p-2 border bg-secondary-10 <%= 'opacity-50' if current_page === 1 %>"
-    <%= 'disabled' if current_page === 1 %>>
+    class="flex items-center gap-1 p-2 <%= 'opacity-50' if current_page == 1 %>"
+    <%= 'disabled' if current_page == 1 %>>
+    <%= heroicon("arrow-left", options: { class: "w-5 h-5" }) %>
     이전
   </button>
 
-  <% (1..total_pages).each do |page| %>
-    <button
-      type="button"
-      data-action="click->query#goToPage"
-      data-page-number="<%= page %>"
-      class="p-2 px-4 border <%= 'bg-secondary-40 ' if page == current_page %>">
-      <%= page %>
-    </button>
-  <% end %>
-
-  <buttonl
-    type="button"
-    data-action="click->query#user"
-    data-page-number="<%= current_page + 1 %>"
-    class="p-2 border bg-secondary-10 <%= 'opacity-50' if current_page >= total_pages %>"
-    <%= 'disabled' if current_page >= total_pages %>>
-    다음
-  </buttonl>
+  <div>
+    <% pagination_range(current_page, total_pages).each do |item| %>
+      <% if item == "..." %>
+        <span class="p-2 px-4 text-gray-400 select-none">...</span>
+      <% else %>
+        <button
+          type="button"
+          data-action="click->query#goToPage"
+          data-page-number="<%= item %>"
+          class="px-4 py-2 rounded-xl <%= 'bg-secondary-40 text-white' if item == current_page %>">
+          <%= item %>
+        </button>
+      <% end %>
+    <% end %>
+  </div>
 
   <button
     type="button"
     data-action="click->query#goToPage"
-    data-page-number="<%= total_pages %>"
-    class="p-2 border rounded-r-xl bg-secondary-10 <%= 'opacity-50' if current_page >= total_pages %>"
+    data-page-number="<%= current_page + 1 %>"
+    class="flex items-center gap-1 p-2 <%= 'opacity-50' if current_page >= total_pages %>"
     <%= 'disabled' if current_page >= total_pages %>>
-    마지막
+    다음
+    <%= heroicon("arrow-right", options: { class: "w-5 h-5" }) %>
   </button>
+
 </div>

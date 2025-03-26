@@ -1,7 +1,7 @@
 class Admin::UsersController < Admin::AdminController
   def index
     page     = params[:page] ||= 1
-    per_page = 10
+    per_page = 5
     order    = params[:order] ||= "desc"
     order_by = params[:order_by] ||= "created_at"
     keyword  = params[:keyword] ||= ""

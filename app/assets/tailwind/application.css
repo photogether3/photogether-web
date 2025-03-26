@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @config "../../../config/tailwind.config.js";
+@plugin "daisyui";
 
 @layer {
     .motion-custom-focus-in {

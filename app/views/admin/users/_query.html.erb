@@ -14,35 +14,36 @@
   data-query-target="form"
   method="get"
   class="flex justify-between items-center">
-  <label>
+  <label class="flex gap-2 items-center bg-white soft-shadow rounded-xl px-4 h-12">
+    <%= heroicon("magnifying-glass", options: { class: "w-5 h-5 text-gray-500" }) %>
     <input
       data-query-target="keyword"
       data-action="keyup->query#search"
       name="keyword"
       placeholder="닉네임 또는 이메일"
       value="<%= params[:keyword] %>"
-      class="border rounded-xl p-2"/>
+      class=""/>
   </label>
-  <div>
-    <label>
-      <select
-        name="order"
-        data-action="change->query#changeOrder"
-        class="p-2 border rounded-xl">
-        <%= order_list.each do |item| %>
-          <option value="<%= item[:value] %>" <%= 'selected' if params[:order] == item[:value] %>><%= item[:label] %></option>
-        <% end %>
-      </select>
-    </label>
-    <label>
-      <select
-        name="order_by"
-        data-action="change->query#changeOrderBy"
-        class="p-2 border rounded-xl">
-        <%= order_by_list.each do |item| %>
-          <option value="<%= item[:value] %>" <%= 'selected' if params[:order_by] == item[:value] %>><%= item[:label] %></option>
-        <% end %>
-      </select>
-    </label>
-  </div>
+<!--  <div>-->
+<!--    <label>-->
+<!--      <select-->
+<!--        name="order"-->
+<!--        data-action="change->query#changeOrder"-->
+<!--        class="p-2 border rounded-xl">-->
+        <%#= order_list.each do |item| %>
+<!--          <option value="<%#= item[:value] %>" <%#= 'selected' if params[:order] == item[:value] %>><%#= item[:label] %></option>-->
+        <%# end %>
+<!--      </select>-->
+<!--    </label>-->
+<!--    <label>-->
+<!--      <select-->
+<!--        name="order_by"-->
+<!--        data-action="change->query#changeOrderBy"-->
+<!--        class="p-2 border rounded-xl">-->
+        <%#= order_by_list.each do |item| %>
+<!--          <option value="<%#= item[:value] %>" <%#= 'selected' if params[:order_by] == item[:value] %>><%#= item[:label] %></option>-->
+        <%# end %>
+<!--      </select>-->
+<!--    </label>-->
+<!--  </div>-->
 </form>

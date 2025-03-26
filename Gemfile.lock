@@ -177,6 +177,8 @@ GEM
     grpc (1.71.0-x86_64-linux)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
+    heroicon (1.0.0)
+      rails (>= 5.2)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
     importmap-rails (2.1.0)
@@ -461,6 +463,7 @@ DEPENDENCIES
   capybara
   debug
   google-cloud-vision
+  heroicon (~> 1.0)
   importmap-rails
   jbuilder
   jwt

@@ -1,8 +1,8 @@
 <%= turbo_frame_tag :user_list do %>
-  <div class="w-full overflow-hidden border rounded-xl">
-    <table class="text-center w-full [&_th,td]:p-2">
-      <thead class="bg-gray-200">
-      <tr class="border-b">
+  <div class="w-full overflow-hidden border border-gray-100 rounded-xl bg-white soft-shadow">
+    <table class="text-center w-full [&_th,td]:p-2 [&_th]:py-4">
+      <thead >
+      <tr class="border-b-2 border-gray-100">
         <th>번호</th>
         <th>닉네임</th>
         <th>이메일</th>
@@ -15,7 +15,7 @@
       <tbody>
       <% if @users.any? %>
         <% @users.each_with_index do |user, i| %>
-          <tr id="<%= "user_#{user.id}" %>" class="border-b [&:last-child]:border-none">
+          <tr id="<%= "user_#{user.id}" %>" class="border-b-2 border-gray-100">
             <td><%= (@users.current_page - 1) * @users.limit_value + i + 1 %></td>
             <td><%= user.nickname %></td>
             <td><%= user.email_address %></td>
@@ -38,9 +38,9 @@
       <% end %>
       </tbody>
     </table>
-  </div>
 
-  <div>
-    <%= render partial: 'admin/users/pagination' %>
+    <div class="p-4">
+      <%= render partial: 'admin/users/pagination' %>
+    </div>
   </div>
 <% end %>
