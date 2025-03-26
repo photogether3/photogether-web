@@ -5,6 +5,7 @@ class Admin::UsersController < Admin::AdminController
     order    = params[:order] ||= "desc"
     order_by = params[:order_by] ||= "created_at"
     keyword  = params[:keyword] ||= ""
+
     @users = User.all
     @users = @users.where("email_address LIKE :q OR nickname LIKE :q", q: "%#{keyword}%") if keyword.present?
     @users = @users.page(page).per(per_page)
@@ -12,7 +13,7 @@ class Admin::UsersController < Admin::AdminController
 
     respond_to do |format|
       format.turbo_stream do
-        render turbo_stream: turbo_stream.replace('user_list', partial: "admin/users/user_list")
+        render turbo_stream: turbo_stream.replace("user_list", partial: "admin/users/user_list")
       end
       format.html
     end
@@ -23,7 +24,6 @@ class Admin::UsersController < Admin::AdminController
   end
 
   def new
-    @anims = "motion-preset-focus"
     @user = User.new
   end
 
@@ -40,15 +40,13 @@ class Admin::UsersController < Admin::AdminController
 
     respond_to do |format|
       if @user.save
-        format.html { redirect_to admin_users_url, notice: "사용자가 성공적으로 생성되었습니다." }
-        format.json { render :show, status: :created, location: @user }
+        format.turbo_stream { head :ok }
       else
+        @modal_anims = ""
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
       end
     end
   end
-
 
   def edit
     @user = User.find(params[:id])
@@ -69,11 +67,10 @@ class Admin::UsersController < Admin::AdminController
 
     respond_to do |format|
       if @user.save
-        format.html { redirect_to admin_users_url, notice: "사용자가 성공적으로 수정되었습니다." }
-        format.json { render :show, status: :ok, location: @user }
+        format.turbo_stream { head :ok }
       else
+        @modal_anims = ""
         format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -84,8 +81,6 @@ class Admin::UsersController < Admin::AdminController
 
     respond_to do |format|
       format.turbo_stream { render turbo_stream: turbo_stream.remove("user_#{@user.id}") }
-      format.html { redirect_to admin_users_path, notice: "사용자가 삭제되었습니다." }
     end
   end
-
 end

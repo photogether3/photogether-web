@@ -1,8 +1,9 @@
+<% modal_anims = @modal_anims ||= 'motion-preset-fade' %>
 <div
   id="modal"
   data-controller="modal"
   data-action="turbo:submit-end->modal#submit"
-  class="fixed inset-0 bg-black/50 flex justify-center items-center z-50 <%= class_addons ||= '' %>">
+  class="fixed inset-0 bg-black/50 flex justify-center items-center z-50 <%= modal_anims %>">
   <div class="bg-white w-full max-w-xl mx-4 sm:h-auto rounded-lg p-4">
     <div class="flex justify-between items-center w-full">
       <div class="text-xl font-bold"><%= title ||= '' %></div>

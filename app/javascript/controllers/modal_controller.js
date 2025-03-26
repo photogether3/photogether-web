@@ -1,17 +1,28 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
+  async submit(e) {
+    const method =
+      e.target.querySelector('input[name="_method"]')?.value?.toUpperCase() ||
+      e.target.method?.toUpperCase();
+    if (!e.detail.success) return;
+    await this.close();
 
-    submit(e) {
-        console.log(e);
-        if (!e.detail.success) return;
-        this.close();
-    }
+    // if (method !== 'POST') return;
+    Turbo.visit("/admin/users");
+  }
 
-    close() {
-        this.element.classList.add('motion-custom-fade-out');
-        this.element.addEventListener('animationend', () => {
-            this.element.remove();
-        }, { once: true });
-    }
+  async close() {
+    this.element.classList.add("motion-custom-fade-out");
+    return new Promise((resolve) => {
+      this.element.addEventListener(
+        "animationend",
+        () => {
+          this.element.remove();
+          resolve();
+        },
+        { once: true }
+      );
+    });
+  }
 }
