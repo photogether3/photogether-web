@@ -8,7 +8,7 @@
     data-page-number="<%= current_page - 1 %>"
     class="flex items-center gap-1 p-2 <%= 'opacity-50' if current_page == 1 %>"
     <%= 'disabled' if current_page == 1 %>>
-    <%= heroicon("arrow-left", options: { class: "w-5 h-5" }) %>
+    <%= heroicon("arrow-left", options: { class: "w-5 h-5 pointer-events-none" }) %>
     이전
   </button>
 
@@ -35,7 +35,7 @@
     class="flex items-center gap-1 p-2 <%= 'opacity-50' if current_page >= total_pages %>"
     <%= 'disabled' if current_page >= total_pages %>>
     다음
-    <%= heroicon("arrow-right", options: { class: "w-5 h-5" }) %>
+    <%= heroicon("arrow-right", options: { class: "w-5 h-5 pointer-events-none" }) %>
   </button>
 
 </div>

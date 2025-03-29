@@ -1,5 +1,5 @@
 <%= turbo_frame_tag :user_list do %>
-  <div class="w-full overflow-hidden border border-gray-300 rounded-xl bg-white">
+  <div class="w-full overflow-hidden bg-white border border-gray-300 rounded-xl">
     <table class="text-center w-full [&_th,td]:p-2 [&_th]:py-4">
       <thead >
       <tr class="border-b border-gray-300">
@@ -26,10 +26,10 @@
               <details
                 data-controller="dropdown"
                 class="dropdown dropdown-bottom dropdown-end">
-                <summary class="btn border-none bg-white">
+                <summary class="bg-white border-none shadow-none btn">
                   <%= heroicon("cog-8-tooth", options: { class: "w-5 h-5 text-gray-500" }) %>
                 </summary>
-                <ul class="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 border border-gray-300">
+                <ul class="p-2 border border-gray-300 menu dropdown-content bg-base-100 rounded-box z-1 w-52">
                   <li>
                     <%= link_to '수정', edit_admin_user_url(user), data: {
                       action: 'click->dropdown#select',

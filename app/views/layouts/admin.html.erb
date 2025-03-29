@@ -10,8 +10,8 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-  <main class="flex flex-1 bg-gray-100 h-screen">
-    <aside class="flex-shrink-0 h-full p-2 bg-white w-60 soft-shadow">
+  <main class="flex flex-1 h-screen bg-gray-100">
+    <aside class="flex-shrink-0 h-full p-2 bg-white border-r border-gray-300 w-60">
       <div class="flex justify-center p-4">
         <a href="#" class="-m-1.5 p-1.5">
           <span class="sr-only">Photogether</span>
@@ -26,7 +26,7 @@
       </ul>
     </aside>
     <section class="w-full h-full">
-      <div class="w-full max-w-6xl border-r-2 border-gray-300 border-dashed h-full p-10">
+      <div class="w-full h-full max-w-6xl p-10 border-r-2 border-gray-300 border-dashed min-w-6xl">
         <%= yield %>
       </div>
     </section>
