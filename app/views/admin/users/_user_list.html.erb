@@ -1,27 +1,27 @@
 <%= turbo_frame_tag :user_list do %>
   <div class="w-full overflow-hidden bg-white border border-gray-300 rounded-xl">
-    <table class="text-center w-full [&_th,td]:p-2 [&_th]:py-4">
-      <thead >
+    <table class="w-full text-center [&_th,td]:p-2 [&_th]:py-4 table-fixed">
+      <thead>
       <tr class="border-b border-gray-300">
-        <th>번호</th>
-        <th>닉네임</th>
-        <th>이메일</th>
-        <th>이메일 인증</th>
-        <th>역할</th>
-        <th>생성일</th>
-        <th>설정</th>
+        <th class="w-16">번호</th>
+        <th class="w-32">닉네임</th>
+        <th class="w-60">이메일</th>
+        <th class="w-24">이메일 인증</th>
+        <th class="w-24">역할</th>
+        <th class="w-40">생성일</th>
+        <th class="w-20">설정</th>
       </tr>
       </thead>
-      <tbody>
+      <tbody class="motion-preset-fade">
       <% if @users.any? %>
         <% @users.each_with_index do |user, i| %>
           <tr id="<%= "user_#{user.id}" %>" class="border-b border-gray-300">
-            <td><%= (@users.current_page - 1) * @users.limit_value + i + 1 %></td>
-            <td><%= user.nickname %></td>
-            <td><%= user.email_address %></td>
-            <td><%= user.is_email_verified %></td>
-            <td><%= user.role_id == 1 ? '회원' : '관리자' %></td>
-            <td><%= user.created_at.strftime("%Y.%m.%d %H:%M") %></td>
+            <td class="truncate"><%= (@users.current_page - 1) * @users.limit_value + i + 1 %></td>
+            <td class="truncate" title="<%= user.nickname %>"><%= user.nickname %></td>
+            <td class="truncate" title="<%= user.email_address %>"><%= user.email_address %></td>
+            <td class="truncate"><%= user.is_email_verified %></td>
+            <td class="truncate"><%= user.role_id == 1 ? '회원' : '관리자' %></td>
+            <td class="truncate"><%= user.created_at.strftime("%Y.%m.%d %H:%M") %></td>
             <td>
               <%= render partial: 'shared/dropdown', locals: {
                 title: heroicon("cog-8-tooth", options: { class: "w-5 h-5 text-gray-500" }),
@@ -43,7 +43,7 @@
         <% end %>
       <% else %>
         <tr>
-          <td colspan="5" class="py-6 text-gray-500">회원 목록이 없습니다.</td>
+          <td colspan="7" class="py-6 text-gray-500">회원 목록이 없습니다.</td>
         </tr>
       <% end %>
       </tbody>

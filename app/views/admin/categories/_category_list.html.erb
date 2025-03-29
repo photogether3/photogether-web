@@ -1,21 +1,21 @@
 <%= turbo_frame_tag :category_list do %>
   <div class="w-full overflow-hidden bg-white border border-gray-300 rounded-xl">
-    <table class="text-center w-full [&_th,td]:p-2 [&_th]:py-4">
+    <table class="text-center w-full [&_th,td]:p-2 [&_th]:py-4 table-fixed">
       <thead >
       <tr class="border-b border-gray-300">
-        <th>번호</th>
-        <th>카테고리명</th>
-        <th>생성일</th>
-        <th>설정</th>
+        <th class="w-16">번호</th>
+        <th class="w-96">카테고리명</th>
+        <th class="w-40">생성일</th>
+        <th class="w-20">설정</th>
       </tr>
       </thead>
-      <tbody>
+      <tbody class="motion-preset-fade">
       <% if @categories.any? %>
         <% @categories.each_with_index do |category, i| %>
           <tr id="<%= "category_#{category.id}" %>" class="border-b border-gray-300">
-            <td><%= (@categories.current_page - 1) * @categories.limit_value + i + 1 %></td>
-            <td><%= category.name %></td>
-            <td><%= category.created_at.strftime("%Y.%m.%d %H:%M") %></td>
+            <td class="truncate"><%= (@categories.current_page - 1) * @categories.limit_value + i + 1 %></td>
+            <td class="truncate" title="<%= category.name %>"><%= category.name %></td>
+            <td class="truncate"><%= category.created_at.strftime("%Y.%m.%d %H:%M") %></td>
             <td>
               <%= render partial: 'shared/dropdown', locals: {
                 title: heroicon("cog-8-tooth", options: { class: "w-5 h-5 text-gray-500" }),
@@ -26,7 +26,7 @@
                   }),
                   link_to('삭제', admin_category_url(category), data: { 
                     action: 'click->dropdown#select',
-                    turbo_frame: 'user_list',
+                    turbo_frame: 'category_list',
                     turbo_method: :delete,
                     turbo_confirm: "정말 삭제하시겠어요?"
                   }),
@@ -37,7 +37,7 @@
         <% end %>
       <% else %>
         <tr>
-          <td colspan="5" class="py-6 text-gray-500">카테고리 목록이 없습니다.</td>
+          <td colspan="4" class="py-6 text-gray-500">카테고리 목록이 없습니다.</td>
         </tr>
       <% end %>
       </tbody>

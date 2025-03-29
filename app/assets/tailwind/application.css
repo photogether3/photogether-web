@@ -8,7 +8,7 @@
     }
 
     .motion-custom-fade-in-slide-up {
-        @apply motion-opacity-in-[0] motion-translate-y-in-[5%] motion-duration-[0.7s] motion-ease-in-out;
+        @apply motion-opacity-in-[0] motion-translate-y-in-[2%] motion-duration-[0.5s] motion-ease-in-out;
     }
 
     @keyframes fadeOut {
