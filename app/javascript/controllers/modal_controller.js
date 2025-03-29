@@ -1,6 +1,13 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class ModalController extends Controller {
+  static values = {
+    refreshUrl: String,
+  }
+  connect() {
+    console.log(this.refreshUrlValue);
+  }
+
   async submit(e) {
     const method =
       e.target.querySelector('input[name="_method"]')?.value?.toUpperCase() ||
@@ -9,7 +16,7 @@ export default class ModalController extends Controller {
     await this.close();
 
     // if (method !== 'POST') return;
-    Turbo.visit("/admin/users");
+    Turbo.visit(this.refreshUrlValue);
   }
 
   async close() {

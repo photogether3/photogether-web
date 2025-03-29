@@ -23,28 +23,21 @@
             <td><%= user.role_id == 1 ? '회원' : '관리자' %></td>
             <td><%= user.created_at.strftime("%Y.%m.%d %H:%M") %></td>
             <td>
-              <details
-                data-controller="dropdown"
-                class="dropdown dropdown-bottom dropdown-end">
-                <summary class="bg-white border-none shadow-none btn">
-                  <%= heroicon("cog-8-tooth", options: { class: "w-5 h-5 text-gray-500" }) %>
-                </summary>
-                <ul class="p-2 border border-gray-300 menu dropdown-content bg-base-100 rounded-box z-1 w-52">
-                  <li>
-                    <%= link_to '수정', edit_admin_user_url(user), data: {
-                      action: 'click->dropdown#select',
-                      turbo_frame: 'modal_portal'
-                    } %>
-                  </li>
-                  <li>
-                    <%= link_to "삭제", admin_user_url(user), data: {
-                      action: 'click->dropdown#select',
-                      turbo_frame: 'user_list',
-                      turbo_method: :delete,
-                      turbo_confirm: "정말 삭제하시겠어요?" } %>
-                  </li>
-                </ul>
-              </details>
+              <%= render partial: 'shared/dropdown', locals: {
+                title: heroicon("cog-8-tooth", options: { class: "w-5 h-5 text-gray-500" }),
+                items: [
+                  link_to('수정', edit_admin_user_url(user), data: { 
+                    action: 'click->dropdown#select',
+                    turbo_frame: 'modal_portal'
+                  }),
+                  link_to('삭제', admin_user_url(user), data: { 
+                    action: 'click->dropdown#select',
+                    turbo_frame: 'user_list',
+                    turbo_method: :delete,
+                    turbo_confirm: "정말 삭제하시겠어요?"
+                  }),
+                ],
+              } %>
             </td>
           </tr>
         <% end %>
@@ -57,7 +50,10 @@
     </table>
 
     <div class="p-4">
-      <%= render partial: 'admin/users/pagination' %>
+      <%= render partial: 'shared/pagination', locals: {
+        total_pages: @users.total_pages,
+        current_page: @users.current_page
+      } %>
     </div>
   </div>
 <% end %>

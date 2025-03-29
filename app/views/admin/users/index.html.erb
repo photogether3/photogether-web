@@ -2,7 +2,12 @@
   <h1 class="text-3xl font-bold">회원 관리</h1>
 
   <div class="flex items-center justify-between w-full mt-4">
-    <%= render partial: 'admin/users/query', locals: {
+    <%= render partial: 'shared/query', locals: {
+      query_form_id: 'user_query_form',
+      query_action: '/admin/users',
+      keyword: {
+        placeholder: '닉네임 또는 이메일',
+      },
       order_by_list: [
         { label: '생성일', value: 'created_at' },
         { label: '닉네임', value: 'nickname' },
@@ -11,7 +16,11 @@
     } %>
 
     <div class="flex items-center justify-center gap-2">
-      <%= render partial: 'admin/users/user_total' %>
+      <%= render partial: 'shared/item_total', locals: {
+        total_count_id: 'user_total',
+        content: '총 회원 수',
+        total_count: @users.total_count,
+      } %>
 
       <%= link_to new_admin_user_path,
                   data: { turbo_frame: 'modal_portal' },

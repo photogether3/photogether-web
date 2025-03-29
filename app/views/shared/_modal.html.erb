@@ -2,10 +2,11 @@
 <div
   id="modal"
   data-controller="modal"
+  data-modal-refresh-url-value="<%= local_assigns[:refresh_url] %>"
   data-action="turbo:submit-end->modal#submit"
   class="fixed inset-0 bg-black/50 flex justify-center items-center z-50 <%= modal_anims %>">
-  <div class="bg-white w-full max-w-xl mx-4 sm:h-auto rounded-lg p-4">
-    <div class="flex justify-between items-center w-full">
+  <div class="w-full max-w-xl p-4 mx-4 bg-white rounded-lg sm:h-auto">
+    <div class="flex items-center justify-between w-full">
       <div class="text-xl font-bold"><%= title ||= '' %></div>
       <button data-action="click->modal#close">닫기</button>
     </div>

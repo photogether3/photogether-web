@@ -1,0 +1,11 @@
+<%= turbo_frame_tag :modal_portal do %>
+  <%= render layout: 'shared/modal',
+            formats: [:html],
+            locals: { 
+              refresh_url: '/admin/categories',
+              title: '카테고리 수정', 
+              class_addons: 'motion-preset-fade' 
+            } do %>
+    <%= render partial: 'admin/categories/form', formats: [:html], locals: { category: @category } %>
+  <% end %>
+<% end %>

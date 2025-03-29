@@ -3,7 +3,7 @@
               local: true,
               html: { id: "user_form", class: "flex flex-col gap-4" } do |f| %>
   <% if @user.errors.any? %>
-    <div class="bg-red-50 p-2 text-xs">
+    <div class="p-2 text-xs bg-red-50">
       <% @user.errors.full_messages.each do |msg| %>
         <div>- <%= msg %></div>
       <% end %>
@@ -15,12 +15,12 @@
                     class: "border p-2 rounded-xl" %>
 
   <%= f.password_field :password,
-                       placeholder: "비밀번호",
-                       class: "border p-2 rounded-xl" %>
+                        placeholder: "비밀번호",
+                        class: "border p-2 rounded-xl" %>
 
   <%= f.text_field :nickname,
-                       placeholder: "닉네임",
-                       class: "border p-2 rounded-xl" %>
+                    placeholder: "닉네임",
+                    class: "border p-2 rounded-xl" %>
 
   <%= f.submit (@user.new_record? ? "생성" : "수정"), class: "p-2 bg-primary rounded-xl text-white" %>
 <% end %>

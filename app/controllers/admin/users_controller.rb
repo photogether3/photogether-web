@@ -84,7 +84,11 @@ class Admin::UsersController < Admin::AdminController
         @users = User.all
         render turbo_stream: [
           turbo_stream.remove("user_#{@user.id}"),
-          turbo_stream.replace("user_total", partial: "admin/users/user_total")
+          turbo_stream.replace("user_total", partial: "shared/item_total", locals: {
+            total_count_id: "user_total",
+            total_count: User.all.count,
+            content: "총 회원 수"
+          })
         ]
       end
     end

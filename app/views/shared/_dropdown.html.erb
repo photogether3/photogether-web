@@ -1,0 +1,17 @@
+<details
+  data-controller="dropdown"
+  class="dropdown dropdown-bottom dropdown-end">
+  <summary class="bg-white border-none shadow-none btn">
+    <% if local_assigns[:title].present? %>
+      <%= title %>
+      <%= local_assigns[:refresh_url] %>
+    <% end %>
+  </summary>
+  <ul class="p-2 border border-gray-300 menu dropdown-content bg-base-100 rounded-box z-1 w-52">
+    <% if local_assigns[:items].present? %>
+      <% items.each do |item| %>
+        <li><%= item %></li>
+      <% end %>
+    <% end %>
+  </ul>
+</details>

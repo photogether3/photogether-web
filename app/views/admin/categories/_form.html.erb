@@ -1,0 +1,18 @@
+<%= form_with model: @category,
+              url: @category.persisted? ? admin_category_path(@category) : admin_categories_path,
+              local: true,
+              html: { id: "category_form", class: "flex flex-col gap-4" } do |f| %>
+  <% if @category.errors.any? %>
+    <div class="p-2 text-xs bg-red-50">
+      <% @category.errors.full_messages.each do |msg| %>
+        <div>- <%= msg %></div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%= f.text_field :name,
+                    placeholder: "카테고리명",
+                    class: "border p-2 rounded-xl" %>
+
+  <%= f.submit (@category.new_record? ? "생성" : "수정"), class: "p-2 bg-primary rounded-xl text-white" %>
+<% end %>
