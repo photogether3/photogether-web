@@ -80,7 +80,13 @@ class Admin::UsersController < Admin::AdminController
     @user.destroy
 
     respond_to do |format|
-      format.turbo_stream { render turbo_stream: turbo_stream.remove("user_#{@user.id}") }
+      format.turbo_stream do
+        @users = User.all
+        render turbo_stream: [
+          turbo_stream.remove("user_#{@user.id}"),
+          turbo_stream.replace("user_total", partial: "admin/users/user_total")
+        ]
+      end
     end
   end
 end

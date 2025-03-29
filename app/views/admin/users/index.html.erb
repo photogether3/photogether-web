@@ -11,10 +11,7 @@
     } %>
 
     <div class="flex items-center justify-center gap-2">
-      <div class="flex items-center border-2 border-primary rounded-xl h-12 px-4 gap-2 bg-white">
-        <span class="text-sm text-gray-500">총 회원 수</span>
-        <span class="text-lg font-bold text-primary"><%= @users.total_count rescue User.count %></span>
-      </div>
+      <%= render partial: 'admin/users/user_total' %>
 
       <%= link_to new_admin_user_path,
                   data: { turbo_frame: 'modal_portal' },
