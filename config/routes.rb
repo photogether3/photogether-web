@@ -1,12 +1,10 @@
 Rails.application.routes.draw do
+  # get "up" => "rails/health#show", as: :rails_health_check
   root "landing#index"
-
-  mount Scalar::UI, at: "/docs"
-
-  get "up" => "rails/health#show", as: :rails_health_check
 
   namespace :admin do
     root "dashboard#index"
+    mount Scalar::UI, at: "/docs"
     resources :users
     resources :categories
   end
