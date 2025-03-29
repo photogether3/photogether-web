@@ -1,8 +1,8 @@
 <%= turbo_frame_tag :user_list do %>
-  <div class="w-full overflow-hidden border border-gray-100 rounded-xl bg-white soft-shadow">
+  <div class="w-full overflow-hidden border border-gray-300 rounded-xl bg-white">
     <table class="text-center w-full [&_th,td]:p-2 [&_th]:py-4">
       <thead >
-      <tr class="border-b-2 border-gray-100">
+      <tr class="border-b border-gray-300">
         <th>번호</th>
         <th>닉네임</th>
         <th>이메일</th>
@@ -15,7 +15,7 @@
       <tbody>
       <% if @users.any? %>
         <% @users.each_with_index do |user, i| %>
-          <tr id="<%= "user_#{user.id}" %>" class="border-b-2 border-gray-100">
+          <tr id="<%= "user_#{user.id}" %>" class="border-b border-gray-300">
             <td><%= (@users.current_page - 1) * @users.limit_value + i + 1 %></td>
             <td><%= user.nickname %></td>
             <td><%= user.email_address %></td>
@@ -23,11 +23,28 @@
             <td><%= user.role_id == 1 ? '회원' : '관리자' %></td>
             <td><%= user.created_at.strftime("%Y.%m.%d %H:%M") %></td>
             <td>
-              <%= link_to '수정', edit_admin_user_url(user), data: { turbo_frame: 'modal_portal' } %>
-              <%= link_to "삭제", admin_user_url(user), data: {
-                turbo_frame: 'user_list',
-                turbo_method: :delete,
-                turbo_confirm: "정말 삭제하시겠어요?" } %>
+              <details
+                data-controller="dropdown"
+                class="dropdown dropdown-bottom dropdown-end">
+                <summary class="btn border-none bg-white">
+                  <%= heroicon("cog-8-tooth", options: { class: "w-5 h-5 text-gray-500" }) %>
+                </summary>
+                <ul class="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 border border-gray-300">
+                  <li>
+                    <%= link_to '수정', edit_admin_user_url(user), data: {
+                      action: 'click->dropdown#select',
+                      turbo_frame: 'modal_portal'
+                    } %>
+                  </li>
+                  <li>
+                    <%= link_to "삭제", admin_user_url(user), data: {
+                      action: 'click->dropdown#select',
+                      turbo_frame: 'user_list',
+                      turbo_method: :delete,
+                      turbo_confirm: "정말 삭제하시겠어요?" } %>
+                  </li>
+                </ul>
+              </details>
             </td>
           </tr>
         <% end %>

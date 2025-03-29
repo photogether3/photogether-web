@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
 
-export default class extends Controller {
+export default class ModalController extends Controller {
   async submit(e) {
     const method =
       e.target.querySelector('input[name="_method"]')?.value?.toUpperCase() ||

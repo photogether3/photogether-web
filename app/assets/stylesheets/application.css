@@ -56,7 +56,7 @@ input:-webkit-autofill {
   transition: background-color 5000s ease-in-out 0s !important;
 }
 
-input:focus {
+input,select,textarea:focus {
   outline: none;
 }
 

@@ -13,8 +13,8 @@
   action="/admin/users"
   data-query-target="form"
   method="get"
-  class="flex justify-between items-center">
-  <label class="flex gap-2 items-center bg-white soft-shadow rounded-xl px-4 h-12">
+  class="flex items-center gap-2">
+  <label class="flex gap-2 items-center bg-white border border-gray-300 rounded-xl px-4 h-12">
     <%= heroicon("magnifying-glass", options: { class: "w-5 h-5 text-gray-500" }) %>
     <input
       data-query-target="keyword"
@@ -23,6 +23,17 @@
       placeholder="닉네임 또는 이메일"
       value="<%= params[:keyword] %>"
       class=""/>
+  </label>
+  <label class="swap bg-white rounded-xl px-4 h-12 border border-gray-300">
+    <input type="hidden" name="order" />
+    <input type="checkbox" data-action="change->query#changeOrder"
+      <%= 'checked' if params[:order] == 'asc' %>/>
+    <div class="swap-on" title="최근순">
+      <%= heroicon("arrow-long-down", options: { class: "w-5 h-5 text-gray-500" }) %>
+    </div>
+    <div class="swap-off" title="오래된순">
+      <%= heroicon("arrow-long-up", options: { class: "w-5 h-5 text-gray-500" }) %>
+    </div>
   </label>
 <!--  <div>-->
 <!--    <label>-->
@@ -35,15 +46,15 @@
         <%# end %>
 <!--      </select>-->
 <!--    </label>-->
-<!--    <label>-->
-<!--      <select-->
-<!--        name="order_by"-->
-<!--        data-action="change->query#changeOrderBy"-->
-<!--        class="p-2 border rounded-xl">-->
-        <%#= order_by_list.each do |item| %>
-<!--          <option value="<%#= item[:value] %>" <%#= 'selected' if params[:order_by] == item[:value] %>><%#= item[:label] %></option>-->
-        <%# end %>
-<!--      </select>-->
-<!--    </label>-->
+  <label>
+    <select
+      name="order_by"
+      data-action="change->query#changeOrderBy"
+      class="p-2 rounded-xl h-12 bg-white border border-gray-300">
+      <%= order_by_list.each do |item| %>
+        <option value="<%= item[:value] %>" <%= 'selected' if params[:order_by] == item[:value] %>><%= item[:label] %></option>
+      <% end %>
+    </select>
+  </label>
 <!--  </div>-->
 </form>

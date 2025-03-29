@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
 
-export default class extends Controller {
+export default class EmailCheckController extends Controller {
   check() {
     console.log('hello')
     const email = this.element.value.trim();

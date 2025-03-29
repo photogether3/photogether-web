@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus'
 
-export default class extends Controller {
+export default class QueryController extends Controller {
     static targets = ['form','keyword', 'pagination']
 
     static values = {
@@ -8,7 +8,7 @@ export default class extends Controller {
     }
 
     search(event) {
-        clearTimeout(this.debounceId)
+        clearTimeout(this.debounceId);
         this.debounceId = setTimeout(() => {
             this.#submit({ resetPage: true });
 
@@ -20,7 +20,15 @@ export default class extends Controller {
         }, this.debounceTimeValue);
     }
 
-    changeOrder() {
+    changeOrder(e) {
+        const orderInput = this.formTarget['order'];
+        console.log(e.target.checked);
+        console.log(orderInput);
+        if (e.target.checked) {
+            orderInput.value = 'asc'
+        } else {
+            orderInput.value = 'desc'
+        }
         this.#submit({ resetPage: true });
     }
 
@@ -58,7 +66,7 @@ export default class extends Controller {
             headers: {
                 Accept: "text/vnd.turbo-stream.html"
             }
-        })
+        });
 
         if (response.ok) {
             const streamHtml = await response.text();
