@@ -2,13 +2,16 @@ Rails.application.routes.draw do
   # get "up" => "rails/health#show", as: :rails_health_check
   root "landing#index"
 
+  # 관리자 페이지
   namespace :admin do
     root "dashboard#index"
     mount Scalar::UI, at: "/docs"
     resources :users
     resources :categories
+    resources :posts
   end
 
+  # API 제공
   namespace :api do
     namespace :v1 do
       # auth group
