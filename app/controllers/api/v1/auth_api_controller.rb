@@ -21,20 +21,15 @@ class Api::V1::AuthApiController < Api::ApplicationApiController
   end
 
   def register
-    ActiveRecord::Base.transaction do
-      user = User.create!(
-        email_address: params[:email],
-        password: params[:password],
-        password_confirmation: params[:password],
-        role_id: 1,
-        nickname: BaseUtil.generate_random_nickname,
-      )
+    user_attributes = {
+      email_address: params[:email],
+      password: params[:password],
+      password_confirmation: params[:password],
+      role_id: 1,
+      nickname: BaseUtil.generate_random_nickname
+    }
 
-      user.collections.create!([
-        { category_id: nil, type: "UNCATEGORIZED", title: "미분류" },
-        { category_id: nil, type: "TRASH",         title: "휴지통" }
-      ])
-    end
+    User.create_with_default_collections(user_attributes)
     render json: { message: "회원가입 성공" }, status: :created
   end
 

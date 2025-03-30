@@ -31,17 +31,20 @@ class Admin::UsersController < Admin::AdminController
     user_params = params.require(:user).permit(:email_address, :password, :nickname)
     nickname = user_params[:nickname].presence || BaseUtil.generate_random_nickname
 
-    @user = User.new(user_params.merge(
+    user_attributes = user_params.merge(
       password_confirmation: user_params[:password],
       role_id: 1,
       is_email_verified: true,
       nickname: nickname
-    ))
+    )
 
     respond_to do |format|
-      if @user.save
+      begin
+        @user = User.create_with_default_collections(user_attributes)
         format.turbo_stream { head :ok }
-      else
+      rescue ActiveRecord::RecordInvalid, StandardError => e
+        @user = User.new(user_attributes)
+        @user.errors.add(:base, e.message) if @user.errors.empty?
         @modal_anims = ""
         format.html { render :new, status: :unprocessable_entity }
       end

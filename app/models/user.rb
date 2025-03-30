@@ -56,6 +56,27 @@ class User < ApplicationRecord
     end
   end
 
+  # 사용자 생성과 기본 컬렉션 생성(Api, Admin 공통 사용)
+  def self.create_with_default_collections(user_attributes)
+    user = nil
+
+    ActiveRecord::Base.transaction do
+      # 사용자 생성
+      user = create!(user_attributes)
+
+      # 기본 컬렉션 생성
+      user.collections.create!([
+        { category_id: nil, type: "UNCATEGORIZED", title: "미분류" },
+        { category_id: nil, type: "TRASH", title: "휴지통" }
+      ])
+    end
+
+    user
+  rescue ActiveRecord::RecordInvalid, StandardError => e
+    Rails.logger.error("사용자 생성 실패: #{e.message}")
+    raise e
+  end
+
   # Utils 🍪
 
   def as_json(options = {})
