@@ -14,6 +14,8 @@ Rails.application.routes.draw do
         get :realtime
       end
     end
+    # 관리자용 이미지 텍스트 추출 API
+    post "images/extract_text", to: "images#extract_text"
   end
 
   # API 제공

@@ -14,8 +14,7 @@
       order_by_list: [
         { label: '생성일', value: 'created_at' },
         { label: '수정일', value: 'updated_at' },
-        { label: '좋아요 수', value: 'likes_count' },
-        { label: '댓글 수', value: 'comments_count' },
+        { label: '제목', value: 'title' },
       ],
       filter_by_list: [
         { label: '모든 카테고리', value: '' },
@@ -30,10 +29,12 @@
         total_count: @posts.total_count,
       } %>
 
-      <button id="view-toggle" class="flex items-center justify-center h-12 gap-2 px-4 text-gray-800 bg-gray-200 rounded-xl">
-        <%= heroicon("table-cells", options: { class: "w-5 h-5 text-gray-700" }) %>
-        <span>그리드 보기</span>
-      </button>
+      <%= link_to new_admin_post_path,
+                  data: { turbo_frame: 'modal_portal' },
+                  class: 'h-12 flex items-center justify-center gap-1 bg-primary text-white rounded-xl px-4' do %>
+        <%= heroicon("plus", options: { class: "w-5 h-5 text-white" }) %>
+        게시물 생성
+      <% end %>
     </div>
   </div>
 
@@ -42,26 +43,3 @@
     <%= render partial: 'admin/posts/post_list' %>
   </div>
 </div>
-
-<script>
-  document.addEventListener('turbo:load', function() {
-    const viewToggle = document.getElementById('view-toggle');
-    const container = document.getElementById('post-list-container');
-    let isTableView = true;
-
-    if (viewToggle) {
-      viewToggle.addEventListener('click', function() {
-        isTableView = !isTableView;
-        if (isTableView) {
-          viewToggle.innerHTML = `<%= heroicon("table-cells", options: { class: "w-5 h-5 text-gray-700" }) %><span>그리드 보기</span>`;
-          container.querySelector('.grid-view')?.classList.add('hidden');
-          container.querySelector('.table-view')?.classList.remove('hidden');
-        } else {
-          viewToggle.innerHTML = `<%= heroicon("list-bullet", options: { class: "w-5 h-5 text-gray-700" }) %><span>테이블 보기</span>`;
-          container.querySelector('.table-view')?.classList.add('hidden');
-          container.querySelector('.grid-view')?.classList.remove('hidden');
-        }
-      });
-    }
-  });
-</script>

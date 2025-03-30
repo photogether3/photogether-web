@@ -8,27 +8,37 @@ class Api::V1::PostApiController < Api::ApplicationApiController
   def index
     # 기본값 설정
     page       = params[:page] ||= 1
-    per_page   = params[:perPage] ||= 10
-    sort_order = params[:sortOrder] ||= "desc"
-    sort_by    = params[:sortBy] ||= "created_at"
+    per_page   = 12
+    sort_order = params[:order] ||= "desc"
+    sort_by    = params[:order_by] ||= "created_at"
+    keyword    = params[:keyword] ||= ""
+    filter_by  = params[:filter_by] ||= ""
 
-    # 게시물 조회
-    posts = Post
-      .where(user_id: @current_user.id, collection_id: @collection.id)
-      .order(sort_by => sort_order)
-      .includes(:collection, :post_metadata)
-      .page(page).per(per_page)
+    # 게시물 조회 기본 쿼리
+    @posts = Post.includes(:user, :post_metadata, collection: :category, image_attachment: :blob)
 
-    # JSON 변환
-    render json: {
-      per_page: posts.limit_value,
-      total_item_count: posts.total_count,
-      total_page_count: posts.total_pages,
-      current_page: posts.current_page,
-      items: posts.map { |post| post.to_detail.merge(
-        image_url: url_for(post.image)
-      ) }
-    }, status: :ok
+    # 검색어 필터링
+    @posts = @posts.where("posts.title LIKE :q OR posts.content LIKE :q", q: "%#{keyword}%") if keyword.present?
+
+    # 카테고리 필터링
+    if filter_by.present?
+      @posts = @posts.joins(collection: :category).where(collections: { category_id: filter_by })
+    end
+
+    # 정렬 - 유효성 검사
+    valid_sort_fields = %w[created_at updated_at title]
+    sort_by = "created_at" unless valid_sort_fields.include?(sort_by)
+
+    # 정렬 및 페이징 적용
+    @posts = @posts.order(sort_by => sort_order).page(page).per(per_page)
+
+    # 카테고리 목록 (필터용)
+    @categories = Category.all.order(:name)
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   def show
