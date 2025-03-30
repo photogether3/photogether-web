@@ -1,6 +1,6 @@
 class Admin::LogsController < Admin::AdminController
   def index
-    @log_types = [ "application", "production", "development", "test" ]
+    @log_types = [ "production", "development" ]
     @current_log = params[:log_type] || "application"
     @lines_count = params[:lines] || 100
 
