@@ -33,23 +33,18 @@ Rails.application.configure do
   # Skip http-to-https redirect for the default health check endpoint.
   # config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
 
-  # 기존 로그 설정 (STDOUT으로 출력)
-  # config.log_tags = [ :request_id ]
-  # config.logger = ActiveSupport::TaggedLogging.new(ActiveSupport::Logger.new(STDOUT))
-
   # 파일로 로그 출력하도록 수정
   config.log_tags = [ :request_id ]
-  log_file = File.open(Rails.root.join("log", "#{Rails.env}.log"), "a")
-  log_file.sync = true
-  config.logger = ActiveSupport::TaggedLogging.new(ActiveSupport::Logger.new(log_file))
+  config.logger = ActiveSupport::TaggedLogging.new(
+    Logger.new(
+      Rails.root.join("log", "#{Rails.env}.log"),
+      10,     # 파일 수 (로그 로테이션)
+      10.megabytes  # 각 파일 최대 크기 (10MB)
+    )
+  )
 
   # 로그 레벨 설정 (환경 변수에서 가져옴, 기본값은 info)
   config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
-
-  # 로그 회전 설정 (옵션)
-  # 10MB 단위로 로그 회전, 최대 5개 파일 유지
-  config.logger.instance_variable_get(:@logger).instance_variable_get(:@logdev).instance_variable_set(:@shift_age, 10)
-  config.logger.instance_variable_get(:@logger).instance_variable_get(:@logdev).instance_variable_set(:@shift_size, 10_485_760) # 10MB
 
   # 예방 조치: 헬스체크 경로는 로그에 기록하지 않음
   config.silence_healthcheck_path = "/up"
