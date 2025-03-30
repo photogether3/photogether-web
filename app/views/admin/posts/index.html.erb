@@ -1,0 +1,67 @@
+<% content_for :page_title, "게시물 관리 - 포토게더" %>
+<% content_for :meta_description, "Photogether 게시물 관리 시스템 - 게시물 조회, 수정 및 삭제" %>
+
+<div class="flex flex-col gap-4 motion-custom-fade-in-slide-up" data-controller="query">
+  <h1 class="text-3xl font-bold">게시물 관리</h1>
+
+  <div class="flex items-center justify-between w-full mt-4">
+    <%= render partial: 'shared/query', locals: {
+      query_form_id: 'post_query_form',
+      query_action: '/admin/posts',
+      keyword: {
+        placeholder: '게시물 제목 또는 내용',
+      },
+      order_by_list: [
+        { label: '생성일', value: 'created_at' },
+        { label: '수정일', value: 'updated_at' },
+        { label: '좋아요 수', value: 'likes_count' },
+        { label: '댓글 수', value: 'comments_count' },
+      ],
+      filter_by_list: [
+        { label: '모든 카테고리', value: '' },
+        *@categories.map { |c| { label: c.name, value: c.id.to_s } }
+      ]
+    } %>
+
+    <div class="flex items-center justify-center gap-2">
+      <%= render partial: 'shared/item_total', locals: {
+        total_count_id: 'post_total',
+        content: '총 게시물 수',
+        total_count: @posts.total_count,
+      } %>
+
+      <button id="view-toggle" class="flex items-center justify-center h-12 gap-2 px-4 text-gray-800 bg-gray-200 rounded-xl">
+        <%= heroicon("table-cells", options: { class: "w-5 h-5 text-gray-700" }) %>
+        <span>그리드 보기</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 게시물 목록 -->
+  <div id="post-list-container">
+    <%= render partial: 'admin/posts/post_list' %>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('turbo:load', function() {
+    const viewToggle = document.getElementById('view-toggle');
+    const container = document.getElementById('post-list-container');
+    let isTableView = true;
+
+    if (viewToggle) {
+      viewToggle.addEventListener('click', function() {
+        isTableView = !isTableView;
+        if (isTableView) {
+          viewToggle.innerHTML = `<%= heroicon("table-cells", options: { class: "w-5 h-5 text-gray-700" }) %><span>그리드 보기</span>`;
+          container.querySelector('.grid-view')?.classList.add('hidden');
+          container.querySelector('.table-view')?.classList.remove('hidden');
+        } else {
+          viewToggle.innerHTML = `<%= heroicon("list-bullet", options: { class: "w-5 h-5 text-gray-700" }) %><span>테이블 보기</span>`;
+          container.querySelector('.table-view')?.classList.add('hidden');
+          container.querySelector('.grid-view')?.classList.remove('hidden');
+        }
+      });
+    }
+  });
+</script>
