@@ -33,15 +33,39 @@ Rails.application.configure do
   # Skip http-to-https redirect for the default health check endpoint.
   # config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
 
-  # Log to STDOUT with the current request id as a default log tag.
-  config.log_tags = [ :request_id ]
-  config.logger   = ActiveSupport::TaggedLogging.logger(STDOUT)
+  # 기존 로그 설정 (STDOUT으로 출력)
+  # config.log_tags = [ :request_id ]
+  # config.logger = ActiveSupport::TaggedLogging.new(ActiveSupport::Logger.new(STDOUT))
 
-  # Change to "debug" to log everything (including potentially personally-identifiable information!)
+  # 파일로 로그 출력하도록 수정
+  config.log_tags = [ :request_id ]
+  log_file = File.open(Rails.root.join("log", "#{Rails.env}.log"), "a")
+  log_file.sync = true
+  config.logger = ActiveSupport::TaggedLogging.new(ActiveSupport::Logger.new(log_file))
+
+  # 로그 레벨 설정 (환경 변수에서 가져옴, 기본값은 info)
   config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
 
-  # Prevent health checks from clogging up the logs.
+  # 로그 회전 설정 (옵션)
+  # 10MB 단위로 로그 회전, 최대 5개 파일 유지
+  config.logger.instance_variable_get(:@logger).instance_variable_get(:@logdev).instance_variable_set(:@shift_age, 10)
+  config.logger.instance_variable_get(:@logger).instance_variable_get(:@logdev).instance_variable_set(:@shift_size, 10_485_760) # 10MB
+
+  # 예방 조치: 헬스체크 경로는 로그에 기록하지 않음
   config.silence_healthcheck_path = "/up"
+
+  # TODO: 관리자 활동 로그를 위한 개선 방안
+  # 1. AdminLogger 서비스 클래스 구현 (app/services/admin_logger.rb)
+  # 2. admin_activity.log 파일에 구조화된 JSON 형식으로 기록
+  # 3. 관리자 컨트롤러에서 after_action으로 중요 활동 로깅
+  # 예시 코드:
+  # class AdminLogger
+  #   def self.log(action, user_id, details = {})
+  #     log_file = Rails.root.join('log', 'admin_activity.log')
+  #     message = { timestamp: Time.current, action: action, user_id: user_id, details: details }
+  #     File.open(log_file, 'a') { |f| f.puts(message.to_json) }
+  #   end
+  # end
 
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
