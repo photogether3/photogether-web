@@ -9,6 +9,11 @@ Rails.application.routes.draw do
     resources :users
     resources :categories
     resources :posts
+    resources :logs, only: [ :index ] do
+      collection do
+        get :realtime
+      end
+    end
   end
 
   # API 제공

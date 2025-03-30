@@ -75,6 +75,17 @@
             <span>게시물 관리</span>
           <% end %>
         </li>
+
+        <li>
+          <%= link_to admin_logs_path, 
+              class: "flex items-center px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors
+                      #{current_page?(admin_logs_path) ? 'bg-secondary-40 text-white hover:bg-secondary-50 motion-preset-bounce' : 'text-gray-700'}" do %>
+            <%= heroicon("document-text", 
+                options: { class: "w-5 h-5 mr-3
+                          #{current_page?(admin_logs_path) ? 'text-white' : 'text-gray-500'}" }) %>
+            <span>로그 현황</span>
+          <% end %>
+        </li>
       </ul>
       
       <!-- 스페이서: 사이드바의 나머지 공간을 채워서 버튼을 하단에 배치 -->

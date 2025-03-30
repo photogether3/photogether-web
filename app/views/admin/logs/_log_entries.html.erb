@@ -1,0 +1,38 @@
+<% if log_entries.any? %>
+  <div class="space-y-4">
+    <% log_entries.each do |entry| %>
+      <% log_class = case entry[:level]
+          when "info" then "bg-blue-50 border-blue-200"
+          when "warning" then "bg-yellow-50 border-yellow-200"
+          when "error" then "bg-red-50 border-red-200"
+          when "debug" then "bg-gray-50 border-gray-200"
+          else "bg-blue-50 border-blue-200"
+        end
+      %>
+      <div class="p-3 border <%= log_class %> rounded">
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-2">
+            <% log_icon = case entry[:level]
+                when "info" then heroicon("information-circle", options: { class: "w-5 h-5 text-blue-500" })
+                when "warning" then heroicon("exclamation-triangle", options: { class: "w-5 h-5 text-yellow-500" })
+                when "error" then heroicon("x-circle", options: { class: "w-5 h-5 text-red-500" })
+                when "debug" then heroicon("bug-ant", options: { class: "w-5 h-5 text-gray-500" })
+                else heroicon("information-circle", options: { class: "w-5 h-5 text-blue-500" })
+              end
+            %>
+            <%= log_icon %>
+            <span class="font-medium text-gray-700">
+              <%= entry[:level]&.upcase || "INFO" %>
+            </span>
+          </div>
+          <span class="text-sm text-gray-500"><%= entry[:timestamp] %></span>
+        </div>
+        <pre class="overflow-x-auto text-gray-700 whitespace-pre-wrap"><%= entry[:message] %></pre>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="py-8 text-center text-gray-500">
+    로그 항목이 없습니다.
+  </div>
+<% end %>

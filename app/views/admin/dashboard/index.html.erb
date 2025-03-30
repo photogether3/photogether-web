@@ -4,8 +4,8 @@
 <div class="flex flex-col gap-6 motion-custom-fade-in-slide-up">
   <h1 class="text-3xl font-bold">관리자 대시보드</h1>
   
-  <!-- 요약 통계 카드 영역 -->
-  <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+  <!-- 요약 통계 카드 영역 (상단 4개 카드) -->
+  <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
     <!-- 사용자 통계 카드 -->
     <div class="flex flex-col p-6 bg-white border border-gray-300 shadow-sm rounded-xl">
       <div class="flex items-center justify-between mb-4">
@@ -50,7 +50,7 @@
           <% if top_categories.any? %>
             <% top_categories.each do |category| %>
               <div class="flex items-center justify-between">
-                <span class="text-sm font-medium"><%= category.name %></span>
+                <span class="text-sm font-medium truncate max-w-[140px]"><%= category.name %></span>
                 <span class="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full"><%= category.favorites.count rescue 0 %> 즐겨찾기</span>
               </div>
             <% end %>
@@ -92,8 +92,38 @@
         </div>
       </div>
       <div class="mt-6">
-        <%= link_to "#", class: "w-full px-4 py-2 text-sm text-center text-emerald-600 border border-emerald-200 rounded-lg hover:bg-emerald-50 transition" do %>
+        <%= link_to admin_posts_path, class: "w-full px-4 py-2 text-sm text-center text-emerald-600 border border-emerald-200 rounded-lg hover:bg-emerald-50 transition" do %>
           게시물 관리로 이동 <%= heroicon("arrow-right", options: { class: "inline-block w-4 h-4 ml-1" }) %>
+        <% end %>
+      </div>
+    </div>
+    
+    <!-- 로그 현황 카드 -->
+    <div class="flex flex-col p-6 bg-white border border-gray-300 shadow-sm rounded-xl">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold text-gray-700">로그 현황</h2>
+        <div class="p-2 rounded-full bg-purple-50">
+          <%= heroicon("document-text", options: { class: "w-6 h-6 text-purple-500" }) %>
+        </div>
+      </div>
+      <div class="flex flex-col gap-1">
+        <% 
+          log_file = Rails.root.join("log", "#{Rails.env}.log")
+          log_size = File.exist?(log_file) ? (File.size(log_file) / 1024.0 / 1024.0).round(2) : 0
+          log_updated = File.exist?(log_file) ? File.mtime(log_file).strftime("%Y.%m.%d %H:%M") : "-"
+        %>
+        <span class="text-3xl font-bold"><%= log_size %> MB</span>
+        <span class="text-sm text-gray-500">로그 파일 크기</span>
+      </div>
+      <div class="pt-4 mt-4 border-t border-gray-200">
+        <div class="flex items-center justify-between">
+          <span class="text-sm text-gray-500">최종 업데이트</span>
+          <span class="text-sm font-medium"><%= log_updated %></span>
+        </div>
+      </div>
+      <div class="mt-6">
+        <%= link_to admin_logs_path, class: "w-full px-4 py-2 text-sm text-center text-purple-600 border border-purple-200 rounded-lg hover:bg-purple-50 transition" do %>
+          로그 현황 확인 <%= heroicon("arrow-right", options: { class: "inline-block w-4 h-4 ml-1" }) %>
         <% end %>
       </div>
     </div>

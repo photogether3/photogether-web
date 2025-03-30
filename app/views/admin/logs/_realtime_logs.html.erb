@@ -1,0 +1,7 @@
+<% if log_content.present? %>
+  <pre class="text-green-400"><%= log_content %></pre>
+<% else %>
+  <div class="flex items-center justify-center h-full text-gray-500">
+    현재 로그 데이터가 없습니다.
+  </div>
+<% end %>
