@@ -12,15 +12,15 @@
 
   <%= f.email_field :email_address,
                     placeholder: "이메일",
-                    class: "border p-2 rounded-xl" %>
+                    class: "h-12 border border-gray-300 px-4 rounded-xl" %>
 
   <%= f.password_field :password,
                         placeholder: "비밀번호",
-                        class: "border p-2 rounded-xl" %>
+                        class: "h-12 border border-gray-300 px-4 rounded-xl" %>
 
   <%= f.text_field :nickname,
                     placeholder: "닉네임",
-                    class: "border p-2 rounded-xl" %>
+                    class: "h-12 border border-gray-300 px-4 rounded-xl" %>
 
-  <%= f.submit (@user.new_record? ? "생성" : "수정"), class: "p-2 bg-primary rounded-xl text-white cursor-pointer" %>
+  <%= f.submit (@user.new_record? ? "생성" : "수정"), class: "h-12 bg-primary rounded-xl text-white cursor-pointer" %>
 <% end %>

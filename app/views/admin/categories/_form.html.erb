@@ -1,7 +1,7 @@
 <%= form_with model: @category,
               url: @category.persisted? ? admin_category_path(@category) : admin_categories_path,
               local: true,
-              html: { id: "category_form", class: "flex flex-col gap-4" } do |f| %>
+              html: { id: "category_form", class: "flex flex-col gap-4 w-full" } do |f| %>
   <% if @category.errors.any? %>
     <div class="p-2 text-xs bg-red-50">
       <% @category.errors.full_messages.each do |msg| %>
@@ -12,7 +12,7 @@
 
   <%= f.text_field :name,
                     placeholder: "카테고리명",
-                    class: "border p-2 rounded-xl" %>
+                    class: "h-12 border border-gray-300 px-4 rounded-xl w-full" %>
 
-  <%= f.submit (@category.new_record? ? "생성" : "수정"), class: "p-2 bg-primary rounded-xl text-white" %>
+  <%= f.submit (@category.new_record? ? "생성" : "수정"), class: "h-12 bg-primary rounded-xl text-white cursor-pointer" %>
 <% end %>
