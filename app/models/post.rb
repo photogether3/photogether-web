@@ -70,5 +70,23 @@ class Post < ApplicationRecord
     end
   end
 
-  # 다른 인스턴스 메서드들은 변경 없음...
+  def to_detail
+    {
+      id: id,
+      title: title,
+      content: content,
+      collection_id: collection.id,
+      collection: {
+        id: collection.id,
+        title: collection.title
+      },
+      category: collection.category ? {
+        id: collection.category.id,
+        name: collection.category.name,
+        created_at: collection.category.created_at,
+        updated_at: collection.category.updated_at
+      } : nil,
+      metadata_list: post_metadata.map { |meta| { content: meta.content, is_public: meta.is_public, has_link: meta.has_link } }
+    }
+  end
 end
