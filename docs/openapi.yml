@@ -129,9 +129,60 @@ paths:
                 properties: {}
           headers: {}
       security: []
+  /v1/auth/otp/verify-and-login:
+    post:
+      summary: OTP 검증 후 로그인
+      deprecated: false
+      description: '이메일 OTP를 검증한 후 성공 시 인증 토큰을 발급합니다. 이메일 인증 완료 처리도 함께 이루어집니다.'
+      tags:
+        - 인증
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 이메일
+                otp:
+                  type: string
+                  description: OTP
+              required:
+                - email
+                - otp
+      responses:
+        '201':
+          description: '인증 토큰 발급 성공'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                  refreshToken:
+                    type: string
+                  expiresIn:
+                    type: integer
+                required:
+                  - accessToken
+                  - refreshToken
+                  - expiresIn
+              examples:
+                '1':
+                  summary: Success
+                  value:
+                    accessToken: >-
+                      eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3Mzk5MjcyNjIsImV4cCI6MTc0MDAxMzY2Miwic3ViIjoiMSJ9.BEPVfYov_kirPvbeKEHk90htMXawqw4Javp89Mr99rU
+                    refreshToken: f276fa99-9425-4c52-bc6f-c0c2b919f917
+                    expiresIn: 1740013662
+          headers: {}
+      security: []
   /v1/auth/otp/verify:
     post:
-      summary: OTP 검증, 토큰 발급
+      summary: OTP 검증
       deprecated: false
       description: ''
       tags:
@@ -174,10 +225,7 @@ paths:
                 '1':
                   summary: Success
                   value:
-                    accessToken: >-
-                      eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3Mzk5MjcyNjIsImV4cCI6MTc0MDAxMzY2Miwic3ViIjoiMSJ9.BEPVfYov_kirPvbeKEHk90htMXawqw4Javp89Mr99rU
-                    refreshToken: f276fa99-9425-4c52-bc6f-c0c2b919f917
-                    expiresIn: 1740013662
+                    message: 'ok'
           headers: {}
       security: []
   /v1/auth/refresh:

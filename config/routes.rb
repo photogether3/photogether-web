@@ -26,6 +26,7 @@ Rails.application.routes.draw do
       post "auth/register", to: "auth_api#register"
       post "auth/otp/generate", to: "auth_api#generate_otp"
       post "auth/otp/verify", to: "auth_api#verify_otp"
+      post "auth/otp/verify-and-login", to: "auth_api#verify_otp_with_generate_token"
       post "auth/refresh", to: "auth_api#refresh"
       delete "auth/logout", to: "auth_api#logout"
 

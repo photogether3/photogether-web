@@ -1,5 +1,7 @@
 class Api::V1::AuthApiController < Api::ApplicationApiController
   before_action :authenticate_user!, only: [ :logout ]
+  before_action :validate_otp_params, only: [ :verify_otp, :verify_otp_with_generate_token ]
+  before_action :find_and_verify_user_otp, only: [ :verify_otp, :verify_otp_with_generate_token ]
 
   def login
     email    = params[:email] ||= ""
@@ -49,21 +51,13 @@ class Api::V1::AuthApiController < Api::ApplicationApiController
   end
 
   def verify_otp
-    email = params[:email] ||= ""
-    otp   = params[:otp] ||= ""
+    render json: { message: "OTP 검증 성공" }, status: :ok
+  end
 
-    raise CustomError, "유효한 이메일을 입력해 주세요." unless email.match?(User::VALID_EMAIL_REGEX)
-    raise CustomError, "OTP는 6자리 숫자여야 합니다." unless otp.to_s.match?(User::VALID_OTP_REGEX)
+  def verify_otp_with_generate_token
+    @user.update!(otp: nil, otp_expiry_date: nil, is_email_verified: true)
 
-    user = User.find_by(email_address: email)
-    raise CustomError, "사용자를 찾을 수 없습니다." unless user
-
-    is_valid = user.verify_otp(otp)
-    raise CustomError, "OTP가 유효하지 않습니다." unless is_valid
-
-    user.update!(otp: nil, otp_expiry_date: nil, is_email_verified: true)
-
-    tokens = create_tokens_with_save_effect(user.id)
+    tokens = create_tokens_with_save_effect(@user.id)
     render json: tokens, status: :created
   end
 
@@ -93,14 +87,31 @@ class Api::V1::AuthApiController < Api::ApplicationApiController
   end
 
   private
+    # OTP 관련 파라미터 검증
+    def validate_otp_params
+      @email = params[:email] ||= ""
+      @otp = params[:otp] ||= ""
 
-  # - 사용자ID에 해당하는 토큰 리소스를 발급합니다.
-  # - 사용자 토큰에 리프레시 토큰 정보를 저장합니다.
-  # - 토큰 리소스를 반환합니다.
-  def create_tokens_with_save_effect(user_id)
-    tokens = JwtUtil.generate_tokens(user_id)
-    RefreshToken.create_or_update_usecase(user_id, tokens[:refresh_token])
+      raise CustomError, "유효한 이메일을 입력해 주세요." unless @email.match?(User::VALID_EMAIL_REGEX)
+      raise CustomError, "OTP는 6자리 숫자여야 합니다." unless @otp.to_s.match?(User::VALID_OTP_REGEX)
+    end
 
-    tokens
-  end
+    # 사용자 찾기 및 OTP 검증
+    def find_and_verify_user_otp
+      @user = User.find_by(email_address: @email)
+      raise CustomError, "사용자를 찾을 수 없습니다." unless @user
+
+      is_valid = @user.verify_otp(@otp)
+      raise CustomError, "OTP가 유효하지 않습니다." unless is_valid
+    end
+
+    # - 사용자ID에 해당하는 토큰 리소스를 발급합니다.
+    # - 사용자 토큰에 리프레시 토큰 정보를 저장합니다.
+    # - 토큰 리소스를 반환합니다.
+    def create_tokens_with_save_effect(user_id)
+      tokens = JwtUtil.generate_tokens(user_id)
+      RefreshToken.create_or_update_usecase(user_id, tokens[:refresh_token])
+
+      tokens
+    end
 end
