@@ -2,9 +2,11 @@ class Category < ApplicationRecord
   # 한글 및 영문만 허용하는 정규식 (최소 2글자, 최대 20글자)
   VALID_NAME_REGEX = /\A[가-힣a-zA-Z]{2,20}\z/
 
+  # 관계 설정
   has_many :favorites, dependent: :destroy
   has_many :favorite_users, through: :favorites, source: :user
 
+  # 유효성 검증
   validates :name, presence: { message: "카테고리 이름을 입력해주세요." }
   validates :name, format: {
     with: VALID_NAME_REGEX,
