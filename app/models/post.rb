@@ -1,11 +1,11 @@
 class Post < ApplicationRecord
+  # 관계 설정
   belongs_to :user
   belongs_to :collection
-
   has_one_attached :image
   has_many :post_metadata, dependent: :destroy
 
-  # 타이틀과 컨텐츠를 필수가 아니게 변경하고 최대 길이를 50자로 수정
+  # 유효성 검증
   validates :title, length: { maximum: 50 }, allow_blank: true
   validates :content, length: { maximum: 50 }, allow_blank: true
 
