@@ -118,13 +118,13 @@ class Api::V1::UserApiController < Api::ApplicationApiController
 
   private
 
-  # 사용자 데이터에 이미지 URL을 추가합니다
-  def user_with_image_url(user)
-    # 기본 사용자 정보 가져오기
-    user_data = user.as_json
+    # 사용자 데이터에 이미지 URL을 추가합니다
+    def user_with_image_url(user)
+      # 기본 사용자 정보 가져오기
+      user_data = user.as_json
 
-    # 이미지 URL 추가
-    image_url = user.image.attached? ? url_for(user.image) : nil
-    user_data.merge(image_url: image_url)
-  end
+      # 이미지 URL 추가
+      image_url = user.image.attached? ? url_for(user.image) : nil
+      user_data.merge(image_url: image_url)
+    end
 end
