@@ -18,11 +18,9 @@ class Api::V1::AuthApiController < Api::ApplicationApiController
   end
 
   def register
-    # 사용자 속성 준비
-    user_attributes = prepare_user_attributes
-
-    # 사용자 생성 (기본 컬렉션 포함)
-    User.create_with_default_collections(user_attributes)
+    Users::CreationStrategy.new(params)
+      .add_policies()
+      .create()
     render json: { message: "회원가입 성공" }, status: :created
   end
 

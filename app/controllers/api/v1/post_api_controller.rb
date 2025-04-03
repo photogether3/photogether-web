@@ -111,11 +111,11 @@ class Api::V1::PostApiController < Api::ApplicationApiController
         variants = post.image_variants
 
         post_data.merge!(
-          image_url: url_for(post.image),
+          image_url: url_for(post.image), # 원본 이미지 URL
           images: {
-            blur: variants[:blur] ? url_for(variants[:blur]) : nil,
-            grid: variants[:grid] ? url_for(variants[:grid]) : nil,
-            detail: variants[:detail] ? url_for(variants[:detail]) : nil
+            blur: variants[:blur] ? url_for(variants[:blur]) : nil, # 너비 30px 축소 이미지 URL
+            grid: variants[:grid] ? url_for(variants[:grid]) : nil, # 너비 300px 리스트 이미지 URL
+            detail: variants[:detail] ? url_for(variants[:detail]) : nil # 너비 700px 상세조회용 이미지 URL
           }
         )
       else

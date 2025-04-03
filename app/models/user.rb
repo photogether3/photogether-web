@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  include BaseActionable
+
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   # 비밀번호 정규식: 최소 8자, 최대 50자, 소문자, 숫자, 특수문자를 각각 하나 이상 포함
   VALID_PASSWORD_REGEX = /\A(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,50}\z/
@@ -6,7 +8,6 @@ class User < ApplicationRecord
   VALID_OTP_REGEX = /^\d{6}$/
 
   belongs_to :role
-
   has_secure_password validations: false
   has_one_attached :image
   has_one :refresh_token, dependent: :destroy
@@ -18,24 +19,6 @@ class User < ApplicationRecord
 
   validate :validate_email_address
   validate :validate_password
-
-  # USECASE: 사용자 생성과 기본 컬렉션 생성(Api, Admin 공통 사용)
-  def self.create_with_default_collections(user_attributes)
-    user = nil
-
-    ActiveRecord::Base.transaction do
-      # 사용자 생성
-      user = create!(user_attributes)
-
-      # 기본 컬렉션 생성
-      Collection.create_default_collections_for(user)
-    end
-
-    user
-  rescue ActiveRecord::RecordInvalid, StandardError => e
-    Rails.logger.error("사용자 생성 실패: #{e.message}")
-    raise e
-  end
 
   def validate_email_address
     if email_address.blank?

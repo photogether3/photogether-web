@@ -1,4 +1,6 @@
 class Collection < ApplicationRecord
+  include BaseActionable
+
   # 제목에 대한 정규식 정의 - 2~20글자
   VALID_TITLE_REGEX = /\A.{2,20}\z/
 
@@ -33,14 +35,6 @@ class Collection < ApplicationRecord
   scope :default_type, -> { where(type: "DEFAULT") }
   scope :uncategorized, -> { where(type: "UNCATEGORIZED") }
   scope :trash, -> { where(type: "TRASH") }
-
-  # 사용자를 위한 기본 컬렉션 생성
-  def self.create_default_collections_for(user)
-    user.collections.create!([
-      { category_id: nil, type: "UNCATEGORIZED", title: "미분류" },
-      { category_id: nil, type: "TRASH", title: "휴지통" }
-    ])
-  end
 
   # 미분류 컬렉션 찾거나 생성
   def self.find_or_create_uncategorized_for(user)
