@@ -1,4 +1,6 @@
 class Post < ApplicationRecord
+  include PostApiPresentable
+
   # 관계 설정
   belongs_to :user
   belongs_to :collection
@@ -30,7 +32,6 @@ class Post < ApplicationRecord
       post.image.attach(file) if file.present?
       post.save!
 
-      # 메타데이터 생성 책임을 PostMetadatum 모델로 위임
       PostMetadatum.create_from_array!(post, metadata_list)
 
       # 트랜잭션 내에서 비동기 작업 예약
@@ -62,36 +63,5 @@ class Post < ApplicationRecord
 
       self
     end
-  end
-
-  def to_detail
-    {
-      id: id,
-      title: title,
-      content: content,
-      collection_id: collection.id,
-      collection: {
-        id: collection.id,
-        title: collection.title
-      },
-      category: collection.category ? {
-        id: collection.category.id,
-        name: collection.category.name,
-        created_at: collection.category.created_at,
-        updated_at: collection.category.updated_at
-      } : nil,
-      metadata_list: post_metadata.map(&:to_hash)
-    }
-  end
-
-  # 이미지 변형만 반환하는 새 메서드 추가
-  def image_variants
-    return { blur: nil, grid: nil, detail: nil } unless image.attached?
-
-    {
-      blur: image.variant(:blur),
-      grid: image.variant(:grid),
-      detail: image.variant(:detail)
-    }
   end
 end
