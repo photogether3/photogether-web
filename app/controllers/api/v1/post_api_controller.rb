@@ -25,16 +25,17 @@ class Api::V1::PostApiController < Api::ApplicationApiController
       total_item_count: posts.total_count,
       total_page_count: posts.total_pages,
       current_page: posts.current_page,
-      items: posts.map { |post| post.to_detail.merge(
-        image_url: url_for(post.image)
-      ) }
+      items: posts.map do |post|
+        # 기본 데이터 가져오고 이미지 URL 추가
+        add_image_urls(post.to_detail, post)
+      end
     }, status: :ok
   end
 
   def show
-    render json: @post.to_detail.merge(
-      image_url: url_for(@post.image)
-    ), status: :ok
+    # 기본 데이터 가져오고 이미지 URL 추가
+    post_data = add_image_urls(@post.to_detail, @post)
+    render json: post_data, status: :ok
   end
 
   def create
@@ -42,13 +43,13 @@ class Api::V1::PostApiController < Api::ApplicationApiController
     metadata_list = JSON.parse(params[:metadataStringify] || "[]")
     raise CustomError, "파일은 필수값 입니다." if file.blank?
 
-    Post.create_usecase(@current_user.id, @collection.id, @title, @content, metadata_list, file)
+    Post.create_with_metadata(@current_user.id, @collection.id, @title, @content, metadata_list, file)
     render json: { message: "게시물이 생성되었습니다." }, status: :ok
   end
 
   def update
     metadata_list = params[:metadataList] || []
-    @post.update_usecase(@title, @content, metadata_list)
+    @post.update_with_metadata(@title, @content, metadata_list)
     render json: { message: "게시물이 수정되었습니다." }, status: :ok
   end
 
@@ -103,5 +104,28 @@ class Api::V1::PostApiController < Api::ApplicationApiController
   def pre_set_create_or_update_params
     @title         = params[:title]
     @content       = params[:content]
+  end
+
+  # 이미지 URL을 생성하는 헬퍼 메서드
+  def add_image_urls(post_data, post)
+    if post.image.attached?
+      variants = post.image_variants
+
+      post_data.merge!(
+        image_url: url_for(post.image),
+        images: {
+          blur: variants[:blur] ? url_for(variants[:blur]) : nil,
+          grid: variants[:grid] ? url_for(variants[:grid]) : nil,
+          detail: variants[:detail] ? url_for(variants[:detail]) : nil
+        }
+      )
+    else
+      post_data.merge!(
+        image_url: nil,
+        images: { blur: nil, grid: nil, detail: nil }
+      )
+    end
+
+    post_data
   end
 end

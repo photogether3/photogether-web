@@ -79,3 +79,7 @@ gem "heroicon", "~> 1.0"
 gem "rspec-rails", "~> 6.1.0"
 gem "factory_bot_rails"
 gem "faker"
+
+# 이미지 관련 처리
+gem "image_processing", "~> 1.12"
+gem "ruby-vips", "~> 2.1"

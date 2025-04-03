@@ -110,7 +110,7 @@ class Api::V1::AuthApiController < Api::ApplicationApiController
     # - 토큰 리소스를 반환합니다.
     def create_tokens_with_save_effect(user_id)
       tokens = JwtUtil.generate_tokens(user_id)
-      RefreshToken.create_or_update_usecase(user_id, tokens[:refresh_token])
+      RefreshToken.create_or_update(user_id, tokens[:refresh_token])
 
       tokens
     end
