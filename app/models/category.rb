@@ -1,6 +1,6 @@
 class Category < ApplicationRecord
-  # 한글 및 영문만 허용하는 정규식 (최소 2글자, 최대 20글자)
-  VALID_NAME_REGEX = /\A[가-힣a-zA-Z]{2,20}\z/
+  # 한글, 영문, 숫자, 특수문자 허용하는 정규식 (최소 2글자, 최대 20글자)
+  VALID_NAME_REGEX = /\A[\p{L}\p{N}\p{P}\p{S}\s]{2,20}\z/
 
   # 관계 설정
   has_many :favorites, dependent: :destroy
@@ -10,6 +10,6 @@ class Category < ApplicationRecord
   validates :name, presence: { message: "카테고리 이름을 입력해주세요." }
   validates :name, format: {
     with: VALID_NAME_REGEX,
-    message: "카테고리 이름은 2~20글자의 한글 또는 영문만 사용 가능합니다."
+    message: "카테고리 이름은 2~20글자의 문자, 숫자, 특수문자를 사용할 수 있습니다."
   }, allow_blank: true
 end
