@@ -1,92 +1,125 @@
 class Api::V1::CollectionApiController < Api::ApplicationApiController
+  include Api::PaginationRenderer
+
   before_action :authenticate_user!
-  before_action :get_category_or_fail, only: [ :create, :update ]
-  before_action :get_collection_or_fail, only: [ :show, :update, :destroy ]
 
   def index
-    # 기본값 설정
-    page       = params[:page] ||= 1
-    per_page   = params[:perPage] ||= 10
-    sort_order = params[:sortOrder] ||= "desc"
-    sort_by    = params[:sortBy] ||= "created_at"
+    pagination = pagination_params
 
-    # 사진첩 목록 조회
     collections = Collection
       .where(user_id: @current_user.id)
-      .order(sort_by => sort_order)
+      .order(pagination[:sort_by] => pagination[:sort_order])
       .includes(:category, posts: [ :image_attachment ])
       .with_posts_count
-      .page(page).per(per_page)
+      .page(pagination[:page]).per(pagination[:per_page])
 
-    # JSON 변환
-    render json: {
-      per_page: collections.limit_value,
-      total_item_count: collections.total_count,
-      total_page_count: collections.total_pages,
-      current_page: collections.current_page,
-      items: collections.map { |collection|
-        collection.to_detail.merge(
-          image_urls: collection.posts.order(id: :desc).limit(3).map { |post|
-            post.image.attached? ? url_for(post.image) : nil
-          }.compact
-        )
-      }
-    }, status: :ok
+    # 페이지네이션 데이터 구조 생성 후 직접 렌더링
+    response_data = paginated_response_for(collections) { |collection| collection_with_image_urls(collection) }
+    render json: response_data, status: :ok
   end
 
   def show
-    render json: @collection.to_detail.merge(
-      image_urls: @collection.posts.order(id: :desc).limit(3).map { |post|
-        post.image.attached? ? url_for(post.image) : nil
-      }.compact
-    ), status: :ok
+    collection = get_collection_or_fail
+    render json: collection_with_image_urls(collection), status: :ok
   end
 
   def create
+    category = get_category_or_fail
+
     Collection.create!(
       title: params[:title],
-      category_id: @category.id,
+      category_id: category.id,
       user_id: @current_user.id,
       type: "DEFAULT"
     )
-
     render json: { message: "사진첩이 생성되었어요." }, status: :ok
   end
 
   def update
-    raise CustomError, "수정할 수 없는 사진첩입니다." if @collection.type != "DEFAULT"
+    collection = get_collection_or_fail
+    category = get_category_or_fail
 
-    @collection.update!(
+    raise CustomError, "수정할 수 없는 사진첩입니다." if collection.type != "DEFAULT"
+
+    collection.update!(
       title: params[:title],
-      category_id: @category.id
+      category_id: category.id
     )
-
     render json: { message: "사진첩이 업데이트되었어요." }, status: :ok
   end
 
   def destroy
-    # 게시물을 가지고 있는 사진첩은 삭제 이전에
-    # 사용자의 휴지통 사진첩으로 게시물을 이동시키는 작업이 필요
-    @collection.destroy
+    collection = get_collection_or_fail
 
+    # 게시물 처리 로직 추가
+    handle_collection_posts_before_destroy(collection)
+
+    # 컬렉션 삭제
+    collection.destroy
     render json: { message: "사진첩이 삭제되었어요." }, status: :ok
   end
 
   private
 
-  # 카테고리를 조회하고 없으면 예외를 발생시킵니다.
-  def get_category_or_fail
-    @category = Category.find_by(id: params[:categoryId])
-    raise ActiveRecord::RecordNotFound, "카테고리를 찾을 수 없습니다." unless @category
-  end
+    # 카테고리를 조회하고 없으면 예외를 발생시킵니다.
+    def get_category_or_fail
+      category = Category.find_by(id: params[:categoryId])
+      raise ActiveRecord::RecordNotFound, "카테고리를 찾을 수 없습니다." unless category
+      category
+    end
 
-  # 사진첩을 조회하고 없으면 예외를 발생시킵니다.
-  def get_collection_or_fail
-    @collection = Collection
-      .where(id: params[:id], user_id: @current_user.id)
-      .includes(:category, posts: [ :image_attachment ])
-      .first
-    puts @collection.as_json
-    raise ActiveRecord::RecordNotFound, "사진첩을 찾을 수 없습니다." unless @collection
-  end
+    # 사진첩을 조회하고 없으면 예외를 발생시킵니다.
+    def get_collection_or_fail
+      collection = Collection
+        .where(id: params[:id], user_id: @current_user.id)
+        .includes(:category, posts: [ :image_attachment ])
+        .first
+      raise ActiveRecord::RecordNotFound, "사진첩을 찾을 수 없습니다." unless collection
+      collection
+    end
+
+    # 사진첩 삭제 전 게시물 처리
+    def handle_collection_posts_before_destroy(collection)
+      # 게시물이 없으면 처리 필요 없음
+      return unless collection.posts.exists?
+
+      # 휴지통 컬렉션 찾거나 생성
+      trash_collection = Collection.find_or_create_trash_for(@current_user)
+
+      # 게시물을 휴지통으로 이동
+      collection.posts.update_all(collection_id: trash_collection.id)
+    end
+
+    # 사진첩 데이터에 이미지 URL과 변형 URL 추가
+    def collection_with_image_urls(collection)
+      # 기본 컬렉션 정보 가져오기
+      collection_data = collection.to_detail
+
+      # 최근 이미지 3개 가져오기 (게시물 ID 내림차순)
+      # ActiveStorage 관계를 사용하여 이미지가 있는 게시물만 필터링
+      recent_posts_with_images = collection.posts
+        .joins("INNER JOIN active_storage_attachments ON active_storage_attachments.record_id = posts.id AND active_storage_attachments.record_type = 'Post' AND active_storage_attachments.name = 'image'")
+        .distinct
+        .order(id: :desc)
+        .limit(3)
+
+      # 각 이미지의 원본 및 변형 URL 생성
+      image_urls = recent_posts_with_images.map do |post|
+        # joins로 이미 필터링되었기 때문에 attached? 체크는 불필요하지만, 안전을 위해 유지
+        next unless post.image.attached?
+
+        variants = post.image_variants
+
+        {
+          id: post.id,
+          blur: variants[:blur] ? url_for(variants[:blur]) : nil,
+          grid: variants[:grid] ? url_for(variants[:grid]) : nil
+        }
+      end.compact
+
+      # 컬렉션 데이터와 이미지 정보 결합
+      collection_data.merge({
+        image_urls: image_urls
+      })
+    end
 end

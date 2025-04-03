@@ -19,7 +19,23 @@ class User < ApplicationRecord
   validate :validate_email_address
   validate :validate_password
 
-  # Domain Rules 🧀
+  # USECASE: 사용자 생성과 기본 컬렉션 생성(Api, Admin 공통 사용)
+  def self.create_with_default_collections(user_attributes)
+    user = nil
+
+    ActiveRecord::Base.transaction do
+      # 사용자 생성
+      user = create!(user_attributes)
+
+      # 기본 컬렉션 생성
+      Collection.create_default_collections_for(user)
+    end
+
+    user
+  rescue ActiveRecord::RecordInvalid, StandardError => e
+    Rails.logger.error("사용자 생성 실패: #{e.message}")
+    raise e
+  end
 
   def validate_email_address
     if email_address.blank?
@@ -56,28 +72,27 @@ class User < ApplicationRecord
     end
   end
 
-  # 사용자 생성과 기본 컬렉션 생성(Api, Admin 공통 사용)
-  def self.create_with_default_collections(user_attributes)
-    user = nil
+  # USECASE: 사용자 데이터 초기화
+  def reset_user_data!
+    transaction do
+      # OTP 초기화
+      update!(otp: nil, otp_expiry_date: nil)
 
-    ActiveRecord::Base.transaction do
-      # 사용자 생성
-      user = create!(user_attributes)
+      # 게시물 삭제
+      posts.destroy_all if posts.exists?
 
-      # 기본 컬렉션 생성
-      user.collections.create!([
-        { category_id: nil, type: "UNCATEGORIZED", title: "미분류" },
-        { category_id: nil, type: "TRASH", title: "휴지통" }
-      ])
+      # 즐겨찾기 삭제
+      favorites.destroy_all if favorites.exists?
+
+      # 즐겨찾기 카테고리 삭제
+      favorite_categories.destroy_all if favorite_categories.exists?
+
+      # 일반 사진첩 삭제
+      collections.where(type: "DEFAULT").destroy_all
     end
 
-    user
-  rescue ActiveRecord::RecordInvalid, StandardError => e
-    Rails.logger.error("사용자 생성 실패: #{e.message}")
-    raise e
+    true
   end
-
-  # Utils 🍪
 
   def as_json(options = {})
     super(only: [ :id, :nickname, :bio, :image_url, :created_at, :updated_at ]).tap do |hash|

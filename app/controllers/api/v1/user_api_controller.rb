@@ -13,7 +13,8 @@ class Api::V1::UserApiController < Api::ApplicationApiController
   end
 
   def show
-    render_user_json(@current_user)
+    user_data = user_with_image_url(@current_user)
+    render json: user_data, status: :ok
   end
 
   def update
@@ -41,7 +42,9 @@ class Api::V1::UserApiController < Api::ApplicationApiController
     end
 
     @current_user.save!
-    render_user_json(@current_user)
+
+    user_data = user_with_image_url(@current_user)
+    render json: user_data, status: :ok
   end
 
   def update_password_by_otp
@@ -66,7 +69,8 @@ class Api::V1::UserApiController < Api::ApplicationApiController
       otp_expiry_date: nil,
     )
 
-    render_user_json(user)
+    user_data = user_with_image_url(user)
+    render json: user_data, status: :ok
   end
 
   def update_password
@@ -81,9 +85,13 @@ class Api::V1::UserApiController < Api::ApplicationApiController
       raise CustomError, "기존의 비밀번호가 일치하지 않습니다."
     end
 
-    @current_user.update!(password: new_password, password_confirmation: new_password)
+    @current_user.update!(
+      password: new_password,
+      password_confirmation: new_password
+    )
 
-    render_user_json(@current_user)
+    user_data = user_with_image_url(@current_user)
+    render json: user_data, status: :ok
   end
 
   def reset_data
@@ -93,19 +101,7 @@ class Api::V1::UserApiController < Api::ApplicationApiController
     is_valid = @current_user.verify_otp(otp)
     raise CustomError, "OTP가 유효하지 않습니다." unless is_valid
 
-    ActiveRecord::Base.transaction do
-      u = @current_user
-      # OTP 초기화
-      u.update!(otp: nil, otp_expiry_date: nil)
-      # 게시물 삭제
-      u.posts.destroy_all if u.posts.exists?
-      # 즐겨찾기 삭제
-      u.favorites.destroy_all if u.favorites.exists?
-      # 즐겨찾기 카테고리 삭제
-      u.favorite_categories.destroy_all if u.favorite_categories.exists?
-      # 일반 사진첩 삭제
-      u.collections.where(type: "DEFAULT").destroy_all
-    end
+    @current_user.reset_user_data!
     render json: { message: "데이터가 초기화되었습니다." }, status: :ok
   end
 
@@ -122,9 +118,13 @@ class Api::V1::UserApiController < Api::ApplicationApiController
 
   private
 
-  # 사용자 정보를 JSON으로 렌더링합니다.
-  def render_user_json(user)
+  # 사용자 데이터에 이미지 URL을 추가합니다
+  def user_with_image_url(user)
+    # 기본 사용자 정보 가져오기
+    user_data = user.as_json
+
+    # 이미지 URL 추가
     image_url = user.image.attached? ? url_for(user.image) : nil
-    render json: user.as_json.merge(image_url: image_url), status: :ok
+    user_data.merge(image_url: image_url)
   end
 end

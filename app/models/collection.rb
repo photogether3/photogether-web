@@ -34,6 +34,44 @@ class Collection < ApplicationRecord
   scope :uncategorized, -> { where(type: "UNCATEGORIZED") }
   scope :trash, -> { where(type: "TRASH") }
 
+  # 사용자를 위한 기본 컬렉션 생성
+  def self.create_default_collections_for(user)
+    user.collections.create!([
+      { category_id: nil, type: "UNCATEGORIZED", title: "미분류" },
+      { category_id: nil, type: "TRASH", title: "휴지통" }
+    ])
+  end
+
+  # 미분류 컬렉션 찾거나 생성
+  def self.find_or_create_uncategorized_for(user)
+    uncategorized = user.collections.find_by(type: "UNCATEGORIZED")
+
+    unless uncategorized
+      uncategorized = user.collections.create!(
+        category_id: nil,
+        type: "UNCATEGORIZED",
+        title: "미분류"
+      )
+    end
+
+    uncategorized
+  end
+
+  # 휴지통 컬렉션 찾거나 생성
+  def self.find_or_create_trash_for(user)
+    trash = user.collections.find_by(type: "TRASH")
+
+    unless trash
+      trash = user.collections.create!(
+        category_id: nil,
+        type: "TRASH",
+        title: "휴지통"
+      )
+    end
+
+    trash
+  end
+
   def to_detail
     {
       id: id,
