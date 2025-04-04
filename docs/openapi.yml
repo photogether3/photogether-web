@@ -6,6 +6,8 @@ info:
 servers:
   - url: http://localhost:8000/api
     description: Development server
+  - url: http://localhost:8001/api
+    description: Test server
   - url: https://photogether.store/api
     description: Production server
 tags:
