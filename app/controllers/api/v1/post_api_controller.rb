@@ -1,107 +1,130 @@
 class Api::V1::PostApiController < Api::ApplicationApiController
+  include Api::PaginationRenderer
   before_action :authenticate_user!
-  before_action :pre_set_create_or_update_params, only: [ :create, :update ]
-  before_action :get_collection_or_fail, only: [ :index, :create, :change_collection ]
-  before_action :get_post_or_fail, only: [ :show, :update ]
-  before_action :get_post_group, only: [ :change_collection, :destroys ]
 
   def index
-    # 기본값 설정
-    page       = params[:page] ||= 1
-    per_page   = params[:perPage] ||= 10
-    sort_order = params[:sortOrder] ||= "desc"
-    sort_by    = params[:sortBy] ||= "created_at"
+    collection = get_collection_or_fail
+    pagination = pagination_params
 
-    # 게시물 조회
     posts = Post
-      .where(user_id: @current_user.id, collection_id: @collection.id)
-      .order(sort_by => sort_order)
+      .where(user_id: @current_user.id, collection_id: collection.id)
+      .order(pagination[:sort_by] => pagination[:sort_order])
       .includes(:collection, :post_metadata)
-      .page(page).per(per_page)
+      .page(pagination[:page]).per(pagination[:per_page])
 
-    # JSON 변환
-    render json: {
-      per_page: posts.limit_value,
-      total_item_count: posts.total_count,
-      total_page_count: posts.total_pages,
-      current_page: posts.current_page,
-      items: posts.map { |post| post.to_detail.merge(
-        image_url: url_for(post.image)
-      ) }
-    }, status: :ok
+    response_data = paginated_response_for(posts) do |post|
+      post_with_image_urls(post)
+    end
+
+    render json: response_data, status: :ok
   end
 
   def show
-    render json: @post.to_detail.merge(
-      image_url: url_for(@post.image)
-    ), status: :ok
+    post = get_post_or_fail
+    render json: post_with_image_urls(post), status: :ok
   end
 
   def create
-    file          = params[:file]
-    metadata_list = JSON.parse(params[:metadataStringify] || "[]")
+    title, content = get_title_and_content
+    collection = get_collection_or_fail
+
+    file = params[:file]
     raise CustomError, "파일은 필수값 입니다." if file.blank?
 
-    Post.create_usecase(@current_user.id, @collection.id, @title, @content, metadata_list, file)
+    metadata_list = parse_metadata_string
+
+    Post.create_with_metadata(@current_user.id, collection.id, title, content, metadata_list, file)
     render json: { message: "게시물이 생성되었습니다." }, status: :ok
   end
 
   def update
+    title, content = get_title_and_content
+    post = get_post_or_fail
+
     metadata_list = params[:metadataList] || []
-    @post.update_usecase(@title, @content, metadata_list)
+    post.update_with_metadata(title, content, metadata_list)
     render json: { message: "게시물이 수정되었습니다." }, status: :ok
   end
 
   def change_collection
-    @posts.update_all(collection_id: @collection.id)
+    collection = get_collection_or_fail
+    posts = get_post_group
+
+    posts.update_all(collection_id: collection.id)
     render json: { message: "게시물이 이동되었습니다." }, status: :ok
   end
 
   def destroys
-    # 현재 사용자의 휴지통 컬렉션 찾기
-    trash_collection = Collection.find_by(user_id: @current_user.id, type: "TRASH")
+    posts = get_post_group
+    trash_collection = Collection.find_or_create_trash_for(@current_user)
 
-    if trash_collection.nil?
-      # 휴지통이 없으면 생성
-      trash_collection = Collection.create!(
-        user_id: @current_user.id,
-        type: "TRASH",
-        title: "휴지통",
-        category_id: nil
-      )
-    end
-
-    # 게시물의 컬렉션 ID를 휴지통 컬렉션 ID로 변경
-    @posts.update_all(collection_id: trash_collection.id)
-
+    posts.update_all(collection_id: trash_collection.id)
     render json: { message: "게시물이 휴지통으로 이동되었습니다." }, status: :ok
   end
 
   private
 
-  # 사진첩을 조회하고 없으면 예외를 발생시킵니다.
-  def get_collection_or_fail
-    @collection = Collection.find_by(id: params[:collectionId], user_id: @current_user.id)
-    raise ActiveRecord::RecordNotFound, "사진첩을 찾을 수 없습니다." unless @collection
-  end
+    # 제목과 내용을 파라미터에서 가져옵니다.
+    def get_title_and_content
+      [ params[:title], params[:content] ]
+    end
 
-  # 게시물을 조회하고 없으면 예외를 발생시킵니다.
-  def get_post_or_fail
-    @post = Post.find_by(id: params[:id], user_id: @current_user.id)
-    puts @post.as_json
-    raise ActiveRecord::RecordNotFound, "게시물을 찾을 수 없습니다." unless @post
-  end
+    # 사진첩을 조회하고 없으면 예외를 발생시킵니다.
+    def get_collection_or_fail
+      collection = Collection.find_by(id: params[:collectionId], user_id: @current_user.id)
+      raise ActiveRecord::RecordNotFound, "사진첩을 찾을 수 없습니다." unless collection
+      collection
+    end
 
-  # 게시물 그룹을 조회합니다.
-  def get_post_group
-    post_ids = params[:postIds] || []
-    @posts = Post.where(id: post_ids) || []
-    raise ActiveRecord::RecordNotFound, "게시물 그룹을 찾을 수 없습니다." if @posts.empty?
-  end
+    # 게시물을 조회하고 없으면 예외를 발생시킵니다.
+    def get_post_or_fail
+      post = Post.find_by(id: params[:id], user_id: @current_user.id)
+      raise ActiveRecord::RecordNotFound, "게시물을 찾을 수 없습니다." unless post
+      post
+    end
 
-  # 게시물 생성 또는 수정 시 필요한 파라미터를 미리 설정합니다.
-  def pre_set_create_or_update_params
-    @title         = params[:title]
-    @content       = params[:content]
-  end
+    # 게시물 그룹을 조회하고 없으면 예외를 발생시킵니다.
+    def get_post_group
+      post_ids = params[:postIds] || []
+      posts = Post.where(id: post_ids)
+      raise ActiveRecord::RecordNotFound, "게시물 그룹을 찾을 수 없습니다." if posts.empty?
+      posts
+    end
+
+    # 메타데이터 문자열을 파싱합니다.
+    def parse_metadata_string
+      begin
+        JSON.parse(params[:metadataStringify] || "[]")
+      rescue JSON::ParserError => e
+        Rails.logger.error("메타데이터 파싱 오류: #{e.message}")
+        raise CustomError, "메타데이터 형식이 올바르지 않습니다."
+      end
+    end
+
+    # 이미지 URL을 생성하는 헬퍼 메서드
+    def post_with_image_urls(post)
+      # 기본 데이터 가져오기
+      post_data = post.to_detail
+
+      # 이미지 URL 추가
+      if post.image.attached?
+        variants = post.image_variants
+
+        post_data.merge!(
+          image_url: url_for(post.image), # 원본 이미지 URL
+          images: {
+            blur: variants[:blur] ? url_for(variants[:blur]) : nil, # 너비 30px 축소 이미지 URL
+            grid: variants[:grid] ? url_for(variants[:grid]) : nil, # 너비 300px 리스트 이미지 URL
+            detail: variants[:detail] ? url_for(variants[:detail]) : nil # 너비 700px 상세조회용 이미지 URL
+          }
+        )
+      else
+        post_data.merge!(
+          image_url: nil,
+          images: { blur: nil, grid: nil, detail: nil }
+        )
+      end
+
+      post_data
+    end
 end
