@@ -945,7 +945,23 @@ paths:
                         imageUrls:
                           type: array
                           items:
-                            type: string
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                                description: 이미지 ID
+                              blur:
+                                type: string
+                                format: uri
+                                description: 흐릿한(썸네일) 이미지 URL
+                              grid:
+                                type: string
+                                format: uri
+                                description: 그리드용 이미지 URL
+                            required:
+                              - id
+                              - blur
+                              - grid
                         createdAt:
                           type: string
                         updatedAt:
@@ -997,11 +1013,13 @@ paths:
                         type: TRASH
                         category: null
                         postCount: 3
-                        imageUrls:
-                          - >-
-                            https://storage.googleapis.com/photogether-d3c95.firebasestorage.app/2025%2F02%2F20%2Fcq4nfir4xiearvuymgm8mpr2.jpg
-                          - >-
-                            https://storage.googleapis.com/photogether-d3c95.firebasestorage.app/2025%2F02%2F19%2Fzfvsfisti8xx3yehjek7q018.jpg
+                        imageUrls: [
+                          {
+                            "id": 12,
+                            "blur": "http://localhost:8000/rails/active_storage/representations/redirect/...",
+                            "grid": "http://localhost:8000/rails/active_storage/representations/redirect/..."
+                          },
+                        ]
                         createdAt: '2025-02-19T04:48:46.825+00:00'
                         updatedAt: '2025-02-19T04:48:46.825+00:00'
                       - id: 1
@@ -1104,7 +1122,23 @@ paths:
                   imageUrls:
                     type: array
                     items:
-                      type: string
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: 이미지 ID
+                        blur:
+                          type: string
+                          format: uri
+                          description: 흐릿한(썸네일) 이미지 URL
+                        grid:
+                          type: string
+                          format: uri
+                          description: 그리드용 이미지 URL
+                      required:
+                        - id
+                        - blur
+                        - grid
                   createdAt:
                     type: string
                   updatedAt:
@@ -1135,7 +1169,13 @@ paths:
                       id: 1001
                       name: 기술
                     postCount: null
-                    imageUrls: []
+                    imageUrls: [
+                      {
+                        "id": 12,
+                        "blur": "http://localhost:8000/rails/active_storage/representations/redirect/...",
+                        "grid": "http://localhost:8000/rails/active_storage/representations/redirect/...",
+                      },
+                    ]
                     createdAt: '2025-02-19T06:06:06.043+00:00'
                     updatedAt: '2025-02-19T06:10:45.535+00:00'
           headers: {}
@@ -1284,7 +1324,27 @@ paths:
                         content:
                           type: string
                         imageUrl:
-                          type: 'null'
+                          type: string
+                        images:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: integer
+                                description: 이미지 ID
+                              blur:
+                                type: string
+                                format: uri
+                                description: 흐릿한(썸네일) 이미지 URL
+                              grid:
+                                type: string
+                                format: uri
+                                description: 그리드용 이미지 URL
+                              detail:
+                                type: string
+                                format: uri
+                                description: 디테일 이미지 URL
                         collectionId:
                           type: integer
                         collection:
@@ -1343,7 +1403,16 @@ paths:
                       - id: 1
                         title: 제목입니다
                         content: sodyddlqslek
-                        imageUrl: null
+                        imageUrl: >-
+                          https://storage.googleapis.com/photogether-d3c95.firebasestorage.app/2025%2F02%2F20%2Fcq4nfir4xiearvuymgm8mpr2.jpg
+                        images: [
+                          {
+                            "id": 12,
+                            "blur": "http://localhost:8000/rails/active_storage/representations/redirect/...",
+                            "grid": "http://localhost:8000/rails/active_storage/representations/redirect/...",
+                            "detail": "http://localhost:8000/rails/active_storage/representations/redirect/..."
+                          },
+                        ]
                         collectionId: 3
                         collection:
                           id: 3
@@ -1528,6 +1597,26 @@ paths:
                     type: string
                   imageUrl:
                     type: string
+                  images:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: 이미지 ID
+                        blur:
+                          type: string
+                          format: uri
+                          description: 흐릿한(썸네일) 이미지 URL
+                        grid:
+                          type: string
+                          format: uri
+                          description: 그리드용 이미지 URL
+                        detail:
+                          type: string
+                          format: uri
+                          description: 디테일 이미지 URL
                   collectionId:
                     type: integer
                   collection:
@@ -1572,6 +1661,14 @@ paths:
                     content: Sunt catena comminor
                     imageUrl: >-
                       https://storage.googleapis.com/photogether-d3c95.firebasestorage.app/2025%2F02%2F20%2Fcq4nfir4xiearvuymgm8mpr2.jpg
+                    images: [
+                      {
+                        "id": 12,
+                        "blur": "http://localhost:8000/rails/active_storage/representations/redirect/...",
+                        "grid": "http://localhost:8000/rails/active_storage/representations/redirect/...",
+                        "detail": "http://localhost:8000/rails/active_storage/representations/redirect/..."
+                      },
+                    ]
                     collectionId: 2
                     collection:
                       id: 2
