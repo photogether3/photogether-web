@@ -4,7 +4,7 @@ class RefreshToken < ApplicationRecord
   validates :user_id, presence: true, uniqueness: true
   validates :refresh_token, presence: true, uniqueness: true
 
-  def self.create_or_update_usecase(user_id, refresh_token)
+  def self.create_or_update(user_id, refresh_token)
     token_model = self.find_by(user_id: user_id)
 
     if !token_model
