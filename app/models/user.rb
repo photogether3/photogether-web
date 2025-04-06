@@ -1,12 +1,10 @@
 class User < ApplicationRecord
-  VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
-  # 비밀번호 정규식: 최소 8자, 최대 50자, 소문자, 숫자, 특수문자를 각각 하나 이상 포함
-  VALID_PASSWORD_REGEX = /\A(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,50}\z/
-  # OTP 정규식: 6자리 숫자
-  VALID_OTP_REGEX = /^\d{6}$/
+  include ValidationPatterns
 
+  # ------------------------------------------------------
+  # 관계 설정
+  # ------------------------------------------------------
   belongs_to :role
-
   has_secure_password validations: false
   has_one_attached :image
   has_one :refresh_token, dependent: :destroy
@@ -16,81 +14,108 @@ class User < ApplicationRecord
   has_many :favorite_categories, through: :favorites, source: :category
   has_many :posts, dependent: :destroy
 
-  validate :validate_email_address
-  validate :validate_password
+  # ------------------------------------------------------
+  # 유효성 검사 (이메일, 비밀번호, 닉네임)
+  # ------------------------------------------------------
+  validates :email_address,
+            presence: { message: "이메일 주소를 입력해주세요." },
+            uniqueness: { message: "이미 사용 중인 이메일 주소입니다." },
+            length: { in: 6..50, message: "이메일 주소는 6자 이상 50자 이하여야 합니다." },
+            format: { with: EMAIL_REGEX, message: "유효한 이메일 형식이 아닙니다." }
+  validates :password,
+            presence: { message: "비밀번호를 입력해주세요.", if: :password_required? },
+            format: {
+              with: PASSWORD_REGEX,
+              message: "비밀번호는 8-50자 사이이며, 소문자, 숫자, 특수문자를 각각 하나 이상 포함해야 합니다.",
+              if: -> { password.present? }
+            }
+  validates :nickname,
+            format: {
+              with: NICKNAME_REGEX,
+              message: "닉네임은 2~20자 사이의 영문, 숫자, 한글만 허용됩니다.",
+              allow_blank: true
+            }
 
-  # Domain Rules 🧀
-
-  def validate_email_address
-    if email_address.blank?
-      errors.add(:base, "이메일 주소를 입력해주세요.")
-      return
-    end
-
-    if User.where.not(id: id).exists?(email_address: email_address)
-      errors.add(:base, "이미 사용 중인 이메일 주소입니다.")
-      return
-    end
-
-    # in 범위를 사용하여 길이 검사
-    unless (6..50).include?(email_address.length)
-      errors.add(:base, "이메일 주소는 6자 이상 50자 이하여야 합니다.")
-      return
-    end
-
-    unless email_address.match?(VALID_EMAIL_REGEX)
-      errors.add(:base, "유효한 이메일 형식이 아닙니다.")
-    end
-  end
-
-  def validate_password
-    if password.blank? && new_record?
-      errors.add(:base, "비밀번호를 입력해주세요.")
-      return
-    end
-
-    if password.present?
-      unless password.match?(VALID_PASSWORD_REGEX)
-        errors.add(:base, "비밀번호는 8-50자 사이이며, 소문자, 숫자, 특수문자를 각각 하나 이상 포함해야 합니다.")
-      end
-    end
-  end
-
-  # 사용자 생성과 기본 컬렉션 생성(Api, Admin 공통 사용)
-  def self.create_with_default_collections(user_attributes)
-    user = nil
-
+  # ------------------------------------------------------
+  # 회원가입
+  # ------------------------------------------------------
+  def self.register(params)
     ActiveRecord::Base.transaction do
-      # 사용자 생성
-      user = create!(user_attributes)
-
-      # 기본 컬렉션 생성
+      user = self.create!(
+        email_address: email_address,
+        password: password,
+        password_confirmation: password_confirmation,
+        role_id: 1,
+        nickname: BaseUtil.generate_random_nickname,
+      )
       user.collections.create!([
         { category_id: nil, type: "UNCATEGORIZED", title: "미분류" },
         { category_id: nil, type: "TRASH", title: "휴지통" }
       ])
     end
-
-    user
   rescue ActiveRecord::RecordInvalid, StandardError => e
     Rails.logger.error("사용자 생성 실패: #{e.message}")
     raise e
   end
 
-  # Utils 🍪
+  # ------------------------------------------------------
+  # OTP 검증
+  # ------------------------------------------------------
+  def self.verify_otp(params)
+    email = params[:email] ||= ""
+    otp = params[:otp] ||= ""
 
-  def as_json(options = {})
-    super(only: [ :id, :nickname, :bio, :image_url, :created_at, :updated_at ]).tap do |hash|
-      # 원하는 필드명으로 재정의
-      hash["email"] = self.email_address
-    end
+    raise CustomError, "유효한 이메일을 입력해 주세요." unless email.match?(User::VALID_EMAIL_REGEX)
+    raise CustomError, "OTP는 6자리 숫자여야 합니다." unless otp.to_s.match?(User::VALID_OTP_REGEX)
+
+    user = self.find_by(email_address: email)
+    raise CustomError, "사용자를 찾을 수 없습니다." unless user
+
+    is_valid = user.verify_otp(otp)
+    raise CustomError, "OTP가 유효하지 않습니다." unless is_valid
   end
 
-  # OTP가 유효한지 확인합니다.
+  # ------------------------------------------------------
+  # OTP 유효성 검증
+  # ------------------------------------------------------
   def verify_otp(otp)
     puts "OTP_EXPIRY_DATE: #{self.otp_expiry_date}"
     puts "OTP: #{self.otp}"
     is_valid = self.otp == otp && self.otp_expiry_date > Time.now
     is_valid
+  end
+
+  # ------------------------------------------------------
+  # OTP 새로 발급: 6자리 OTP 생성 및 만료일 5분 후로 설정
+  # ------------------------------------------------------
+  def update_otp
+    self.update!(
+      otp: BaseUtil.generate_otp,
+      otp_expiry_date: 5.minutes.from_now
+    )
+  end
+
+  # ------------------------------------------------------
+  # OTP 초기화: OTP와 만료일을 nil로 설정하고 추가 업데이트 허용
+  # ------------------------------------------------------
+  def reset_otp
+    User.transaction do
+      self.otp = nil
+      self.otp_expiry_date = nil
+
+      yield(self) if block_given?
+
+      self.save!
+    end
+  end
+
+  # ------------------------------------------------------
+  # JSON 형식 반환
+  # ------------------------------------------------------
+  def as_json(options = {})
+    super(only: [ :id, :nickname, :bio, :image_url, :created_at, :updated_at ]).tap do |hash|
+      # 원하는 필드명으로 재정의
+      hash["email"] = self.email_address
+    end
   end
 end

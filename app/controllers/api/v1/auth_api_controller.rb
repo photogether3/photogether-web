@@ -7,30 +7,18 @@ class Api::V1::AuthApiController < Api::ApplicationApiController
   end
 
   def register
-    user_attributes = {
-      email_address: params[:email],
-      password: params[:password],
-      password_confirmation: params[:password],
-      role_id: 1,
-      nickname: BaseUtil.generate_random_nickname
-    }
-
-    User.create_with_default_collections(user_attributes)
+    User.register(params)
     render json: { message: "회원가입 성공" }, status: :created
   end
 
   def generate_otp
     email = params[:email] ||= ""
-
-    raise CustomError, "유효한 이메일을 입력해 주세요." unless email.match?(User::VALID_EMAIL_REGEX)
-
-    user = User.find_by(email_address: email)
+    raise CustomError, "유효한 이메일을 입력해 주세요." unless email.match?(EMAIL_REGEX)
+    user = self.find_by(email_address: email)
     raise CustomError, "사용자를 찾을 수 없습니다." unless user
 
-    user.update!(otp: BaseUtil.generate_otp, otp_expiry_date: 5.minutes.from_now)
-
+    user.update_otp
     UserMailer.send_otp_email(user).deliver_now
-
     render json: { message: "OTP 발급 성공" }, status: :created
   end
 
@@ -39,21 +27,20 @@ class Api::V1::AuthApiController < Api::ApplicationApiController
     email = params[:email] ||= ""
     otp = params[:otp] ||= ""
 
-    validate_otp_params(email, otp)
-    user = find_and_verify_user_otp(email, otp)
+    self.validate_otp_params(email, otp)
+    find_and_verify_user_otp(email, otp)
 
     render json: { message: "OTP 검증 성공" }, status: :ok
   end
 
   def verify_otp_with_generate_token
-    # 직접 메서드 호출
     email = params[:email] ||= ""
-    otp = params[:otp] ||= ""
+    otp   = params[:otp] ||= ""
 
     validate_otp_params(email, otp)
     user = find_and_verify_user_otp(email, otp)
 
-    user.update!(otp: nil, otp_expiry_date: nil, is_email_verified: true)
+    user.reset_otp { |u| u.is_email_verified = true }
 
     tokens = create_tokens_with_save_effect(user.id)
     render json: tokens, status: :created
@@ -91,7 +78,9 @@ class Api::V1::AuthApiController < Api::ApplicationApiController
       raise CustomError, "OTP는 6자리 숫자여야 합니다." unless otp.to_s.match?(User::VALID_OTP_REGEX)
     end
 
-    # 사용자 찾기 및 OTP 검증
+    # -------------------------------------------------------
+    # 이메일로 사용자 조회 및 OTP 검증
+    # -------------------------------------------------------
     def find_and_verify_user_otp(email, otp)
       user = User.find_by(email_address: email)
       raise CustomError, "사용자를 찾을 수 없습니다." unless user
