@@ -20,10 +20,12 @@ class User < ApplicationRecord
   validates :email_address,
             presence: { message: "이메일 주소를 입력해주세요." },
             uniqueness: { message: "이미 사용 중인 이메일 주소입니다." },
-            length: { in: 6..50, message: "이메일 주소는 6자 이상 50자 이하여야 합니다." },
             format: { with: EMAIL_REGEX, message: "유효한 이메일 형식이 아닙니다." }
   validates :password,
-            presence: { message: "비밀번호를 입력해주세요.", if: :password_required? },
+            presence: {
+              message: "비밀번호를 입력해주세요.",
+              if: -> { new_record? }
+            },
             format: {
               with: PASSWORD_REGEX,
               message: "비밀번호는 8-50자 사이이며, 소문자, 숫자, 특수문자를 각각 하나 이상 포함해야 합니다.",
@@ -40,11 +42,11 @@ class User < ApplicationRecord
   # 회원가입
   # ------------------------------------------------------
   def self.register(params)
-    ActiveRecord::Base.transaction do
+    transaction do
       user = self.create!(
-        email_address: email_address,
-        password: password,
-        password_confirmation: password_confirmation,
+        email_address: params[:email],
+        password: params[:password],
+        password_confirmation: params[:password],
         role_id: 1,
         nickname: BaseUtil.generate_random_nickname,
       )
@@ -52,10 +54,11 @@ class User < ApplicationRecord
         { category_id: nil, type: "UNCATEGORIZED", title: "미분류" },
         { category_id: nil, type: "TRASH", title: "휴지통" }
       ])
+
+      puts "회원가입 성공: #{user.inspect}"
+
+      user
     end
-  rescue ActiveRecord::RecordInvalid, StandardError => e
-    Rails.logger.error("사용자 생성 실패: #{e.message}")
-    raise e
   end
 
   # ------------------------------------------------------

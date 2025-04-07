@@ -2,7 +2,21 @@ class Api::V1::AuthApiController < Api::ApplicationApiController
   before_action :authenticate_user!, only: [ :logout ]
 
   def login
-    tokens = Auth::Login.call(params)
+    email    = params[:email] ||= ""
+    password = params[:password] ||= ""
+
+    raise CustomError, "유효한 이메일을 입력해 주세요." unless email.match?(User::EMAIL_REGEX)
+    raise ArgumentError, "비밀번호를 입력해 주세요." if password.blank?
+
+    user = User.find_by(email_address: email)
+
+    err_msg = "아이디 또는 비밀번호를 찾을 수 없습니다."
+    raise CustomError, err_msg unless user
+    raise CustomError, err_msg if !user.authenticate(password)
+    raise CustomError, "이메일 인증을 완료해주세요." unless user.is_email_verified
+
+    tokens = JwtUtil.generate_tokens(user.id)
+    RefreshToken.create_or_update(user.id, tokens[:refresh_token])
     render json: tokens, status: :ok
   end
 
@@ -13,21 +27,20 @@ class Api::V1::AuthApiController < Api::ApplicationApiController
 
   def generate_otp
     email = params[:email] ||= ""
-    raise CustomError, "유효한 이메일을 입력해 주세요." unless email.match?(EMAIL_REGEX)
-    user = self.find_by(email_address: email)
+    raise CustomError, "유효한 이메일을 입력해 주세요." unless email.match?(User::EMAIL_REGEX)
+    user = User.find_by(email_address: email)
     raise CustomError, "사용자를 찾을 수 없습니다." unless user
 
     user.update_otp
     UserMailer.send_otp_email(user).deliver_now
-    render json: { message: "OTP 발급 성공" }, status: :created
+    render json: { message: "OTP 발급 성공" }, status: :ok
   end
 
   def verify_otp
-    # 직접 메서드 호출
     email = params[:email] ||= ""
-    otp = params[:otp] ||= ""
+    otp   = params[:otp] ||= ""
 
-    self.validate_otp_params(email, otp)
+    validate_otp_params(email, otp)
     find_and_verify_user_otp(email, otp)
 
     render json: { message: "OTP 검증 성공" }, status: :ok
@@ -42,8 +55,9 @@ class Api::V1::AuthApiController < Api::ApplicationApiController
 
     user.reset_otp { |u| u.is_email_verified = true }
 
-    tokens = create_tokens_with_save_effect(user.id)
-    render json: tokens, status: :created
+    tokens = JwtUtil.generate_tokens(user.id)
+    RefreshToken.create_or_update(user.id, tokens[:refresh_token])
+    render json: tokens, status: :ok
   end
 
   def refresh
@@ -51,7 +65,6 @@ class Api::V1::AuthApiController < Api::ApplicationApiController
     raise CustomError, "리프레시 토큰이 없습니다." if refresh_token.blank?
 
     refresh_token_model = RefreshToken.find_by(refresh_token: refresh_token)
-
     err_msg = "리프레시 토큰이 유효하지 않습니다."
     raise CustomError, err_msg unless refresh_token_model
 
@@ -60,8 +73,8 @@ class Api::V1::AuthApiController < Api::ApplicationApiController
     end
 
     user = refresh_token_model.user
-    tokens = create_tokens_with_save_effect(user.id)
-
+    tokens = JwtUtil.generate_tokens(user.id)
+    RefreshToken.create_or_update(user.id, tokens[:refresh_token])
     render json: tokens, status: :ok
   end
 
@@ -74,8 +87,8 @@ class Api::V1::AuthApiController < Api::ApplicationApiController
   private
     # OTP 관련 파라미터 검증
     def validate_otp_params(email, otp)
-      raise CustomError, "유효한 이메일을 입력해 주세요." unless email.match?(User::VALID_EMAIL_REGEX)
-      raise CustomError, "OTP는 6자리 숫자여야 합니다." unless otp.to_s.match?(User::VALID_OTP_REGEX)
+      raise CustomError, "유효한 이메일을 입력해 주세요." unless email.match?(User::EMAIL_REGEX)
+      raise CustomError, "OTP는 6자리 숫자여야 합니다." unless otp.to_s.match?(User::OTP_REGEX)
     end
 
     # -------------------------------------------------------

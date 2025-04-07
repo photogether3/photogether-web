@@ -73,15 +73,40 @@ class Api::ApplicationApiController < ActionController::API
 
   # API 예외 처리
   def handle_api_error(exception)
+    # 공통 기본 로깅 (유지)
     Rails.logger.error "Caught exception: #{exception.class}"
     Rails.logger.error(exception.message)
 
+    # 테스트 환경에서는 더 자세한 정보 출력
+    if Rails.env.test?
+      puts "\n===== API Error Details =====\n"
+      puts "Exception class: #{exception.class}"
+      puts "Message: #{exception.message}"
+      puts "Controller: #{controller_name}##{action_name}"
+      puts "Backtrace (first 3 lines):"
+      puts exception.backtrace.first(3).join("\n")
+    end
+
     case exception
     when ActiveRecord::RecordInvalid
-      # RecordInvalid(주로 유효성 검증 실패)
-      record  = exception.record
-      message = record&.errors&.full_messages&.first || exception.message
+      # 유효성 검증 실패 상세 로깅
+      record = exception.record
+      full_messages = record&.errors&.full_messages || []
 
+      Rails.logger.error("[VALIDATION_ERROR] Model: #{record.class.name}")
+      Rails.logger.error("[VALIDATION_ERROR] Errors: #{full_messages.join(', ')}")
+
+      if Rails.env.test?
+        puts "\n===== Validation Error Details ====="
+        puts "Model: #{record.class.name}"
+        puts "Attributes: #{record.attributes.inspect}"
+        puts "Errors by field:"
+        record.errors.messages.each do |field, msgs|
+          puts "  #{field}: #{msgs.join(', ')}"
+        end
+      end
+
+      message = record&.errors&.full_messages&.first || exception.message
       render json: {
         errorCode: 400,
         code: "VALIDATION_ERROR",
@@ -89,7 +114,19 @@ class Api::ApplicationApiController < ActionController::API
       }, status: 400
 
     when ActiveRecord::RecordNotFound
-      # RecordNotFound(레코드를 찾을 수 없음)
+      # 레코드를 찾을 수 없음 상세 로깅
+      model = exception.model
+      id = exception.id
+
+      Rails.logger.error("[NOTFOUND_ERROR] Model: #{model}, ID: #{id}")
+
+      if Rails.env.test?
+        puts "\n===== Record Not Found Details ====="
+        puts "Model: #{model}"
+        puts "ID: #{id}"
+        puts "Primary Key: #{exception.primary_key}"
+      end
+
       render json: {
         errorCode: 400,
         code: "NOTFOUND_ERROR",
@@ -97,7 +134,16 @@ class Api::ApplicationApiController < ActionController::API
       }, status: 400
 
     when ArgumentError
-      # ArgumentError(잘못된 인자, 파라미터 에러 등)
+      # 인자 에러 상세 로깅
+      Rails.logger.error("[ARGUMENT_ERROR] #{exception.message}")
+      Rails.logger.error("[ARGUMENT_ERROR] Params: #{params.to_unsafe_h}")
+
+      if Rails.env.test?
+        puts "\n===== Argument Error Details ====="
+        puts "Params: #{params.to_unsafe_h}"
+        puts "Request body: #{request.raw_post}" if request.raw_post.present?
+      end
+
       render json: {
         errorCode: 400,
         code: "ARGUMENT_ERROR",
@@ -105,15 +151,45 @@ class Api::ApplicationApiController < ActionController::API
       }, status: 400
 
     when CustomError
-      # CustomError 처리 (예외 객체에 error_code가 있다고 가정)
+      # CustomError 상세 로깅
+      error_code = exception.respond_to?(:error_code) ? exception.error_code : "C_BAD_REQUEST"
+
+      Rails.logger.error("[CUSTOM_ERROR:#{error_code}] #{exception.message}")
+      if exception.respond_to?(:details) && exception.details.present?
+        Rails.logger.error("[CUSTOM_ERROR:#{error_code}] Details: #{exception.details}")
+      end
+
+      if Rails.env.test?
+        puts "\n===== Custom Error Details ====="
+        puts "Error Code: #{error_code}"
+        puts "Message: #{exception.message}"
+        puts "Details: #{exception.details}" if exception.respond_to?(:details)
+      end
+
       render json: {
         errorCode: 400,
-        code: "C_BAD_REQUEST",
+        code: error_code,
         message: exception.message
       }, status: 400
 
     else
-      # 그 외 모든 예외(범용 처리)
+      # 예상치 못한 서버 오류 상세 로깅
+      Rails.logger.error("[INTERNAL_SERVER_ERROR] #{exception.class}: #{exception.message}")
+      Rails.logger.error("[INTERNAL_SERVER_ERROR] Backtrace:")
+      exception.backtrace.first(10).each_with_index do |line, i|
+        Rails.logger.error("  #{i+1}. #{line}")
+      end
+
+      if Rails.env.test?
+        puts "\n===== Server Error Details ====="
+        puts "Exception: #{exception.class}"
+        puts "Message: #{exception.message}"
+        puts "Backtrace (first 10 lines):"
+        exception.backtrace.first(10).each_with_index do |line, i|
+          puts "  #{i+1}. #{line}"
+        end
+      end
+
       render json: {
         errorCode: 500,
         code: "INTERNAL_SERVER_ERROR",

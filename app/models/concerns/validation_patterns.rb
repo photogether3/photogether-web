@@ -1,4 +1,3 @@
-# app/models/concerns/validation_patterns.rb
 module ValidationPatterns
   extend ActiveSupport::Concern
 
@@ -11,6 +10,9 @@ module ValidationPatterns
   # OTP 정규식: 6자리 숫자
   OTP_REGEX = /\A\d{6}\z/
 
-  # 닉네임 정규식: 2~20자 영문, 숫자, 한글
-  NICKNAME_REGEX = /\A[a-zA-Z0-9가-힣]{2,20}\z/
+  # 닉네임 정규식: 2~20자 영문, 숫자, 한글, 공백 허용
+  NICKNAME_REGEX = /\A[a-zA-Z0-9가-힣\s]{2,20}\z/
+
+  # 카테고리 정규식: 2~20자 영문, 숫자, 한글, 특수문자 가능
+  CATEGORY_REGEX = /\A[a-zA-Z0-9가-힣!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/? ]{2,20}\z/
 end
