@@ -76,11 +76,11 @@ class Api::V1::AuthApiControllerTest < ActionDispatch::IntegrationTest
       @login_url = "/api/v1/auth/login"
 
       # 사용자 미리 생성
-      params = {
-        email: "test@gmail.com",
-        password: "1q2w3e4r5t!@"
-      }
-      @user = User.register(params)
+      @test_email = "test@gmail.com"
+      @test_password = "1q2w3e4r5t!@"
+      @user = Auth::RegisterUser
+        .new(@test_email, @test_password)
+        .execute
 
       puts "테스트용 사용자 생성: #{@user.inspect}"
     end
@@ -113,8 +113,8 @@ class Api::V1::AuthApiControllerTest < ActionDispatch::IntegrationTest
 
     test "이메일 미 인증시 400 에러" do
       post @login_url, params: {
-        email: "test@gmail.com",
-        password: "1q2w3e4r5t!@"
+        email: @test_email,
+        password: @test_password
       }
 
       result = JSON.parse(response.body)
@@ -131,8 +131,8 @@ class Api::V1::AuthApiControllerTest < ActionDispatch::IntegrationTest
       # 이메일이 인증상태이고 존재하는 아이디, 비밀번호를 입력했을 경우
       @user.update!(is_email_verified: true)
       post @login_url, params: {
-        email: "test@gmail.com",
-        password: "1q2w3e4r5t!@"
+        email: @test_email,
+        password: @test_password
       }
 
       result = JSON.parse(response.body)
@@ -146,13 +146,13 @@ class Api::V1::AuthApiControllerTest < ActionDispatch::IntegrationTest
 
   describe "이메일로 OTP 코드 발송 API" do
     setup do
-      @test_email = "dev.goraebap@gmail.com"
       @generate_otp_url = "/api/v1/auth/otp/generate"
-      params = {
-        email: @test_email,
-        password: "1q2w3e4r5t!@"
-      }
-      User.register(params)
+
+      @test_email = "test@gmail.com"
+      @test_password = "1q2w3e4r5t!@"
+      @user = Auth::RegisterUser
+        .new(@test_email, @test_password)
+        .execute
     end
 
     test "이메일 형식이 이상한 경우 400 에러" do
@@ -194,13 +194,13 @@ class Api::V1::AuthApiControllerTest < ActionDispatch::IntegrationTest
 
   describe "OTP 검증" do
     setup do
-      @test_email = "test@gmail.com"
       @verify_otp_url = "/api/v1/auth/otp/verify"
-      params = {
-        email: @test_email,
-        password: "1q2w3e4r5t!@"
-      }
-      @user = User.register(params)
+
+      @test_email = "test@gmail.com"
+      @test_password = "1q2w3e4r5t!@"
+      @user = Auth::RegisterUser
+        .new(@test_email, @test_password)
+        .execute
       @user.update_otp
 
       puts @user.inspect
@@ -250,13 +250,14 @@ class Api::V1::AuthApiControllerTest < ActionDispatch::IntegrationTest
 
   describe "OTP 검증 및 토큰 발급" do
     setup do
-      @test_email = "test@gmail.com"
       @verify_otp_url = "/api/v1/auth/otp/verify-and-login"
-      params = {
-        email: @test_email,
-        password: "1q2w3e4r5t!@"
-      }
-      @user = User.register(params)
+
+      @test_email = "test@gmail.com"
+      @test_password = "1q2w3e4r5t!@"
+      @user = Auth::RegisterUser
+        .new(@test_email, @test_password)
+        .execute
+
       @user.update_otp
 
       puts @user.inspect
@@ -310,17 +311,17 @@ class Api::V1::AuthApiControllerTest < ActionDispatch::IntegrationTest
       @refresh_url = "/api/v1/auth/refresh"
 
       # 사용자 생성
-      params = {
-        email: "refresh_test@gmail.com",
-        password: "1q2w3e4r5t!@"
-      }
-      @user = User.register(params)
+      @test_email = "test@gmail.com"
+      @test_password = "1q2w3e4r5t!@"
+      @user = Auth::RegisterUser
+        .new(@test_email, @test_password)
+        .execute
       @user.update!(is_email_verified: true)
 
       # 로그인하여 토큰 발급
       post "/api/v1/auth/login", params: {
-        email: "refresh_test@gmail.com",
-        password: "1q2w3e4r5t!@"
+        email: @test_email,
+        password: @test_password
       }
 
       login_result = JSON.parse(response.body)
@@ -377,17 +378,17 @@ class Api::V1::AuthApiControllerTest < ActionDispatch::IntegrationTest
       @logout_url = "/api/v1/auth/logout"
 
       # 사용자 생성
-      params = {
-        email: "logout_test@gmail.com",
-        password: "1q2w3e4r5t!@"
-      }
-      @user = User.register(params)
+      @test_email = "test@gmail.com"
+      @test_password = "1q2w3e4r5t!@"
+      @user = Auth::RegisterUser
+        .new(@test_email, @test_password)
+        .execute
       @user.update!(is_email_verified: true)
 
       # 로그인하여 토큰 발급
       post "/api/v1/auth/login", params: {
-        email: "logout_test@gmail.com",
-        password: "1q2w3e4r5t!@"
+        email: @test_email,
+        password: @test_password
       }
 
       login_result = JSON.parse(response.body)

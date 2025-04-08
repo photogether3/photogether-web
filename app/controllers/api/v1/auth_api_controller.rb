@@ -21,8 +21,10 @@ class Api::V1::AuthApiController < Api::ApplicationApiController
   end
 
   def register
-    User.register(params)
-    render json: { message: "회원가입 성공" }, status: :created
+    result = Auth::RegisterUser
+      .new(params[:email], params[:password])
+      .execute
+    render_result(result, success_status: :created)
   end
 
   def generate_otp

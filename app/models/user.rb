@@ -39,29 +39,6 @@ class User < ApplicationRecord
             }
 
   # ------------------------------------------------------
-  # 회원가입
-  # ------------------------------------------------------
-  def self.register(params)
-    transaction do
-      user = self.create!(
-        email_address: params[:email],
-        password: params[:password],
-        password_confirmation: params[:password],
-        role_id: 1,
-        nickname: BaseUtil.generate_random_nickname,
-      )
-      user.collections.create!([
-        { category_id: nil, type: "UNCATEGORIZED", title: "미분류" },
-        { category_id: nil, type: "TRASH", title: "휴지통" }
-      ])
-
-      puts "회원가입 성공: #{user.inspect}"
-
-      user
-    end
-  end
-
-  # ------------------------------------------------------
   # OTP 검증
   # ------------------------------------------------------
   def self.verify_otp(params)
