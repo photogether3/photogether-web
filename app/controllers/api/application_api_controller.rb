@@ -26,7 +26,7 @@ class Api::ApplicationApiController < ActionController::API
         }, status: :unauthorized and return
       end
 
-      payload = JwtUtil.decode_token(token)
+      payload = Auth::TokenManager.decode_token(token)
       if payload.nil?
         render json: {
           errorCode: 401,

@@ -39,23 +39,6 @@ class User < ApplicationRecord
             }
 
   # ------------------------------------------------------
-  # OTP 검증
-  # ------------------------------------------------------
-  def self.verify_otp(params)
-    email = params[:email] ||= ""
-    otp = params[:otp] ||= ""
-
-    raise CustomError, "유효한 이메일을 입력해 주세요." unless email.match?(User::VALID_EMAIL_REGEX)
-    raise CustomError, "OTP는 6자리 숫자여야 합니다." unless otp.to_s.match?(User::VALID_OTP_REGEX)
-
-    user = self.find_by(email_address: email)
-    raise CustomError, "사용자를 찾을 수 없습니다." unless user
-
-    is_valid = user.verify_otp(otp)
-    raise CustomError, "OTP가 유효하지 않습니다." unless is_valid
-  end
-
-  # ------------------------------------------------------
   # OTP 유효성 검증
   # ------------------------------------------------------
   def verify_otp(otp)
@@ -68,9 +51,9 @@ class User < ApplicationRecord
   # ------------------------------------------------------
   # OTP 새로 발급: 6자리 OTP 생성 및 만료일 5분 후로 설정
   # ------------------------------------------------------
-  def update_otp
+  def update_otp(otp)
     self.update!(
-      otp: BaseUtil.generate_otp,
+      otp: otp,
       otp_expiry_date: 5.minutes.from_now
     )
   end

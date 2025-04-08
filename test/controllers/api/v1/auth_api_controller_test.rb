@@ -13,16 +13,23 @@ class Api::V1::AuthApiControllerTest < ActionDispatch::IntegrationTest
 
     options = defaults.merge(options)
 
-    user_result = Auth::RegisterUser.new(options[:email], options[:password]).call
+    user_result = Auth::RegisterUser.new(
+      email: options[:email],
+      password: options[:password]
+    ).call
     user = options[:with_data] ? user_result.data : user_result
 
-    user.update_otp if options[:update_otp]
+    otp_result = Auth::OtpProcessor
+      .new(email: options[:email])
+      .generate(with_otp: true)
+      .data if options[:update_otp]
     user.update!(is_email_verified: true) if options[:verify_email]
 
     {
       user: user,
       email: options[:email],
-      password: options[:password]
+      password: options[:password],
+      otp: otp_result
     }
   end
 
@@ -280,6 +287,7 @@ class Api::V1::AuthApiControllerTest < ActionDispatch::IntegrationTest
       @user = test_data[:user]
       @test_email = test_data[:email]
       @test_password = test_data[:password]
+      @otp = test_data[:otp]
 
       puts @user.inspect
     end
@@ -312,9 +320,12 @@ class Api::V1::AuthApiControllerTest < ActionDispatch::IntegrationTest
     end
 
     test "OTP 검증 성공" do
+      puts @otp.inspect
+      puts @otp.inspect
+      puts @otp.inspect
       post @verify_otp_url, params: {
         email: @test_email,
-        otp: @user.otp
+        otp: @otp
       }
 
       result = JSON.parse(response.body)
