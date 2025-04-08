@@ -1,13 +1,13 @@
 class BaseUseCase
-  Result = Struct.new(:success?, :data, :error_message)
+  Result = Struct.new(:success?, :failure?, :data, :error_message)
 
   private
 
     def success(data = nil)
-      Result.new(true, data, nil)
+      Result.new(true, false, data, nil)
     end
 
     def failure(message)
-      Result.new(false, nil, message)
+      Result.new(false, true, nil, message)
     end
 end
