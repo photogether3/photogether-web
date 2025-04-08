@@ -11,9 +11,26 @@ module Auth
 
     # [1] access_token + refresh_token 발급 + refresh 저장
     def self.issue_tokens(user)
-      tokens = generate_tokens(user.id)
-      RefreshToken.create_or_update(user.id, tokens[:refresh_token])
-      tokens
+      exp = 1.hour.from_now.to_i
+
+      payload = { sub: user.id.to_s, exp: exp }
+      access_token = JWT.encode(payload, Rails.application.credentials.secret_key_base, "HS256")
+      refresh_token = SecureRandom.uuid
+
+      # 리프레시 토큰 저장 처리
+      token = RefreshToken.find_or_initialize_by(user_id: user.id)
+      token.assign_attributes(
+        refresh_token: refresh_token,
+        expiry_date: 7.days.from_now,
+        last_refreshing_date: Time.current
+      )
+      token.save!
+
+      {
+        access_token: access_token,
+        refresh_token: refresh_token,
+        expires_in: exp
+      }
     end
 
     # [2] access_token + refresh_token만 발급 (DB 저장은 안 함)
