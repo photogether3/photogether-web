@@ -4,26 +4,14 @@ class Api::V1::AuthApiController < Api::ApplicationApiController
   def login
     email    = params[:email] ||= ""
     password = params[:password] ||= ""
-
-    raise CustomError, "유효한 이메일을 입력해 주세요." unless email.match?(User::EMAIL_REGEX)
-    raise ArgumentError, "비밀번호를 입력해 주세요." if password.blank?
-
-    user = User.find_by(email_address: email)
-
-    err_msg = "아이디 또는 비밀번호를 찾을 수 없습니다."
-    raise CustomError, err_msg unless user
-    raise CustomError, err_msg if !user.authenticate(password)
-    raise CustomError, "이메일 인증을 완료해주세요." unless user.is_email_verified
-
-    tokens = JwtUtil.generate_tokens(user.id)
-    RefreshToken.create_or_update(user.id, tokens[:refresh_token])
-    render json: tokens, status: :ok
+    result = Auth::LoginFlow.new(email, password).call
+    render_result(result, success_status: :ok)
   end
 
   def register
-    result = Auth::RegisterUser
-      .new(params[:email], params[:password])
-      .execute
+    email    = params[:email] ||= ""
+    password = params[:password] ||= ""
+    result = Auth::RegisterUser.new(email, password, with_user: false).call
     render_result(result, success_status: :created)
   end
 

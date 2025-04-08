@@ -1,6 +1,37 @@
 require "test_helper"
 
 class Api::V1::AuthApiControllerTest < ActionDispatch::IntegrationTest
+  # 공통 헬퍼 메서드 정의
+  def setup_test_user(options = {})
+    defaults = {
+      email: "test@gmail.com",
+      password: "1q2w3e4r5t!@",
+      update_otp: false,
+      verify_email: false,
+      with_data: true
+    }
+
+    options = defaults.merge(options)
+
+    user_result = Auth::RegisterUser.new(options[:email], options[:password]).call
+    user = options[:with_data] ? user_result.data : user_result
+
+    user.update_otp if options[:update_otp]
+    user.update!(is_email_verified: true) if options[:verify_email]
+
+    {
+      user: user,
+      email: options[:email],
+      password: options[:password]
+    }
+  end
+
+  # 로그인 토큰 획득 헬퍼
+  def get_auth_tokens(email, password)
+    post "/api/v1/auth/login", params: { email: email, password: password }
+    JSON.parse(response.body)
+  end
+
   describe "회원가입 API" do
     setup do
       # URL 설정
@@ -9,7 +40,6 @@ class Api::V1::AuthApiControllerTest < ActionDispatch::IntegrationTest
 
     test "파라미터 자체를 안넘길 경우 400 에러" do
       post @register_url
-
 
       result = JSON.parse(response.body)
       puts result.inspect
@@ -46,7 +76,7 @@ class Api::V1::AuthApiControllerTest < ActionDispatch::IntegrationTest
 
       result = JSON.parse(response.body)
 
-      assert :bad_request
+      assert_response :bad_request
       assert result.key?("errorCode")
       assert result.key?("code")
       assert result.key?("message")
@@ -63,8 +93,7 @@ class Api::V1::AuthApiControllerTest < ActionDispatch::IntegrationTest
       result = JSON.parse(response.body)
       puts result.inspect
 
-      assert :created
-      assert_includes result["message"], "성공"
+      assert_response :created
       created_user = User.find_by(email_address: test_email)
       assert_not_nil created_user, "사용자가 생성되지 않았습니다"
     end
@@ -76,11 +105,10 @@ class Api::V1::AuthApiControllerTest < ActionDispatch::IntegrationTest
       @login_url = "/api/v1/auth/login"
 
       # 사용자 미리 생성
-      @test_email = "test@gmail.com"
-      @test_password = "1q2w3e4r5t!@"
-      @user = Auth::RegisterUser
-        .new(@test_email, @test_password)
-        .execute
+      test_data = setup_test_user()
+      @user = test_data[:user]
+      @test_email = test_data[:email]
+      @test_password = test_data[:password]
 
       puts "테스트용 사용자 생성: #{@user.inspect}"
     end
@@ -103,7 +131,6 @@ class Api::V1::AuthApiControllerTest < ActionDispatch::IntegrationTest
       }
 
       result = JSON.parse(response.body)
-
       puts result.inspect
 
       assert_response :bad_request
@@ -128,7 +155,7 @@ class Api::V1::AuthApiControllerTest < ActionDispatch::IntegrationTest
     end
 
     test "로그인 성공" do
-      # 이메일이 인증상태이고 존재하는 아이디, 비밀번호를 입력했을 경우
+      # 이메일이 인증상태로 업데이트
       @user.update!(is_email_verified: true)
       post @login_url, params: {
         email: @test_email,
@@ -148,11 +175,10 @@ class Api::V1::AuthApiControllerTest < ActionDispatch::IntegrationTest
     setup do
       @generate_otp_url = "/api/v1/auth/otp/generate"
 
-      @test_email = "test@gmail.com"
-      @test_password = "1q2w3e4r5t!@"
-      @user = Auth::RegisterUser
-        .new(@test_email, @test_password)
-        .execute
+      test_data = setup_test_user(with_data: false)
+      @user = test_data[:user]
+      @test_email = test_data[:email]
+      @test_password = test_data[:password]
     end
 
     test "이메일 형식이 이상한 경우 400 에러" do
@@ -196,12 +222,10 @@ class Api::V1::AuthApiControllerTest < ActionDispatch::IntegrationTest
     setup do
       @verify_otp_url = "/api/v1/auth/otp/verify"
 
-      @test_email = "test@gmail.com"
-      @test_password = "1q2w3e4r5t!@"
-      @user = Auth::RegisterUser
-        .new(@test_email, @test_password)
-        .execute
-      @user.update_otp
+      test_data = setup_test_user(update_otp: true, with_data: false)
+      @user = test_data[:user]
+      @test_email = test_data[:email]
+      @test_password = test_data[:password]
 
       puts @user.inspect
     end
@@ -252,13 +276,10 @@ class Api::V1::AuthApiControllerTest < ActionDispatch::IntegrationTest
     setup do
       @verify_otp_url = "/api/v1/auth/otp/verify-and-login"
 
-      @test_email = "test@gmail.com"
-      @test_password = "1q2w3e4r5t!@"
-      @user = Auth::RegisterUser
-        .new(@test_email, @test_password)
-        .execute
-
-      @user.update_otp
+      test_data = setup_test_user(update_otp: true)
+      @user = test_data[:user]
+      @test_email = test_data[:email]
+      @test_password = test_data[:password]
 
       puts @user.inspect
     end
@@ -310,21 +331,14 @@ class Api::V1::AuthApiControllerTest < ActionDispatch::IntegrationTest
     setup do
       @refresh_url = "/api/v1/auth/refresh"
 
-      # 사용자 생성
-      @test_email = "test@gmail.com"
-      @test_password = "1q2w3e4r5t!@"
-      @user = Auth::RegisterUser
-        .new(@test_email, @test_password)
-        .execute
-      @user.update!(is_email_verified: true)
+      # 사용자 생성 및 이메일 인증 처리
+      test_data = setup_test_user(verify_email: true)
+      @user = test_data[:user]
+      @test_email = test_data[:email]
+      @test_password = test_data[:password]
 
       # 로그인하여 토큰 발급
-      post "/api/v1/auth/login", params: {
-        email: @test_email,
-        password: @test_password
-      }
-
-      login_result = JSON.parse(response.body)
+      login_result = get_auth_tokens(@test_email, @test_password)
       @refresh_token = login_result["refreshToken"]
 
       puts "테스트용 리프레시 토큰: #{@refresh_token.inspect}"
@@ -377,21 +391,14 @@ class Api::V1::AuthApiControllerTest < ActionDispatch::IntegrationTest
     setup do
       @logout_url = "/api/v1/auth/logout"
 
-      # 사용자 생성
-      @test_email = "test@gmail.com"
-      @test_password = "1q2w3e4r5t!@"
-      @user = Auth::RegisterUser
-        .new(@test_email, @test_password)
-        .execute
-      @user.update!(is_email_verified: true)
+      # 사용자 생성 및 이메일 인증 처리
+      test_data = setup_test_user(verify_email: true)
+      @user = test_data[:user]
+      @test_email = test_data[:email]
+      @test_password = test_data[:password]
 
       # 로그인하여 토큰 발급
-      post "/api/v1/auth/login", params: {
-        email: @test_email,
-        password: @test_password
-      }
-
-      login_result = JSON.parse(response.body)
+      login_result = get_auth_tokens(@test_email, @test_password)
       @access_token = login_result["accessToken"]
 
       puts "테스트용 액세스 토큰: #{@access_token.inspect}"

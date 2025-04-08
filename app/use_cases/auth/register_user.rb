@@ -1,12 +1,14 @@
 class Auth::RegisterUser < BaseUseCase
-  def initialize(email, password)
+  def initialize(email, password, options = {})
+    with_user = options.fetch(:with_user, false)
     @params = {
       email: email,
-      password: password
+      password: password,
+      with_user: with_user # 프로세스가 끝날 때 user 데이터를 반환할지 여부
     }
   end
 
-  def execute
+  def call
     return failure("유효한 이메일을 입력해 주세요.") unless valid_email?
     return failure("비밀번호를 입력해 주세요.") if @params[:password].blank?
 
@@ -26,7 +28,7 @@ class Auth::RegisterUser < BaseUseCase
 
       puts "회원가입 성공: #{user.inspect}"
 
-      success
+      success(user)
     end
   end
 
