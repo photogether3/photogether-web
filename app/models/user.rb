@@ -1,6 +1,4 @@
 class User < ApplicationRecord
-  include ValidationPatterns
-
   # ------------------------------------------------------
   # 관계 설정
   # ------------------------------------------------------
@@ -20,20 +18,20 @@ class User < ApplicationRecord
   validates :email_address,
             presence: { message: "이메일 주소를 입력해주세요." },
             uniqueness: { message: "이미 사용 중인 이메일 주소입니다." },
-            format: { with: EMAIL_REGEX, message: "유효한 이메일 형식이 아닙니다." }
+            format: { with: ValidationPatterns::EMAIL_REGEX, message: "유효한 이메일 형식이 아닙니다." }
   validates :password,
             presence: {
               message: "비밀번호를 입력해주세요.",
               if: -> { new_record? }
             },
             format: {
-              with: PASSWORD_REGEX,
+              with: ValidationPatterns::PASSWORD_REGEX,
               message: "비밀번호는 8-50자 사이이며, 소문자, 숫자, 특수문자를 각각 하나 이상 포함해야 합니다.",
               if: -> { password.present? }
             }
   validates :nickname,
             format: {
-              with: NICKNAME_REGEX,
+              with: ValidationPatterns::NICKNAME_REGEX,
               message: "닉네임은 2~20자 사이의 영문, 숫자, 한글만 허용됩니다.",
               allow_blank: true
             }

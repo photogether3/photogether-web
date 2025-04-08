@@ -1,6 +1,4 @@
 module ValidationPatterns
-  extend ActiveSupport::Concern
-
   # 이메일 정규식: 6~50자 길이 제한 포함
   EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 

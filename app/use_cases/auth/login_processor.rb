@@ -5,7 +5,7 @@ class Auth::LoginProcessor < BaseUseCase
   end
 
   def call
-    return failure("유효한 이메일을 입력해 주세요.") unless @email.match?(User::EMAIL_REGEX)
+    return failure("유효한 이메일을 입력해 주세요.") unless @email.match?(ValidationPatterns::EMAIL_REGEX)
     return failure("비밀번호를 입력해 주세요.") if @password.blank?
 
     user = User.find_by(email_address: @email)

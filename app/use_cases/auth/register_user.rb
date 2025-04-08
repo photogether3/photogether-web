@@ -33,7 +33,7 @@ class Auth::RegisterUser < BaseUseCase
 
     # 이메일 유효성 검증
     def valid_email?
-      @email.match?(User::EMAIL_REGEX)
+      @email.match?(ValidationPatterns::EMAIL_REGEX)
     end
 
     # 랜덤한 닉네임을 생성하는 메서드

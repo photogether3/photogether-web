@@ -5,7 +5,7 @@ class Auth::OtpProcessor < BaseUseCase
   end
 
   def generate(with_otp: false) # 프로세스가 끝날 때 otp 데이터를 반환할지 여부
-    return failure("유효한 이메일을 입력해 주세요.") unless @email.match?(User::EMAIL_REGEX)
+    return failure("유효한 이메일을 입력해 주세요.") unless @email.match?(ValidationPatterns::EMAIL_REGEX)
 
     user = User.find_by(email_address: @email)
     return failure("사용자를 찾을 수 없습니다.") unless user
@@ -40,8 +40,8 @@ class Auth::OtpProcessor < BaseUseCase
   private
     # OTP 검증 공통 로직을 담당하는 메서드
     def verify_otp
-      return failure("유효한 이메일을 입력해 주세요.") unless @email.match?(User::EMAIL_REGEX)
-      return failure("OTP는 6자리 숫자여야 합니다.") unless @otp.to_s.match?(User::OTP_REGEX)
+      return failure("유효한 이메일을 입력해 주세요.") unless @email.match?(ValidationPatterns::EMAIL_REGEX)
+      return failure("OTP는 6자리 숫자여야 합니다.") unless @otp.to_s.match?(ValidationPatterns::OTP_REGEX)
 
       user = User.find_by(email_address: @email)
       return failure("사용자를 찾을 수 없습니다.") unless user
