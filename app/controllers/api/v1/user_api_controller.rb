@@ -13,35 +13,12 @@ class Api::V1::UserApiController < Api::ApplicationApiController
   end
 
   def show
-    render_user_json(@current_user)
+    render json: @current_user.to_detail, status: :ok
   end
 
   def update
-    nickname = params[:nickname]
-    bio      = params[:bio]
-    file     = params[:file]
-
-    puts "file: #{file.inspect}"
-
-    @current_user.nickname = nickname if nickname.present?
-    @current_user.bio      = bio if bio.present?
-
-    if params.key?(:file)
-      case
-      when file.nil?, file == "null"
-        puts "파일 제거 요청으로 판단함"
-        @current_user.image.purge if @current_user.image.attached?
-      when file.respond_to?(:content_type)
-        puts "파일 전달 됨!"
-        @current_user.image.purge if @current_user.image.attached?
-        @current_user.image.attach(file)
-      else
-        puts "file 형식이 유효하지 않음, 무시함"
-      end
-    end
-
-    @current_user.save!
-    render_user_json(@current_user)
+    User::Updater.new(@current_user, params).call
+    render json: @current_user.to_detail, status: :ok
   end
 
   def update_password_by_otp
@@ -118,13 +95,5 @@ class Api::V1::UserApiController < Api::ApplicationApiController
 
     @current_user.destroy
     render json: { message: "계정이 삭제되었습니다." }, status: :ok
-  end
-
-  private
-
-  # 사용자 정보를 JSON으로 렌더링합니다.
-  def render_user_json(user)
-    image_url = user.image.attached? ? url_for(user.image) : nil
-    render json: user.as_json.merge(image_url: image_url), status: :ok
   end
 end

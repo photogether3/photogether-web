@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  include Rails.application.routes.url_helpers
+
   # ------------------------------------------------------
   # 관계 설정
   # ------------------------------------------------------
@@ -60,7 +62,7 @@ class User < ApplicationRecord
   # OTP 초기화: OTP와 만료일을 nil로 설정하고 추가 업데이트 허용
   # ------------------------------------------------------
   def reset_otp
-    User.transaction do
+    transaction do
       self.otp = nil
       self.otp_expiry_date = nil
 
@@ -73,10 +75,22 @@ class User < ApplicationRecord
   # ------------------------------------------------------
   # JSON 형식 반환
   # ------------------------------------------------------
-  def as_json(options = {})
-    super(only: [ :id, :nickname, :bio, :image_url, :created_at, :updated_at ]).tap do |hash|
-      # 원하는 필드명으로 재정의
-      hash["email"] = self.email_address
-    end
+  def to_detail(options = {})
+    result = {
+      id: id,
+      nickname: nickname,
+      bio: bio,
+      created_at: created_at,
+      updated_at: updated_at,
+      email: email_address
+    }
+
+    # 이미지 URL 추가
+    result[:image_url] = image.attached? ? Rails.application.routes.url_helpers.url_for(image) : nil
+
+    # 추가 옵션 병합
+    result.merge!(options)
+
+    result
   end
 end
