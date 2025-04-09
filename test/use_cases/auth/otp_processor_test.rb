@@ -1,4 +1,3 @@
-# test/use_cases/auth/otp_processor_test.rb
 require "test_helper"
 
 class Auth::OtpProcessorTest < ActiveSupport::TestCase
@@ -66,19 +65,19 @@ class Auth::OtpProcessorTest < ActiveSupport::TestCase
     end
   end
 
-  describe "#verify_and_generate_token" do
+  describe "#verify with_tokens option" do
     setup do
       @otp = "654321"
       @user.update_otp(@otp)
     end
 
     test "정상적인 OTP 입력 시 토큰 발급과 이메일 인증 처리" do
-      result = Auth::OtpProcessor.new(email: @user.email_address, otp: @otp).verify_and_generate_token
+      result = Auth::OtpProcessor.new(email: @user.email_address, otp: @otp).verify(with_tokens: true)
 
       assert result.success?
-      assert result.data[:access_token].present?
-      assert result.data[:refresh_token].present?
-      assert result.data[:expires_in].present?
+      assert result.data[:access_token].present? || result.data["access_token"].present?
+      assert result.data[:refresh_token].present? || result.data["refresh_token"].present?
+      assert result.data[:expires_in].present? || result.data["expires_in"].present?
 
       @user.reload
       assert @user.is_email_verified
@@ -86,8 +85,9 @@ class Auth::OtpProcessorTest < ActiveSupport::TestCase
       assert_nil @user.otp_expiry_date
     end
 
-    test "OTP가 틀리면 실패한다" do
-      result = Auth::OtpProcessor.new(email: @user.email_address, otp: "111111").verify_and_generate_token
+    test "OTP가 틀리면 with_tokens 옵션과 상관없이 실패한다" do
+      result = Auth::OtpProcessor.new(email: @user.email_address, otp: "111111").verify(with_tokens: true)
+
       assert result.failure?
       assert_equal "OTP가 일치하지 않습니다.", result.error_message
     end

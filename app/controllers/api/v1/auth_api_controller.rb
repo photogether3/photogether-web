@@ -7,7 +7,9 @@ class Api::V1::AuthApiController < Api::ApplicationApiController
   end
 
   def register
-    result = Auth::RegisterUser.new(params, with_user: false).call
+    result = User::Register.new(params)
+      .without_user
+      .call
     render_result(result, success_status: :created)
   end
 
@@ -22,7 +24,7 @@ class Api::V1::AuthApiController < Api::ApplicationApiController
   end
 
   def verify_otp_with_generate_token
-    result = Auth::OtpProcessor.new(params).verify_and_generate_token
+    result = Auth::OtpProcessor.new(params).verify(with_tokens: true)
     render_result(result, success_status: :ok)
   end
 

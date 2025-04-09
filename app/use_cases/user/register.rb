@@ -1,13 +1,20 @@
-class Auth::RegisterUser < BaseUseCase
-  def initialize(params, options = {})
+class User::Register < BaseUseCase
+  def initialize(params)
     @email     = params[:email] || ""
     @password  = params[:password] || ""
-    @with_user = options.fetch(:with_user, false) # 프로세스가 끝날 때 user 데이터를 반환할지 여부
+    @with_user = true # 프로세스가 끝날 때 user 데이터를 반환할지 여부
+  end
+
+  # 메서드 체이닝을 통해 반환데이터에 user를 포함하지 않습니다.
+  def without_user
+    @with_user = false
+    self
   end
 
   def call
     return failure("유효한 이메일을 입력해 주세요.") unless valid_email?
     return failure("비밀번호를 입력해 주세요.") if @password.blank?
+    return failure("비밀번호는 최소 8자, 최대 50자, 소문자, 숫자, 특수문자를 각각 하나 이상 포함") unless ValidationPatterns::PASSWORD_REGEX.match?(@password)
 
     ActiveRecord::Base.transaction do
       user = User.create!(

@@ -1,14 +1,16 @@
 # test/use_cases/auth/register_user_test.rb
 require "test_helper"
 
-class Auth::RegisterUserTest < ActiveSupport::TestCase
+class User::RegisterTest < ActiveSupport::TestCase
   test "회원가입 성공 시 유저를 반환한다" do
     params = {
       email: "new_user@example.com",
-      password: "Password1!"
+      password: "testPassword1!"
     }
 
-    result = Auth::RegisterUser.new(params).call
+    result = User::Register.new(params).call
+
+    puts result.error_message
 
     assert result.success?
     user = result.data
@@ -26,10 +28,10 @@ class Auth::RegisterUserTest < ActiveSupport::TestCase
   test "이메일 형식이 유효하지 않으면 실패한다" do
     params = {
       email: "invalid_email",
-      password: "Password1!"
+      password: "testPassword1!"
     }
 
-    result = Auth::RegisterUser.new(params).call
+    result = User::Register.new(params).call
 
     assert result.failure?
     assert_equal "유효한 이메일을 입력해 주세요.", result.error_message
@@ -41,7 +43,7 @@ class Auth::RegisterUserTest < ActiveSupport::TestCase
       password: ""
     }
 
-    result = Auth::RegisterUser.new(params).call
+    result = User::Register.new(params).call
 
     assert result.failure?
     assert_equal "비밀번호를 입력해 주세요.", result.error_message

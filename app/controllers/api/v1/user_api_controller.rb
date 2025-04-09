@@ -4,12 +4,14 @@ class Api::V1::UserApiController < Api::ApplicationApiController
   def is_email_taken
     email = params[:email]
 
-    unless email.match?(User::VALID_EMAIL_REGEX)
+    # 이메일 형식이 유효하지 않은 경우는 조회까지 하지 않고 false 리턴
+    # 입력시 계속해서 호출하는 경우가 있어 성능상 이점을 고려
+    unless email.match?(ValidationPatterns::EMAIL_REGEX)
       return render json: { is_duplicated: false }, status: :ok
     end
 
-    user = User.find_by(email_address: email)
-    render json: { is_duplicated: !user.nil? }, status: :ok
+    is_duplicated = User.exists?(email_address: email)
+    render json: { is_duplicated: is_duplicated }, status: :ok
   end
 
   def show
@@ -17,32 +19,12 @@ class Api::V1::UserApiController < Api::ApplicationApiController
   end
 
   def update
-    User::Updater.new(@current_user, params).call
+    User::ProfileUpdater.new(@current_user, params).call
     render json: @current_user.to_detail, status: :ok
   end
 
   def update_password_by_otp
-    email    = params[:email]
-    otp      = params[:otp]
-    password = params[:password]
-
-    raise CustomError, "유효한 이메일을 입력해 주세요." unless email.match?(User::VALID_EMAIL_REGEX)
-    raise CustomError, "OTP는 6자리 숫자여야 합니다." unless otp.to_s.match?(User::VALID_OTP_REGEX)
-    raise CustomError, "비밀번호를 입력해 주세요." if password.blank?
-
-    user = User.find_by(email_address: email)
-    raise ActiveRecord::RecordNotFound, "사용자를 찾을 수 없습니다." unless user
-
-    is_valid = user.verify_otp(otp)
-    raise CustomError, "OTP가 유효하지 않습니다." unless is_valid
-
-    user.update!(
-      password: password,
-      password_confirmation: password,
-      otp: nil,
-      otp_expiry_date: nil,
-    )
-
+    result = User::PasswordUpdater.new(@current_user, params).call
     render_user_json(user)
   end
 
