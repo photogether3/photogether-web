@@ -4,6 +4,9 @@
 # and recreated between test runs. Don't rely on the data there!
 
 Rails.application.configure do
+  # URL 생성을 위한 기본 호스트 설정
+  Rails.application.routes.default_url_options[:host] = "localhost:8000"
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # While tests run files are not watched, reloading is not necessary.
