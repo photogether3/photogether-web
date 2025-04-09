@@ -43,13 +43,7 @@ class Api::V1::UserApiController < Api::ApplicationApiController
   end
 
   def destroy
-    otp = params[:otp]
-    raise CustomError, "OTP는 6자리 숫자여야 합니다." unless otp.to_s.match?(User::VALID_OTP_REGEX)
-
-    is_valid = @current_user.verify_otp(otp)
-    raise CustomError, "OTP가 유효하지 않습니다." unless is_valid
-
-    @current_user.destroy
-    render json: { message: "계정이 삭제되었습니다." }, status: :ok
+    result = User::Withdrawer.new(@current_user, params).call
+    render_result(result, success_status: :ok)
   end
 end
