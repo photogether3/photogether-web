@@ -24,9 +24,8 @@ class Api::V1::CollectionApiController < Api::ApplicationApiController
   end
 
   def create
-    category = get_category_or_fail
-    Collection.create_by_user(@current_user.id, category.id, params)
-    render json: { message: "사진첩이 생성되었어요." }, status: :ok
+    result = Collection::CreateUseCase.new(@current_user.id, params).call
+    render_result(result)
   end
 
   def update

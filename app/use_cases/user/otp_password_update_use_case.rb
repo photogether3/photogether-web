@@ -1,4 +1,4 @@
-class User::OtpPasswordUpdater < BaseUseCase
+class User::OtpPasswordUpdateUseCase < BaseUseCase
   def initialize(params)
     @email = params[:email]
     @otp = params[:otp]

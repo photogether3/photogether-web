@@ -1,6 +1,6 @@
 require "test_helper"
 
-class User::DataResetterTest < ActiveSupport::TestCase
+class User::DataResetUseCaseTest < ActiveSupport::TestCase
   setup do
     @password = "Password1!"
     @user = User.create!(
@@ -22,28 +22,28 @@ class User::DataResetterTest < ActiveSupport::TestCase
   end
 
   test "OTP 형식이 잘못된 경우 실패한다" do
-    result = User::DataResetter.new(@user, { otp: "abc" }).call
+    result = User::DataResetUseCase.new(@user, { otp: "abc" }).call
 
     assert result.failure?
     assert_equal "OTP는 6자리 숫자여야 합니다.", result.error_message
   end
 
   test "사용자가 없을 경우 실패한다" do
-    result = User::DataResetter.new(nil, { otp: @otp }).call
+    result = User::DataResetUseCase.new(nil, { otp: @otp }).call
 
     assert result.failure?
     assert_equal "로그인이 필요합니다.", result.error_message
   end
 
   test "OTP가 일치하지 않을 경우 실패한다" do
-    result = User::DataResetter.new(@user, { otp: "654321" }).call
+    result = User::DataResetUseCase.new(@user, { otp: "654321" }).call
 
     assert result.failure?
     assert_equal "OTP가 유효하지 않습니다.", result.error_message
   end
 
   test "모든 조건이 충족되면 사용자 데이터가 초기화된다" do
-    result = User::DataResetter.new(@user, { otp: @otp }).call
+    result = User::DataResetUseCase.new(@user, { otp: @otp }).call
 
     assert result.success?
     assert_equal "데이터가 초기화되었습니다.", result.data[:message]

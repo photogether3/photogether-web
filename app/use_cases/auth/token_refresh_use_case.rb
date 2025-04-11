@@ -1,5 +1,4 @@
-# app/use_cases/auth/token_refresher.rb
-class Auth::TokenRefresher < BaseUseCase
+class Auth::TokenRefreshUseCase < BaseUseCase
   def initialize(refresh_token)
     @refresh_token = refresh_token
   end

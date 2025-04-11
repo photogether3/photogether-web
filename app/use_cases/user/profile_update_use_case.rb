@@ -1,4 +1,4 @@
-class User::ProfileUpdater < BaseUseCase
+class User::ProfileUpdateUseCase < BaseUseCase
   def initialize(current_user, params)
     @current_user = current_user
     @nickname = params[:nickname] || ""

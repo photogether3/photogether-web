@@ -1,4 +1,4 @@
-class User::Register < BaseUseCase
+class User::RegisterUseCase < BaseUseCase
   def initialize(params)
     @email     = params[:email] || ""
     @password  = params[:password] || ""

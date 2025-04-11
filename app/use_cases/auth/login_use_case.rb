@@ -1,4 +1,4 @@
-class Auth::LoginProcessor < BaseUseCase
+class Auth::LoginUseCase < BaseUseCase
   def initialize(params)
     @email    = params[:email] || ""
     @password = params[:password] || ""

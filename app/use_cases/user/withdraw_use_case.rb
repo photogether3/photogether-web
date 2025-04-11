@@ -1,4 +1,4 @@
-class User::Withdrawer < BaseUseCase
+class User::WithdrawUseCase < BaseUseCase
   def initialize(current_user, params)
     @current_user = current_user
     @otp = params[:otp]

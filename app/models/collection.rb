@@ -22,18 +22,6 @@ class Collection < ApplicationRecord
   }
 
   # ------------------------------------------------------
-  # 사용자의 사진첩 생성
-  # ------------------------------------------------------
-  def self.create_by_user(user_id, category_id, params)
-    Collection.create!(
-      title: params[:title],
-      category_id: category_id,
-      user_id: user_id,
-      type: "DEFAULT"
-    )
-  end
-
-  # ------------------------------------------------------
   # 상세 반환타입
   # ------------------------------------------------------
   def to_detail
