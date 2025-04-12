@@ -1,4 +1,4 @@
-class User::Register < BaseService
+class User::Register
   def initialize(params)
     @email     = params[:email] || ""
     @password  = params[:password] || ""
@@ -12,9 +12,9 @@ class User::Register < BaseService
   end
 
   def call
-    return failure("유효한 이메일을 입력해 주세요.") unless valid_email?
-    return failure("비밀번호를 입력해 주세요.") if @password.blank?
-    return failure("비밀번호는 최소 8자, 최대 50자, 소문자, 숫자, 특수문자를 각각 하나 이상 포함") unless ValidationPatterns::PASSWORD_REGEX.match?(@password)
+    return Result.failure("유효한 이메일을 입력해 주세요.") unless valid_email?
+    return Result.failure("비밀번호를 입력해 주세요.") if @password.blank?
+    return Result.failure("비밀번호는 최소 8자, 최대 50자, 소문자, 숫자, 특수문자를 각각 하나 이상 포함") unless ValidationPatterns::PASSWORD_REGEX.match?(@password)
 
     ActiveRecord::Base.transaction do
       user = User.create!(
@@ -32,7 +32,7 @@ class User::Register < BaseService
 
       puts "회원가입 성공: #{user.inspect}"
 
-      success(user)
+      Result.success(user)
     end
   end
 

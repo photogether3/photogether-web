@@ -1,4 +1,4 @@
-class User::ResetData < BaseService
+class User::ResetData
   def initialize(current_user, params)
     @current_user = current_user
     @otp = params[:otp]
@@ -6,12 +6,12 @@ class User::ResetData < BaseService
 
   def call
     # OTP 유효성 검증
-    return failure("OTP는 6자리 숫자여야 합니다.") unless valid_otp_format?
-    return failure("로그인이 필요합니다.") unless @current_user
+    return Result.failure("OTP는 6자리 숫자여야 합니다.") unless valid_otp_format?
+    return Result.failure("로그인이 필요합니다.") unless @current_user
 
     # OTP 검증
     unless @current_user.verify_otp(@otp)
-      return failure("OTP가 유효하지 않습니다.")
+      return Result.failure("OTP가 유효하지 않습니다.")
     end
 
     # 데이터 초기화 실행
@@ -41,9 +41,9 @@ class User::ResetData < BaseService
       # 일반 사진첩 삭제 (미분류, 휴지통 제외)
       @current_user.collections.where(type: "DEFAULT").destroy_all
 
-      success(message: "데이터가 초기화되었습니다.")
+      Result.success(message: "데이터가 초기화되었습니다.")
     rescue => e
-      failure("데이터 초기화 중 오류가 발생했습니다: #{e.message}")
+      Result.failure("데이터 초기화 중 오류가 발생했습니다: #{e.message}")
     end
   end
 end

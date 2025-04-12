@@ -1,4 +1,4 @@
-class Collection::Create < BaseService
+class Collection::Create
   def initialize(user_id, params)
     @user_id = user_id
     @category_id = params[:categoryId]
@@ -6,10 +6,10 @@ class Collection::Create < BaseService
   end
 
   def call
-    return failure("제목을 입력해 주세요.") if @title.blank?
+    return Result.failure("제목을 입력해 주세요.") if @title.blank?
 
     category = Category.find_by(id: @category_id)
-    return failure("카테고리를 찾을 수 없습니다.") unless category
+    return Result.failure("카테고리를 찾을 수 없습니다.") unless category
 
     Collection.create!(
       title: @title,
@@ -18,6 +18,6 @@ class Collection::Create < BaseService
       type: "DEFAULT"
     )
 
-    success
+    Result.success
   end
 end

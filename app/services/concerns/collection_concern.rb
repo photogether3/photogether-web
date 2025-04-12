@@ -1,4 +1,4 @@
-module CollectionUseCaseConcern
+module CollectionConcern
   private
 
   def find_collection(collection_id, user_id)

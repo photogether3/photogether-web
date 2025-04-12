@@ -1,4 +1,4 @@
-class User::UpdateProfile < BaseService
+class User::UpdateProfile
   def initialize(current_user, params)
     @current_user = current_user
     @nickname = params[:nickname] || ""
@@ -26,6 +26,6 @@ class User::UpdateProfile < BaseService
 
     @current_user.save!
 
-    success
+    Result.success
   end
 end
