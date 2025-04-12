@@ -6,6 +6,8 @@ class Collection::CreateUseCase < BaseUseCase
   end
 
   def call
+    return failure("제목을 입력해 주세요.") if @title.blank?
+
     category = Category.find_by(id: @category_id)
     return failure("카테고리를 찾을 수 없습니다.") unless category
 
