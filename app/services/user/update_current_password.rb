@@ -1,4 +1,4 @@
-class User::CurrentPasswordUpdateUseCase < BaseUseCase
+class User::UpdateCurrentPassword < BaseService
   def initialize(current_user, params)
     @current_user = current_user
     @current_password = params[:currentPassword]

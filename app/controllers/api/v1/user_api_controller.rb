@@ -19,31 +19,31 @@ class Api::V1::UserApiController < Api::ApplicationApiController
   end
 
   def update
-    User::ProfileUpdateUseCase.new(@current_user, params).call
+    User::UpdateProfile.new(@current_user, params).call
     render json: @current_user.to_detail, status: :ok
   end
 
   def update_password_by_otp
-    result = User::OtpPasswordUpdateUseCase.new(params).call
+    result = User::UpdateOtpPassword.new(params).call
     return render_result(result) if result.failure?
 
     render json: { message: "성공" }, status: :ok
   end
 
   def update_password
-    result = User::CurrentPasswordUpdateUseCase.new(@current_user, params).call
+    result = User::UpdateCurrentPassword.new(@current_user, params).call
     return render_result(result) if result.failure?
 
     render json: @current_user.to_detail, status: :ok
   end
 
   def reset_data
-    result = User::DataResetUseCase.new(@current_user, params).call
+    result = User::ResetData.new(@current_user, params).call
     render_result(result, success_status: :ok)
   end
 
   def destroy
-    result = User::WithdrawUseCase.new(@current_user, params).call
+    result = User::Withdraw.new(@current_user, params).call
     render_result(result, success_status: :ok)
   end
 end

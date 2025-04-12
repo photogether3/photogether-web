@@ -1,4 +1,4 @@
-class Auth::LoginUseCase < BaseUseCase
+class Auth::Login < BaseService
   def initialize(params)
     @email    = params[:email] || ""
     @password = params[:password] || ""

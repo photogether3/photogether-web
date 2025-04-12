@@ -1,4 +1,4 @@
-class User::DataResetUseCase < BaseUseCase
+class User::ResetData < BaseService
   def initialize(current_user, params)
     @current_user = current_user
     @otp = params[:otp]

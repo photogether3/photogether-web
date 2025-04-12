@@ -1,6 +1,6 @@
 require "test_helper"
 
-class User::ProfileUpdateUseCaseTest < ActiveSupport::TestCase
+class User::UpdateProfileTest < ActiveSupport::TestCase
   include ActionDispatch::TestProcess
 
   setup do
@@ -28,7 +28,7 @@ class User::ProfileUpdateUseCaseTest < ActiveSupport::TestCase
       bio: update_bio,
       file: file
     }
-    result = User::ProfileUpdateUseCase.new(@user, params).call
+    result = User::UpdateProfile.new(@user, params).call
 
     assert result.success?
     @user.reload
@@ -39,7 +39,7 @@ class User::ProfileUpdateUseCaseTest < ActiveSupport::TestCase
 
   test "닉네임만 넘기면 닉네임만 업데이트한다." do
     update_nickname = "UpdateNickname"
-    result = User::ProfileUpdateUseCase.new(@user, nickname: update_nickname).call
+    result = User::UpdateProfile.new(@user, nickname: update_nickname).call
 
     assert result.success?
     @user.reload
@@ -50,7 +50,7 @@ class User::ProfileUpdateUseCaseTest < ActiveSupport::TestCase
 
   test "자기소개글만 넘기면 자기소개글만 업데이트한다." do
     update_bio = "helloworld2"
-    result = User::ProfileUpdateUseCase.new(@user, bio: update_bio).call
+    result = User::UpdateProfile.new(@user, bio: update_bio).call
 
     assert result.success?
     @user.reload
@@ -64,7 +64,7 @@ class User::ProfileUpdateUseCaseTest < ActiveSupport::TestCase
       Rails.root.join("test/fixtures/files/test_img.jpg"),
       "image/jpeg"
     )
-    result = User::ProfileUpdateUseCase.new(@user, file: test_image).call
+    result = User::UpdateProfile.new(@user, file: test_image).call
 
     assert result.success?
     @user.reload

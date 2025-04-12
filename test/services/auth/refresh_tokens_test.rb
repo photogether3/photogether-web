@@ -1,6 +1,6 @@
 require "test_helper"
 
-class Auth::TokenRefreshUseCaseTest < ActiveSupport::TestCase
+class Auth::RefreshTokensTest < ActiveSupport::TestCase
   setup do
     @user = User.create!(
       email_address: "refresh_user@example.com",
@@ -20,7 +20,7 @@ class Auth::TokenRefreshUseCaseTest < ActiveSupport::TestCase
       # 실제 DB에 저장된 리프레시 토큰 확인
       assert RefreshToken.exists?(refresh_token: refresh_token)
 
-      result = Auth::TokenRefreshUseCase.new(refresh_token).call
+      result = Auth::RefreshTokens.new(refresh_token).call
 
       assert result.success?
       assert result.data[:access_token].present?
@@ -29,14 +29,14 @@ class Auth::TokenRefreshUseCaseTest < ActiveSupport::TestCase
     end
 
     test "리프레시 토큰이 비어있으면 실패한다" do
-      result = Auth::TokenRefreshUseCase.new(nil).call
+      result = Auth::RefreshTokens.new(nil).call
 
       assert result.failure?
       assert_equal "리프레시 토큰이 없습니다.", result.error_message
     end
 
     test "DB에 존재하지 않는 리프레시 토큰이면 실패한다" do
-      result = Auth::TokenRefreshUseCase.new("non_existing_token").call
+      result = Auth::RefreshTokens.new("non_existing_token").call
 
       assert result.failure?
       assert_equal "리프레시 토큰이 유효하지 않습니다.", result.error_message
@@ -51,7 +51,7 @@ class Auth::TokenRefreshUseCaseTest < ActiveSupport::TestCase
         last_refreshing_date: Time.current
       )
 
-      result = Auth::TokenRefreshUseCase.new(expired_token).call
+      result = Auth::RefreshTokens.new(expired_token).call
 
       assert result.failure?
       assert_equal "리프레시 토큰이 유효하지 않습니다.", result.error_message

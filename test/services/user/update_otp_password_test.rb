@@ -1,6 +1,6 @@
 require "test_helper"
 
-class User::OtpPasswordUpdateUseCaseTest < ActiveSupport::TestCase
+class User::UpdateOtpPasswordTest < ActiveSupport::TestCase
   setup do
     @password = "Password1!"
     @new_password = "NewPassword2@"
@@ -19,7 +19,7 @@ class User::OtpPasswordUpdateUseCaseTest < ActiveSupport::TestCase
   end
 
   test "이메일 형식이 잘못된 경우 실패한다" do
-    result = User::OtpPasswordUpdateUseCase.new({
+    result = User::UpdateOtpPassword.new({
       email: "invalid-email",
       otp: @otp,
       newPassword: @new_password
@@ -30,7 +30,7 @@ class User::OtpPasswordUpdateUseCaseTest < ActiveSupport::TestCase
   end
 
   test "OTP 형식이 잘못된 경우 실패한다" do
-    result = User::OtpPasswordUpdateUseCase.new({
+    result = User::UpdateOtpPassword.new({
       email: @user.email_address,
       otp: "abc", # 6자리 숫자가 아님
       newPassword: @new_password
@@ -41,7 +41,7 @@ class User::OtpPasswordUpdateUseCaseTest < ActiveSupport::TestCase
   end
 
   test "새 비밀번호가 없을 경우 실패한다" do
-    result = User::OtpPasswordUpdateUseCase.new({
+    result = User::UpdateOtpPassword.new({
       email: @user.email_address,
       otp: @otp,
       newPassword: ""
@@ -52,7 +52,7 @@ class User::OtpPasswordUpdateUseCaseTest < ActiveSupport::TestCase
   end
 
   test "존재하지 않는 사용자의 경우 실패한다" do
-    result = User::OtpPasswordUpdateUseCase.new({
+    result = User::UpdateOtpPassword.new({
       email: "nonexistent@example.com",
       otp: @otp,
       newPassword: @new_password
@@ -63,7 +63,7 @@ class User::OtpPasswordUpdateUseCaseTest < ActiveSupport::TestCase
   end
 
   test "OTP가 일치하지 않을 경우 실패한다" do
-    result = User::OtpPasswordUpdateUseCase.new({
+    result = User::UpdateOtpPassword.new({
       email: @user.email_address,
       otp: "654321", # 잘못된 OTP
       newPassword: @new_password
@@ -74,7 +74,7 @@ class User::OtpPasswordUpdateUseCaseTest < ActiveSupport::TestCase
   end
 
   test "모든 조건이 충족되면 비밀번호가 성공적으로 업데이트된다" do
-    result = User::OtpPasswordUpdateUseCase.new({
+    result = User::UpdateOtpPassword.new({
       email: @user.email_address,
       otp: @otp,
       newPassword: @new_password
@@ -95,7 +95,7 @@ class User::OtpPasswordUpdateUseCaseTest < ActiveSupport::TestCase
 
   test "유효하지 않은 비밀번호 형식은 실패한다" do
     invalid_password = "weak"
-    result = User::OtpPasswordUpdateUseCase.new({
+    result = User::UpdateOtpPassword.new({
       email: @user.email_address,
       otp: @otp,
       newPassword: invalid_password
@@ -108,7 +108,7 @@ class User::OtpPasswordUpdateUseCaseTest < ActiveSupport::TestCase
     # OTP 만료 설정 (과거 시간으로 설정)
     @user.update_column(:otp_expiry_date, 1.day.ago)
 
-    result = User::OtpPasswordUpdateUseCase.new({
+    result = User::UpdateOtpPassword.new({
       email: @user.email_address,
       otp: @otp,
       newPassword: @new_password

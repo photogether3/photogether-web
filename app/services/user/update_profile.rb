@@ -1,4 +1,4 @@
-class User::ProfileUpdateUseCase < BaseUseCase
+class User::UpdateProfile < BaseService
   def initialize(current_user, params)
     @current_user = current_user
     @nickname = params[:nickname] || ""

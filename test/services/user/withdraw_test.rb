@@ -1,6 +1,6 @@
 require "test_helper"
 
-class User::WithdrawUseCaseTest < ActiveSupport::TestCase
+class User::WithdrawTest < ActiveSupport::TestCase
   setup do
     @password = "Password1!"
     @user = User.create!(
@@ -18,21 +18,21 @@ class User::WithdrawUseCaseTest < ActiveSupport::TestCase
   end
 
   test "OTP 형식이 잘못된 경우 실패한다" do
-    result = User::WithdrawUseCase.new(@user, { otp: "abc" }).call
+    result = User::Withdraw.new(@user, { otp: "abc" }).call
 
     assert result.failure?
     assert_equal "OTP는 6자리 숫자여야 합니다.", result.error_message
   end
 
   test "사용자가 없을 경우 실패한다" do
-    result = User::WithdrawUseCase.new(nil, { otp: @otp }).call
+    result = User::Withdraw.new(nil, { otp: @otp }).call
 
     assert result.failure?
     assert_equal "로그인이 필요합니다.", result.error_message
   end
 
   test "OTP가 일치하지 않을 경우 실패한다" do
-    result = User::WithdrawUseCase.new(@user, { otp: "654321" }).call
+    result = User::Withdraw.new(@user, { otp: "654321" }).call
 
     assert result.failure?
     assert_equal "OTP가 유효하지 않습니다.", result.error_message
@@ -40,7 +40,7 @@ class User::WithdrawUseCaseTest < ActiveSupport::TestCase
 
   test "모든 조건이 충족되면 사용자 계정이 삭제된다" do
     user_id = @user.id
-    result = User::WithdrawUseCase.new(@user, { otp: @otp }).call
+    result = User::Withdraw.new(@user, { otp: @otp }).call
 
     assert result.success?
     assert_equal "계정이 삭제되었습니다.", result.data[:message]

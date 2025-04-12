@@ -1,4 +1,4 @@
-class Auth::OtpUseCase < BaseUseCase
+class Auth::Otp < BaseService
   def initialize(params)
     @email    = params[:email] || ""
     @otp      = params[:otp] || nil

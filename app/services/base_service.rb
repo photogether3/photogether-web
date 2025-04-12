@@ -1,4 +1,4 @@
-class BaseUseCase
+class BaseService
   Result = Struct.new(:success?, :failure?, :data, :error_message)
 
   private

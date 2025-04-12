@@ -1,4 +1,4 @@
-class Collection::CreateUseCase < BaseUseCase
+class Collection::Create < BaseService
   def initialize(user_id, params)
     @user_id = user_id
     @category_id = params[:categoryId]

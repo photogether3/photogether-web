@@ -1,6 +1,6 @@
 require "test_helper"
 
-class User::CurrentPasswordUpdateUseCaseTest < ActiveSupport::TestCase
+class User::UpdateCurrentPasswordTest < ActiveSupport::TestCase
   setup do
     @password = "Password1!"
     @user = User.create!(
@@ -14,7 +14,7 @@ class User::CurrentPasswordUpdateUseCaseTest < ActiveSupport::TestCase
   end
 
   test "현재 비밀번호가 없을 경우 실패한다" do
-    result = User::CurrentPasswordUpdateUseCase.new(@user, {
+    result = User::UpdateCurrentPassword.new(@user, {
       newPassword: "NewPassword2@"
     }).call
 
@@ -23,7 +23,7 @@ class User::CurrentPasswordUpdateUseCaseTest < ActiveSupport::TestCase
   end
 
   test "새 비밀번호가 없을 경우 실패한다" do
-    result = User::CurrentPasswordUpdateUseCase.new(@user, {
+    result = User::UpdateCurrentPassword.new(@user, {
       currentPassword: @password
     }).call
 
@@ -32,7 +32,7 @@ class User::CurrentPasswordUpdateUseCaseTest < ActiveSupport::TestCase
   end
 
   test "사용자가 없을 경우 실패한다" do
-    result = User::CurrentPasswordUpdateUseCase.new(nil, {
+    result = User::UpdateCurrentPassword.new(nil, {
       currentPassword: @password,
       newPassword: "NewPassword2@"
     }).call
@@ -42,7 +42,7 @@ class User::CurrentPasswordUpdateUseCaseTest < ActiveSupport::TestCase
   end
 
   test "현재 비밀번호가 일치하지 않을 경우 실패한다" do
-    result = User::CurrentPasswordUpdateUseCase.new(@user, {
+    result = User::UpdateCurrentPassword.new(@user, {
       currentPassword: "WrongPassword1!",
       newPassword: "NewPassword2@"
     }).call
@@ -52,7 +52,7 @@ class User::CurrentPasswordUpdateUseCaseTest < ActiveSupport::TestCase
   end
 
   test "새 비밀번호가 현재 비밀번호와 같을 경우 실패한다" do
-    result = User::CurrentPasswordUpdateUseCase.new(@user, {
+    result = User::UpdateCurrentPassword.new(@user, {
       currentPassword: @password,
       newPassword: @password
     }).call
@@ -63,7 +63,7 @@ class User::CurrentPasswordUpdateUseCaseTest < ActiveSupport::TestCase
 
   test "모든 조건이 충족되면 비밀번호가 성공적으로 업데이트된다" do
     new_password = "NewPassword2@"
-    result = User::CurrentPasswordUpdateUseCase.new(@user, {
+    result = User::UpdateCurrentPassword.new(@user, {
       currentPassword: @password,
       newPassword: new_password
     }).call
@@ -79,7 +79,7 @@ class User::CurrentPasswordUpdateUseCaseTest < ActiveSupport::TestCase
 
   test "유효하지 않은 비밀번호 형식은 실패한다" do
     invalid_password = "weak"
-    result = User::CurrentPasswordUpdateUseCase.new(@user, {
+    result = User::UpdateCurrentPassword.new(@user, {
       currentPassword: @password,
       newPassword: invalid_password
     }).call

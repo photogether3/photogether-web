@@ -1,13 +1,13 @@
 require "test_helper"
 
-class User::RegisterUseCaseTest < ActiveSupport::TestCase
+class User::RegisterTest < ActiveSupport::TestCase
   test "회원가입 성공 시 유저를 반환한다" do
     params = {
       email: "new_user@example.com",
       password: "testPassword1!"
     }
 
-    result = User::RegisterUseCase.new(params).call
+    result = User::Register.new(params).call
 
     puts result.error_message
 
@@ -30,7 +30,7 @@ class User::RegisterUseCaseTest < ActiveSupport::TestCase
       password: "testPassword1!"
     }
 
-    result = User::RegisterUseCase.new(params).call
+    result = User::Register.new(params).call
 
     assert result.failure?
     assert_equal "유효한 이메일을 입력해 주세요.", result.error_message
@@ -42,7 +42,7 @@ class User::RegisterUseCaseTest < ActiveSupport::TestCase
       password: ""
     }
 
-    result = User::RegisterUseCase.new(params).call
+    result = User::Register.new(params).call
 
     assert result.failure?
     assert_equal "비밀번호를 입력해 주세요.", result.error_message

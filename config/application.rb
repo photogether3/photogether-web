@@ -18,7 +18,7 @@ module PhotogetherWeb
 
     config.autoload_paths << Rails.root.join("app", "errors")
     config.autoload_paths << Rails.root.join("app", "services")
-    config.autoload_paths << Rails.root.join("app", "use_cases")
+    config.autoload_paths << Rails.root.join("app", "libs")
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

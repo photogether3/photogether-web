@@ -1,7 +1,7 @@
 # test/use_cases/collection/create_use_case_test.rb
 require "test_helper"
 
-class Collection::CreateUseCaseTest < ActiveSupport::TestCase
+class Collection::CreateTest < ActiveSupport::TestCase
   setup do
     # 테스트 유저 생성
     @user = User.create!(
@@ -23,7 +23,7 @@ class Collection::CreateUseCaseTest < ActiveSupport::TestCase
       title: "새 컬렉션"
     }
 
-    result = Collection::CreateUseCase.new(@user.id, params).call
+    result = Collection::Create.new(@user.id, params).call
 
     assert result.success?
 
@@ -41,7 +41,7 @@ class Collection::CreateUseCaseTest < ActiveSupport::TestCase
       title: "새 컬렉션"
     }
 
-    result = Collection::CreateUseCase.new(@user.id, params).call
+    result = Collection::Create.new(@user.id, params).call
 
     assert result.failure?
     assert_equal "카테고리를 찾을 수 없습니다.", result.error_message
@@ -57,7 +57,7 @@ class Collection::CreateUseCaseTest < ActiveSupport::TestCase
       title: "새 컬렉션"
     }
 
-    result = Collection::CreateUseCase.new(@user.id, params).call
+    result = Collection::Create.new(@user.id, params).call
 
     assert result.failure?
     assert_equal "카테고리를 찾을 수 없습니다.", result.error_message
@@ -69,7 +69,7 @@ class Collection::CreateUseCaseTest < ActiveSupport::TestCase
       title: nil
     }
 
-    result = Collection::CreateUseCase.new(@user.id, params).call
+    result = Collection::Create.new(@user.id, params).call
 
     assert result.failure?
     assert_equal "제목을 입력해 주세요.", result.error_message
@@ -85,7 +85,7 @@ class Collection::CreateUseCaseTest < ActiveSupport::TestCase
       title: ""
     }
 
-    result = Collection::CreateUseCase.new(@user.id, params).call
+    result = Collection::Create.new(@user.id, params).call
 
     assert result.failure?
     assert_equal "제목을 입력해 주세요.", result.error_message
@@ -103,7 +103,7 @@ class Collection::CreateUseCaseTest < ActiveSupport::TestCase
 
     # 존재하지 않는 사용자 ID
     assert_raises(ActiveRecord::RecordInvalid) do
-      Collection::CreateUseCase.new(9999, params).call
+      Collection::Create.new(9999, params).call
     end
   end
 end

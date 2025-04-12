@@ -20,25 +20,23 @@ class Api::V1::CollectionApiController < Api::ApplicationApiController
 
   def show
     collection = get_collection_or_fail
-    render json: collection_with_image_urls(collection), status: :ok
+    render json: collection.to_detail, status: :ok
   end
 
   def create
-    result = Collection::CreateUseCase.new(@current_user.id, params).call
+    result = Collection::Create.new(@current_user.id, params).call
     render_result(result)
   end
 
   def update
-    collection = get_collection_or_fail
-    category = get_category_or_fail
+    result = Collection::Update.new(@current_user.id, params[:id], params).call
 
-    raise CustomError, "수정할 수 없는 사진첩입니다." if collection.type != "DEFAULT"
+    if result.success? && result.data[:collection].present?
+      # 이미지 URL이 포함된 컬렉션 데이터로 교체
+      result.data[:collection] = result.data[:collection].to_detail
+    end
 
-    collection.update!(
-      title: params[:title],
-      category_id: category.id
-    )
-    render json: { message: "사진첩이 업데이트되었어요." }, status: :ok
+    render_result(result)
   end
 
   def destroy
