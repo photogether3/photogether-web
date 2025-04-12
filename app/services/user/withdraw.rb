@@ -1,4 +1,4 @@
-class User::Withdraw < BaseService
+class User::Withdraw
   def initialize(current_user, params)
     @current_user = current_user
     @otp = params[:otp]
