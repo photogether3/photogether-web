@@ -40,14 +40,8 @@ class Api::V1::CollectionApiController < Api::ApplicationApiController
   end
 
   def destroy
-    collection = get_collection_or_fail
-
-    # 게시물 처리 로직 추가
-    handle_collection_posts_before_destroy(collection)
-
-    # 컬렉션 삭제
-    collection.destroy
-    render json: { message: "사진첩이 삭제되었어요." }, status: :ok
+    result = Collection::Destroy.new(@current_user.id, params[:id]).call
+    render_result(result)
   end
 
   private
@@ -67,18 +61,6 @@ class Api::V1::CollectionApiController < Api::ApplicationApiController
         .first
       raise ActiveRecord::RecordNotFound, "사진첩을 찾을 수 없습니다." unless collection
       collection
-    end
-
-    # 사진첩 삭제 전 게시물 처리
-    def handle_collection_posts_before_destroy(collection)
-      # 게시물이 없으면 처리 필요 없음
-      return unless collection.posts.exists?
-
-      # 휴지통 컬렉션 찾거나 생성
-      trash_collection = Collection.find_or_create_trash_for(@current_user)
-
-      # 게시물을 휴지통으로 이동
-      collection.posts.update_all(collection_id: trash_collection.id)
     end
 
     # 사진첩 데이터에 이미지 URL과 변형 URL 추가
