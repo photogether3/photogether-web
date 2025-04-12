@@ -19,8 +19,8 @@ class Api::V1::CollectionApiController < Api::ApplicationApiController
   end
 
   def show
-    collection = get_collection_or_fail
-    render json: collection.to_detail, status: :ok
+    result = Collection::Show.new(@current_user.id, params[:id]).call
+    render_result(result)
   end
 
   def create
