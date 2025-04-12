@@ -45,24 +45,6 @@ class Api::V1::CollectionApiController < Api::ApplicationApiController
   end
 
   private
-
-    # 카테고리를 조회하고 없으면 예외를 발생시킵니다.
-    def get_category_or_fail
-      category = Category.find_by(id: params[:categoryId])
-      raise ActiveRecord::RecordNotFound, "카테고리를 찾을 수 없습니다." unless category
-      category
-    end
-
-    # 사진첩을 조회하고 없으면 예외를 발생시킵니다.
-    def get_collection_or_fail
-      collection = Collection
-        .where(id: params[:id], user_id: @current_user.id)
-        .includes(:category, posts: [ :image_attachment ])
-        .first
-      raise ActiveRecord::RecordNotFound, "사진첩을 찾을 수 없습니다." unless collection
-      collection
-    end
-
     # 사진첩 데이터에 이미지 URL과 변형 URL 추가
     def collection_with_image_urls(collection)
       # 기본 컬렉션 정보 가져오기
