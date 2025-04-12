@@ -1,6 +1,6 @@
 require "test_helper"
 
-class Collection::UpdateUseCaseTest < ActiveSupport::TestCase
+class Collection::UpdateTest < ActiveSupport::TestCase
   setup do
     # 테스트 사용자 생성
     @user = User.create!(
@@ -56,7 +56,7 @@ class Collection::UpdateUseCaseTest < ActiveSupport::TestCase
       categoryId: @category2.id
     }
 
-    result = Collection::UpdateUseCase.new(@user.id, @collection.id, params).call
+    result = Collection::Update.new(@user.id, @collection.id, params).call
 
     assert result.success?
 
@@ -72,7 +72,7 @@ class Collection::UpdateUseCaseTest < ActiveSupport::TestCase
       categoryId: @category2.id
     }
 
-    result = Collection::UpdateUseCase.new(@user.id, 9999, params).call
+    result = Collection::Update.new(@user.id, 9999, params).call
 
     assert result.failure?
     assert_equal "사진첩을 찾을 수 없습니다.", result.error_message
@@ -84,7 +84,7 @@ class Collection::UpdateUseCaseTest < ActiveSupport::TestCase
       categoryId: @category2.id
     }
 
-    result = Collection::UpdateUseCase.new(@user.id, @other_collection.id, params).call
+    result = Collection::Update.new(@user.id, @other_collection.id, params).call
 
     assert result.failure?
     assert_equal "사진첩을 찾을 수 없습니다.", result.error_message
@@ -96,7 +96,7 @@ class Collection::UpdateUseCaseTest < ActiveSupport::TestCase
       categoryId: @category2.id
     }
 
-    result = Collection::UpdateUseCase.new(@user.id, @system_collection.id, params).call
+    result = Collection::Update.new(@user.id, @system_collection.id, params).call
 
     assert result.failure?
     assert_equal "수정할 수 없는 사진첩입니다.", result.error_message
@@ -108,7 +108,7 @@ class Collection::UpdateUseCaseTest < ActiveSupport::TestCase
       categoryId: 9999
     }
 
-    result = Collection::UpdateUseCase.new(@user.id, @collection.id, params).call
+    result = Collection::Update.new(@user.id, @collection.id, params).call
 
     assert result.failure?
     assert_equal "카테고리를 찾을 수 없습니다.", result.error_message
@@ -120,7 +120,7 @@ class Collection::UpdateUseCaseTest < ActiveSupport::TestCase
       categoryId: @category2.id
     }
 
-    result = Collection::UpdateUseCase.new(@user.id, @collection.id, params).call
+    result = Collection::Update.new(@user.id, @collection.id, params).call
 
     assert result.failure?
     assert_equal "제목을 입력해 주세요.", result.error_message

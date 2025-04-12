@@ -1,5 +1,6 @@
 class Collection::Update
   include CollectionConcern
+  include CategoryConcern
 
   def initialize(user_id, collection_id, params)
     @user_id = user_id
