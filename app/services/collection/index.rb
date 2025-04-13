@@ -59,7 +59,8 @@ class Collection::Index
       {
         id: post.id,
         blur: variants[:blur] ? url_for(variants[:blur]) : nil,
-        grid: variants[:grid] ? url_for(variants[:grid]) : nil
+        grid: variants[:grid] ? url_for(variants[:grid]) : nil,
+        detail: variants[:detail] ? url_for(variants[:detail]) : nil
       }
     end.compact
 
