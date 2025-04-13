@@ -13,6 +13,8 @@ class Collection::Destroy
 
     collection = collection_result.data
 
+    return Result.failure("기본 제공 사진첩을 삭제할 수 없습니다.") if collection.is_system_collection?
+
     # 게시물 처리 로직 실행
     handle_posts_before_destroy(collection)
 

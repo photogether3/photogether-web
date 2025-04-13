@@ -24,6 +24,12 @@ class Collection < ApplicationRecord
     select("collections.*, (SELECT COUNT(*) FROM posts WHERE posts.collection_id = collections.id) AS posts_count")
   }
 
+  def is_system_collection?
+    # 시스템 관리 사진첩인지 확인하는 메서드 (삭제 불가능)
+    # TRASH 또는 UNCATEGORIZED인 경우 true
+    self.type == "TRASH" || self.type == "UNCATEGORIZED"
+  end
+
   # ------------------------------------------------------
   # 상세 반환타입
   # ------------------------------------------------------
