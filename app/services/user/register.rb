@@ -32,7 +32,9 @@ class User::Register
 
       puts "회원가입 성공: #{user.inspect}"
 
-      Result.success(user)
+      return Result.success(user) if @with_user
+
+      Result.success
     end
   end
 
