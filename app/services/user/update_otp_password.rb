@@ -2,7 +2,7 @@ class User::UpdateOtpPassword
   def initialize(params)
     @email = params[:email]
     @otp = params[:otp]
-    @new_password = params[:newPassword]
+    @new_password = params[:password]
   end
 
   def call

@@ -22,7 +22,7 @@ class User::UpdateOtpPasswordTest < ActiveSupport::TestCase
     result = User::UpdateOtpPassword.new({
       email: "invalid-email",
       otp: @otp,
-      newPassword: @new_password
+      password: @new_password
     }).call
 
     assert result.failure?
@@ -33,7 +33,7 @@ class User::UpdateOtpPasswordTest < ActiveSupport::TestCase
     result = User::UpdateOtpPassword.new({
       email: @user.email_address,
       otp: "abc", # 6자리 숫자가 아님
-      newPassword: @new_password
+      password: @new_password
     }).call
 
     assert result.failure?
@@ -44,7 +44,7 @@ class User::UpdateOtpPasswordTest < ActiveSupport::TestCase
     result = User::UpdateOtpPassword.new({
       email: @user.email_address,
       otp: @otp,
-      newPassword: ""
+      password: ""
     }).call
 
     assert result.failure?
@@ -55,7 +55,7 @@ class User::UpdateOtpPasswordTest < ActiveSupport::TestCase
     result = User::UpdateOtpPassword.new({
       email: "nonexistent@example.com",
       otp: @otp,
-      newPassword: @new_password
+      password: @new_password
     }).call
 
     assert result.failure?
@@ -66,7 +66,7 @@ class User::UpdateOtpPasswordTest < ActiveSupport::TestCase
     result = User::UpdateOtpPassword.new({
       email: @user.email_address,
       otp: "654321", # 잘못된 OTP
-      newPassword: @new_password
+      password: @new_password
     }).call
 
     assert result.failure?
@@ -77,7 +77,7 @@ class User::UpdateOtpPasswordTest < ActiveSupport::TestCase
     result = User::UpdateOtpPassword.new({
       email: @user.email_address,
       otp: @otp,
-      newPassword: @new_password
+      password: @new_password
     }).call
 
     assert result.success?
@@ -98,7 +98,7 @@ class User::UpdateOtpPasswordTest < ActiveSupport::TestCase
     result = User::UpdateOtpPassword.new({
       email: @user.email_address,
       otp: @otp,
-      newPassword: invalid_password
+      password: invalid_password
     }).call
 
     assert result.failure?
@@ -111,7 +111,7 @@ class User::UpdateOtpPasswordTest < ActiveSupport::TestCase
     result = User::UpdateOtpPassword.new({
       email: @user.email_address,
       otp: @otp,
-      newPassword: @new_password
+      password: @new_password
     }).call
 
     assert result.failure?
