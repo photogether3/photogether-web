@@ -8,11 +8,11 @@ class Post::Destroys
   end
 
   def call
-    posts_result = get_post_group
+    posts_result = get_post_group(@post_ids)
     return posts_result if posts_result.failure?
     posts = posts_result.data
 
-    trash_collection = find_or_create_trash_for(@current_user)
+    trash_collection = find_or_create_trash_for(@user_id)
 
     posts.update_all(collection_id: trash_collection.id)
 

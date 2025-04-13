@@ -11,6 +11,6 @@ module PostConcern
   def get_post_group(post_ids = [])
     posts = Post.where(id: post_ids)
     return Result.failure("게시물 그룹을 찾을 수 없습니다.") if posts.empty?
-    posts
+    Result.success(posts)
   end
 end
