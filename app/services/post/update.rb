@@ -26,7 +26,7 @@ class Post::Update
 
       # 게시물 업데이트
       post.update!(
-        title: @title.presence,
+        title: @title.presence || "",
         content: @content.presence || ""
       )
 

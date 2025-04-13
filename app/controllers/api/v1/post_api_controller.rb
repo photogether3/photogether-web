@@ -3,7 +3,8 @@ class Api::V1::PostApiController < Api::ApplicationApiController
   before_action :authenticate_user!
 
   def index
-    result = Post::Index.new(@current_user.id, params[:collectionId]).call
+    puts params
+    result = Post::Index.new(@current_user.id, params).call
     render_result(result)
   end
 
