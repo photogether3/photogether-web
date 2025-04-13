@@ -2,11 +2,9 @@ class Api::V1::ImageApiController < Api::ApplicationApiController
   before_action :authenticate_user!
 
   def preview
-    file = params[:file]
-    raise CustomError, "파일은 필수값 입니다." if file.blank?
-
-    lines = VisionService.extract_text_lines(file)
-
-    render json: { lines: lines }, status: :ok
+    result = Images::GoogleVision
+      .new(params[:file])
+      .extract_text_lines
+    render_result(result)
   end
 end
