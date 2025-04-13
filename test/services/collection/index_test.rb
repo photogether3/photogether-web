@@ -70,6 +70,8 @@ class Collection::IndexTest < ActiveSupport::TestCase
     # 서비스 실행 (기본 정렬: created_at desc)
     result = Collection::Index.new(@user.id).call
 
+    puts result.inspect
+
     # 결과 확인
     assert result.success?
     assert_equal 3, result.data[:total_item_count]

@@ -2,7 +2,7 @@ class Collection::Index
   include PaginationConcern
   include Rails.application.routes.url_helpers
 
-  def initialize(user_id, params)
+  def initialize(user_id, params = {})
     @user_id = user_id
 
     @page = params[:page] || 1

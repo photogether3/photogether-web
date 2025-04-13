@@ -2,7 +2,7 @@ class Post::Index
   include PaginationConcern
   include CollectionConcern
 
-  def initialize(user_id, params)
+  def initialize(user_id, params = {})
     @user_id = user_id
     @collection_id = params[:collectionId]
     @page = params[:page] || 1
