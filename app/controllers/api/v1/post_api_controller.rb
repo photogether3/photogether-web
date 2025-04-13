@@ -25,16 +25,8 @@ class Api::V1::PostApiController < Api::ApplicationApiController
   end
 
   def create
-    title, content = get_title_and_content
-    collection = get_collection_or_fail
-
-    file = params[:file]
-    raise CustomError, "파일은 필수값 입니다." if file.blank?
-
-    metadata_list = parse_metadata_string
-
-    Post.create_with_metadata(@current_user.id, collection.id, title, content, metadata_list, file)
-    render json: { message: "게시물이 생성되었습니다." }, status: :ok
+    result = Post::Create.new(@current_user.id, params).call
+    render_result(result)
   end
 
   def update

@@ -1,109 +1,80 @@
-# test/use_cases/collection/create_use_case_test.rb
-require "test_helper"
+class Post::Create
+  include CollectionConcern
+  include Rails.application.routes.url_helpers
 
-class Collection::CreateTest < ActiveSupport::TestCase
-  setup do
-    # 테스트 유저 생성
-    @user = User.create!(
-      email_address: "collection_creator@example.com",
-      password: "Password1!",
-      password_confirmation: "Password1!",
-      nickname: "컬렉션생성자",
-      role_id: 1,
-      is_email_verified: true
-    )
-
-    # 테스트용 카테고리 생성
-    @category = Category.create!(name: "테스트 카테고리")
+  def initialize(user_id, params)
+    @user_id = user_id
+    @collection_id = params[:collectionId]
+    @title = params[:title]
+    @content = params[:content]
+    @file = params[:file]
+    @metadata_string = params[:metadataStringify] # 메타데이터 JSON 문자열
+    @params = params
   end
 
-  test "유효한 파라미터로 컬렉션을 성공적으로 생성한다" do
-    params = {
-      categoryId: @category.id,
-      title: "새 컬렉션"
-    }
+  def call
+    # 파일 필수 검증
+    return Result.failure("파일은 필수값 입니다.") if @file.blank?
 
-    result = Collection::Create.new(@user.id, params).call
+    # 컬렉션 조회
+    collection_result = find_collection(@collection_id, @user_id)
+    return collection_result if collection_result.failure?
 
-    assert result.success?
+    # 메타데이터 파싱
+    begin
+      metadata_list = parse_metadata_string
+    rescue => e
+      Rails.logger.error("메타데이터 파싱 오류: #{e.message}")
+      return Result.failure("메타데이터 형식이 올바르지 않습니다.")
+    end
 
-    # 컬렉션이 실제로 생성됐는지 확인
-    collection = Collection.last
-    assert_equal "새 컬렉션", collection.title
-    assert_equal @category.id, collection.category_id
-    assert_equal @user.id, collection.user_id
-    assert_equal "DEFAULT", collection.type
+    # 게시물 생성
+    begin
+      post = Post.new(
+        title: @title,
+        content: @content,
+        user_id: @user_id,
+        collection_id: collection_result.data.id
+      )
+
+      # 이미지 첨부
+      post.image.attach(@file)
+
+      # 저장
+      if post.save
+        # 메타데이터 생성
+        create_post_metadata(post, metadata_list)
+
+        Result.success
+      else
+        Result.failure("게시물 생성에 실패했습니다: #{post.errors.full_messages.join(', ')}")
+      end
+    rescue => e
+      Rails.logger.error("게시물 생성 오류: #{e.message}")
+      Result.failure("게시물 생성에 실패했습니다.")
+    end
   end
 
-  test "존재하지 않는 카테고리 ID로 컬렉션 생성을 시도하면 실패한다" do
-    params = {
-      categoryId: 9999, # 존재하지 않는 카테고리 ID
-      title: "새 컬렉션"
-    }
+  private
 
-    result = Collection::Create.new(@user.id, params).call
+  # 메타데이터 문자열을 파싱
+  def parse_metadata_string
+    return [] if @metadata_string.blank?
 
-    assert result.failure?
-    assert_equal "카테고리를 찾을 수 없습니다.", result.error_message
-
-    # 컬렉션이 생성되지 않았는지 확인
-    initial_count = Collection.count
-    assert_equal initial_count, Collection.count
+    JSON.parse(@metadata_string)
+  rescue JSON::ParserError => e
+    Rails.logger.error("메타데이터 파싱 오류: #{e.message}")
+    raise
   end
 
-  test "카테고리 ID가 nil이면 실패한다" do
-    params = {
-      categoryId: nil,
-      title: "새 컬렉션"
-    }
-
-    result = Collection::Create.new(@user.id, params).call
-
-    assert result.failure?
-    assert_equal "카테고리를 찾을 수 없습니다.", result.error_message
-  end
-
-  test "제목이 없으면 컬렉션을 생성할 수 없다" do
-    params = {
-      categoryId: @category.id,
-      title: nil
-    }
-
-    result = Collection::Create.new(@user.id, params).call
-
-    assert result.failure?
-    assert_equal "제목을 입력해 주세요.", result.error_message
-
-    # 컬렉션이 생성되지 않았는지 확인
-    initial_count = Collection.count
-    assert_equal initial_count, Collection.count
-  end
-
-  test "제목이 빈 문자열이면 컬렉션을 생성할 수 없다" do
-    params = {
-      categoryId: @category.id,
-      title: ""
-    }
-
-    result = Collection::Create.new(@user.id, params).call
-
-    assert result.failure?
-    assert_equal "제목을 입력해 주세요.", result.error_message
-
-    # 컬렉션이 생성되지 않았는지 확인
-    initial_count = Collection.count
-    assert_equal initial_count, Collection.count
-  end
-
-  test "유효하지 않은 사용자 ID로는 컬렉션을 생성할 수 없다" do
-    params = {
-      categoryId: @category.id,
-      title: "새 컬렉션"
-    }
-
-    # 존재하지 않는 사용자 ID
-    assert_raises(ActiveRecord::RecordInvalid) do
-      Collection::Create.new(9999, params).call
+  # 게시물 메타데이터 생성
+  def create_post_metadata(post, metadata_list)
+    metadata_list.each do |metadata|
+      post.post_metadata.create!(
+        content: metadata["content"] || metadata["key"], # content 또는 key 필드 사용
+        is_public: metadata["isPublic"] || true,
+        has_link: metadata["hasLink"] || false
+      )
     end
   end
 end
