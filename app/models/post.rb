@@ -1,4 +1,6 @@
 class Post < ApplicationRecord
+  include Rails.application.routes.url_helpers
+  
   # -------------------------------------------------------------
   # 관계 설정
   # -------------------------------------------------------------
@@ -21,7 +23,8 @@ class Post < ApplicationRecord
   # 상세 조회용 메서드
   # -------------------------------------------------------------
   def to_detail
-    {
+    # 기본 데이터 구성
+    post_data = {
       id: id,
       title: title,
       content: content,
@@ -38,6 +41,27 @@ class Post < ApplicationRecord
       } : nil,
       metadata_list: post_metadata.map(&:to_hash)
     }
+
+    # 이미지 URL 추가
+    if image.attached?
+      variants = image_variants
+
+      post_data.merge!(
+        image_url: Rails.application.routes.url_helpers.url_for(image), # 원본 이미지 URL
+        images: {
+          blur: variants[:blur] ? Rails.application.routes.url_helpers.url_for(variants[:blur]) : nil,
+          grid: variants[:grid] ? Rails.application.routes.url_helpers.url_for(variants[:grid]) : nil,
+          detail: variants[:detail] ? Rails.application.routes.url_helpers.url_for(variants[:detail]) : nil
+        }
+      )
+    else
+      post_data.merge!(
+        image_url: nil,
+        images: { blur: nil, grid: nil, detail: nil }
+      )
+    end
+
+    post_data
   end
 
   # -------------------------------------------------------------
