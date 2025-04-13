@@ -19,6 +19,6 @@ class Post::Move
 
     posts.update_all(collection_id: collection.id)
 
-    success
+    Result.success
   end
 end
