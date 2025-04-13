@@ -8,7 +8,7 @@ class Post::Destroys
   end
 
   def call
-    posts_result = get_post_group(@post_ids)
+    posts_result = get_post_group(@user_id, @post_ids)
     return posts_result if posts_result.failure?
     posts = posts_result.data
 

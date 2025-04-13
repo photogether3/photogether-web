@@ -13,7 +13,7 @@ class Post::Move
     return collection_result if collection_result.failure?
     collection = collection_result.data
 
-    posts_result = get_post_group(@post_ids)
+    posts_result = get_post_group(@user_id, @post_ids)
     return posts_result if posts_result.failure?
     posts = posts_result.data
 
