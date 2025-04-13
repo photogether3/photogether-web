@@ -23,11 +23,8 @@ class Api::V1::PostApiController < Api::ApplicationApiController
   end
 
   def change_collection
-    collection = get_collection_or_fail
-    posts = get_post_group
-
-    posts.update_all(collection_id: collection.id)
-    render json: { message: "게시물이 이동되었습니다." }, status: :ok
+    result = Post::Move.new(@current_user.id, params[:postIds], params[:collectionId]).call
+    render_result(result)
   end
 
   def destroys
