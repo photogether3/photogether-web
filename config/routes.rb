@@ -2,6 +2,10 @@ Rails.application.routes.draw do
   # get "up" => "rails/health#show", as: :rails_health_check
   root "landing#index"
 
+  # 정책 라우트 설정
+  get "policies/:kind", to: "policies#show", as: :policy
+  get "policies/:kind/:version", to: "policies#show", as: :policy_version
+
   # 관리자 페이지
   namespace :admin do
     root "dashboard#index"
