@@ -25,6 +25,10 @@ Rails.application.routes.draw do
   # API 제공
   namespace :api do
     namespace :v1 do
+      # policy group
+      get "policies", to: "policy_api#index"
+      get "policies/:id", to: "policy_api#show"
+
       # auth group
       post "auth/login", to: "auth_api#login"
       post "auth/register", to: "auth_api#register"
