@@ -213,7 +213,7 @@ paths:
     post:
       summary: 회원가입
       deprecated: false
-      description: ''
+      description: '회원가입 시 필수 약관에 모두 동의해야 합니다.'
       tags:
         - 인증
       parameters: []
@@ -229,18 +229,51 @@ paths:
                 password:
                   type: string
                   description: 패스워드
+                policy_ids:
+                  type: array
+                  items:
+                    type: integer
+                  description: 동의한 약관 ID 목록
               required:
                 - email
                 - password
+                - policy_ids
+            examples:
+              '1':
+                value:
+                  email: "user@example.com"
+                  password: "Password123!"
+                  policy_ids: [1, 2, 3]
+                description: '필수 약관 및 선택적 약관 동의'
       responses:
-        '200':
-          description: ''
+        '201':
+          description: '회원가입 성공'
           content:
             application/json:
               schema:
                 type: object
-                properties: {}
-          headers: {}
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+              examples:
+                '1':
+                  summary: Success
+                  value:
+                    success: true
+        '422':
+          description: '유효성 검증 실패'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "필수 약관에 모두 동의해야 합니다. 누락된 약관: 서비스 이용약관, 개인정보처리방침"
       security: []
   /v1/auth/otp/generate:
     post:
