@@ -13,6 +13,8 @@ class User < ApplicationRecord
   has_many :favorites, dependent: :destroy
   has_many :favorite_categories, through: :favorites, source: :category
   has_many :posts, dependent: :destroy
+  has_many :policy_acceptances, dependent: :destroy
+  has_many :accepted_policies, through: :policy_acceptances, source: :policy
 
   # ------------------------------------------------------
   # 유효성 검사 (이메일, 비밀번호, 닉네임)

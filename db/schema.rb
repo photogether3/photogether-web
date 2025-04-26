@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_13_110432) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_26_073516) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -65,6 +65,31 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_13_110432) do
     t.index ["category_id"], name: "index_favorites_on_category_id"
     t.index ["user_id", "category_id"], name: "index_favorites_on_user_id_and_category_id", unique: true
     t.index ["user_id"], name: "index_favorites_on_user_id"
+  end
+
+  create_table "policies", force: :cascade do |t|
+    t.string "title", null: false
+    t.string "kind", null: false
+    t.text "content", null: false
+    t.string "version", null: false
+    t.boolean "is_active", default: true
+    t.datetime "effective_date", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["kind", "version"], name: "index_policies_on_kind_and_version", unique: true
+  end
+
+  create_table "policy_acceptances", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "policy_id", null: false
+    t.datetime "accepted_at", null: false
+    t.string "ip_address"
+    t.string "user_agent"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["policy_id"], name: "index_policy_acceptances_on_policy_id"
+    t.index ["user_id", "policy_id"], name: "index_policy_acceptances_on_user_id_and_policy_id", unique: true
+    t.index ["user_id"], name: "index_policy_acceptances_on_user_id"
   end
 
   create_table "post_metadata", force: :cascade do |t|
@@ -131,6 +156,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_13_110432) do
   add_foreign_key "collections", "users", on_delete: :cascade
   add_foreign_key "favorites", "categories"
   add_foreign_key "favorites", "users"
+  add_foreign_key "policy_acceptances", "policies"
+  add_foreign_key "policy_acceptances", "users"
   add_foreign_key "post_metadata", "posts", on_delete: :cascade
   add_foreign_key "posts", "collections"
   add_foreign_key "posts", "users", on_delete: :cascade
