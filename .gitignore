@@ -39,3 +39,5 @@
 config/vision-key.json
 
 node_modules
+
+docker-compose.server.yml
