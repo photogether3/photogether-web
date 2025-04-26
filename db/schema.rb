@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_26_073516) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_26_074347) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -83,8 +83,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_26_073516) do
     t.bigint "user_id", null: false
     t.bigint "policy_id", null: false
     t.datetime "accepted_at", null: false
-    t.string "ip_address"
-    t.string "user_agent"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["policy_id"], name: "index_policy_acceptances_on_policy_id"
