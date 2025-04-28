@@ -2,7 +2,7 @@ class User::Register
   def initialize(params)
     @email     = params[:email] || ""
     @password  = params[:password] || ""
-    @policy_ids = params[:policy_ids] || []
+    @policy_ids = params[:policyIds] || []
     @with_user = true # 프로세스가 끝날 때 user 데이터를 반환할지 여부
   end
 

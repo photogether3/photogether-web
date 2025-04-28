@@ -38,7 +38,7 @@ class User::RegisterTest < ActiveSupport::TestCase
     params = {
       email: "new_user@example.com",
       password: "testPassword1!",
-      policy_ids: [ @required_policy1.id, @required_policy2.id, @optional_policy.id ]
+      policyIds: [ @required_policy1.id, @required_policy2.id, @optional_policy.id ]
     }
 
     result = User::Register.new(params).call
@@ -70,7 +70,7 @@ class User::RegisterTest < ActiveSupport::TestCase
     params = {
       email: "new_user2@example.com",
       password: "testPassword1!",
-      policy_ids: [ @required_policy1.id, @required_policy2.id ] # 선택 약관 제외
+      policyIds: [ @required_policy1.id, @required_policy2.id ] # 선택 약관 제외
     }
 
     result = User::Register.new(params).call
@@ -94,7 +94,7 @@ class User::RegisterTest < ActiveSupport::TestCase
     params = {
       email: "new_user3@example.com",
       password: "testPassword1!",
-      policy_ids: [ @required_policy1.id, @optional_policy.id ] # 필수 약관 2 누락
+      policyIds: [ @required_policy1.id, @optional_policy.id ] # 필수 약관 2 누락
     }
 
     result = User::Register.new(params).call
@@ -108,7 +108,7 @@ class User::RegisterTest < ActiveSupport::TestCase
     params = {
       email: "new_user4@example.com",
       password: "testPassword1!",
-      policy_ids: [] # 약관 동의 없음
+      policyIds: [] # 약관 동의 없음
     }
 
     result = User::Register.new(params).call
@@ -123,7 +123,7 @@ class User::RegisterTest < ActiveSupport::TestCase
     params = {
       email: "invalid_email",
       password: "testPassword1!",
-      policy_ids: [ @required_policy1.id, @required_policy2.id ]
+      policyIds: [ @required_policy1.id, @required_policy2.id ]
     }
 
     result = User::Register.new(params).call
@@ -136,7 +136,7 @@ class User::RegisterTest < ActiveSupport::TestCase
     params = {
       email: "new_user@example.com",
       password: "",
-      policy_ids: [ @required_policy1.id, @required_policy2.id ]
+      policyIds: [ @required_policy1.id, @required_policy2.id ]
     }
 
     result = User::Register.new(params).call
