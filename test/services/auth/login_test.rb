@@ -26,6 +26,7 @@ class Auth::LoginTest < ActiveSupport::TestCase
 
     assert result.failure?
     assert_equal "유효한 이메일을 입력해 주세요.", result.error_message
+    assert_equal "INVALID_EMAIL", result.error_code
   end
 
   test "등록되지 않은 이메일이면 실패한다" do
@@ -33,6 +34,7 @@ class Auth::LoginTest < ActiveSupport::TestCase
 
     assert result.failure?
     assert_equal "아이디 또는 비밀번호를 찾을 수 없습니다.", result.error_message
+    assert_equal "INVALID_CREDENTIALS", result.error_code
   end
 
   test "이메일 인증이 안 된 경우 실패한다" do
@@ -42,6 +44,7 @@ class Auth::LoginTest < ActiveSupport::TestCase
 
     assert result.failure?
     assert_equal "이메일 인증을 완료해주세요.", result.error_message
+    assert_equal "EMAIL_NOT_VERIFIED", result.error_code
   end
 
   test "비밀번호가 없으면 실패한다" do
@@ -49,6 +52,7 @@ class Auth::LoginTest < ActiveSupport::TestCase
 
     assert result.failure?
     assert_equal "비밀번호를 입력해 주세요.", result.error_message
+    assert_equal "MISSING_PASSWORD", result.error_code
   end
 
   test "비밀번호가 틀리면 실패한다" do
@@ -56,5 +60,6 @@ class Auth::LoginTest < ActiveSupport::TestCase
 
     assert result.failure?
     assert_equal "아이디 또는 비밀번호를 찾을 수 없습니다.", result.error_message
+    assert_equal "INVALID_CREDENTIALS", result.error_code
   end
 end
