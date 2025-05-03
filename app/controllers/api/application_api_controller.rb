@@ -59,7 +59,7 @@ class Api::ApplicationApiController < ActionController::API
       else
         render json: {
           errorCode: 400,
-          code: "C_BAD_REQUEST",
+          code: result.error_code || "C_BAD_REQUEST", # 에러 코드가 있으면 사용, 없으면 기본값
           message: result.error_message
         }, status: failure_status
       end
