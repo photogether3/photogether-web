@@ -15,6 +15,6 @@ class Collection::Show
     collection = collection_result.data
 
     # 성공 결과 반환 (collection 객체를 그대로 반환하지 않고 to_detail 메서드 호출 결과를 반환)
-    Result.success(collection: collection.to_detail)
+    Result.success(collection.to_detail)
   end
 end

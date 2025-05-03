@@ -1,4 +1,3 @@
-# test/services/collection/show_test.rb
 require "test_helper"
 
 class Collection::ShowTest < ActiveSupport::TestCase
@@ -49,10 +48,10 @@ class Collection::ShowTest < ActiveSupport::TestCase
 
     # 결과 확인
     assert result.success?
-    assert_not_nil result.data[:collection]
-    assert_equal @collection.id, result.data[:collection][:id]
-    assert_equal @collection.title, result.data[:collection][:title]
-    assert_equal @category.id, result.data[:collection][:category][:id]
+    assert_not_nil result.data
+    assert_equal @collection.id, result.data[:id]
+    assert_equal @collection.title, result.data[:title]
+    assert_equal @category.id, result.data[:category][:id]
   end
 
   test "존재하지 않는 컬렉션 ID로 조회 시 실패한다" do
