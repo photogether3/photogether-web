@@ -56,7 +56,7 @@ class Collection < ApplicationRecord
       .joins("INNER JOIN active_storage_attachments ON active_storage_attachments.record_id = posts.id AND active_storage_attachments.record_type = 'Post' AND active_storage_attachments.name = 'image'")
       .distinct
       .order(id: :desc)
-      .limit(3)
+      .limit(10)
 
     # 각 이미지의 원본 및 변형 URL 생성
     recent_posts_with_images.map do |post|
