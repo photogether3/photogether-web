@@ -7,7 +7,7 @@ class PostMetadatum < ApplicationRecord
   # ---------------------------------------------------------------
   # 유효성 검증
   # ---------------------------------------------------------------
-  validates :content, presence: true, length: { in: 1..30 }
+  validates :content, presence: true, length: { in: 1..100 }
   validates :is_public, inclusion: { in: [ true, false ] }
   validates :has_link, inclusion: { in: [ true, false ] }
 
