@@ -17,27 +17,37 @@ class Post::Update
 
     post = post_result.data
 
-    # 게시물 업데이트
-    Post.transaction do
-      # 제목이 없고 메타데이터가 있는 경우 메타데이터에서 제목 추출
-      if @title.blank?
-        @title = extract_title_from_metadata(@metadata_list)
+    begin
+      # 게시물 업데이트
+      Post.transaction do
+        # 제목이 없고 메타데이터가 있는 경우 메타데이터에서 제목 추출
+        if @title.blank?
+          @title = extract_title_from_metadata(@metadata_list)
+        end
+
+        # 게시물 업데이트
+        post.update!(
+          title: @title.presence || "",
+          content: @content.presence || ""
+        )
+
+        # 기존 메타데이터 삭제
+        post.post_metadata.delete_all
+
+        # 새로운 메타데이터 추가
+        create_post_metadata(post, @metadata_list)
       end
 
-      # 게시물 업데이트
-      post.update!(
-        title: @title.presence || "",
-        content: @content.presence || ""
-      )
-
-      # 기존 메타데이터 삭제
-      post.post_metadata.delete_all
-
-      # 새로운 메타데이터 추가
-      create_post_metadata(post, @metadata_list)
+      # 성공 결과 반환
+      Result.success
+    rescue ArgumentError => e
+      # 메타데이터 길이 제한 예외 처리
+      Rails.logger.error("메타데이터 검증 오류: #{e.message}")
+      Result.failure(e.message, "METADATA_VALIDATION_ERROR")
+    rescue => e
+      # 기타 예외 처리
+      Rails.logger.error("게시물 생성 오류: #{e.message}")
+      Result.failure("게시물 생성 중 오류가 발생했습니다.")
     end
-
-    # 성공 결과 반환
-    Result.success
   end
 end

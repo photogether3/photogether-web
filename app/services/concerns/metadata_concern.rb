@@ -1,4 +1,6 @@
 module MetadataConcern
+  MAX_METADATA_LENGTH = 100
+
   private
 
   # 메타데이터에서 제목 추출
@@ -26,6 +28,23 @@ module MetadataConcern
       content = metadata["content"] || metadata[:content]
       is_public = !!metadata["isPublic"]
       has_link = !!metadata["hasLink"]
+
+      if content.blank?
+        Rails.logger.warn("메타데이터 내용 없음(#{index+1}번째): #{content}")
+        raise ArgumentError, "메타데이터 텍스트는 필수값입니다. [#{index+1}]번째 항목"
+      end
+
+      if content.to_s.length > MAX_METADATA_LENGTH
+        Rails.logger.warn("메타데이터 길이 초과(#{index+1}번째): #{content.to_s.length}자")
+        # 두 가지 방법 중 선택
+
+        # 방법 1: 에러 발생시키기
+        raise ArgumentError, "메타데이터 텍스트는 #{MAX_METADATA_LENGTH}자를 초과할 수 없습니다. [#{index+1}]번째 항목"
+
+        # 방법 2: 자동으로 자르기 (주석 처리된 대안)
+        # content = content.to_s[0...MAX_METADATA_LENGTH]
+        # Rails.logger.info("메타데이터 길이 초과로 자동 잘림: #{content}")
+      end
 
       puts "메타데이터 생성: #{content}, 공개 여부: #{is_public}, 링크 여부: #{has_link}"
 
