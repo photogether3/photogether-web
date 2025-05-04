@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_26_081722) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_04_114220) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -94,7 +94,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_26_081722) do
   create_table "post_metadata", force: :cascade do |t|
     t.integer "post_id", null: false
     t.integer "rank", default: 1, null: false
-    t.string "content", limit: 50, null: false
+    t.string "content", limit: 100, null: false
     t.boolean "is_public", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
