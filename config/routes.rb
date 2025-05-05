@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   root "landing#index"
 
   # 정책 라우트 설정
+  get "policies/data-deletion", to: "policies#data_deletion"
   get "policies/:kind", to: "policies#show", as: :policy
   get "policies/:kind/:version", to: "policies#show", as: :policy_version
 

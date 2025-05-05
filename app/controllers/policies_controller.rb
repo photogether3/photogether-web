@@ -18,4 +18,7 @@ class PoliciesController < ApplicationController
       format.json { render json: @policy }
     end
   end
+
+  def data_deletion
+  end
 end
