@@ -6,7 +6,9 @@ class User < ApplicationRecord
   # ------------------------------------------------------
   belongs_to :role
   has_secure_password validations: false
-  has_one_attached :image
+  has_one_attached :image do |attachable|
+    attachable.variant :profile, resize_to_fill: [ 250, 250 ]
+  end
   has_one :refresh_token, dependent: :destroy
   has_many :sessions, dependent: :destroy
   has_many :collections, dependent: :destroy
@@ -74,9 +76,6 @@ class User < ApplicationRecord
     end
   end
 
-  # ------------------------------------------------------
-  # JSON 형식 반환
-  # ------------------------------------------------------
   def to_detail(options = {})
     result = {
       id: id,
@@ -87,8 +86,16 @@ class User < ApplicationRecord
       email: email_address
     }
 
-    # 이미지 URL 추가
-    result[:image_url] = image.attached? ? Rails.application.routes.url_helpers.url_for(image) : nil
+    # 이미지 URL 추가 - 크롭된 250x250 프로필 이미지 사용
+    if image.attached?
+      # variant(:profile)을 사용하여 미리 정의된 250x250 크기의 이미지 제공
+      result[:image_url] = Rails.application.routes.url_helpers.url_for(image.variant(:profile))
+
+      # 필요한 경우 원본 이미지 URL도 추가할 수 있습니다
+      result[:original_image_url] = Rails.application.routes.url_helpers.url_for(image)
+    else
+      result[:image_url] = nil
+    end
 
     # 추가 옵션 병합
     result.merge!(options)
