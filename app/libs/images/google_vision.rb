@@ -4,21 +4,10 @@ class Images::GoogleVision
   end
 
   # Google Vision API를 사용하여 이미지에서 텍스트를 추출하는 메소드
-  # @param file [File] 이미지 파일
-  # @return [Array<String>] 추출된 텍스트 줄 배열
   def extract_text_lines
-    return Result.failure("파일은 필수값 입니다.", "FILE_REQUIRED") if @file.blank?
-
-    # 파일이 비어있는 경우 확인
-    if @file.size == 0
-      return Result.failure("이미지 파일이 비어있습니다.", "EMPTY_FILE")
-    end
-
-    # 파일 형식 확인 (이미지 파일인지)
-    valid_mime_types = [ "image/jpeg", "image/png", "image/gif", "image/bmp", "image/webp" ]
-    unless valid_mime_types.include?(@file.content_type)
-      return Result.failure("올바른 이미지 파일 형식이 아닙니다.", "INVALID_IMAGE_FORMAT")
-    end
+    # 이미지 파일 검증 (클래스 메서드 사용)
+    validation_result = Shared::ImageValidator.validate_image_file(@file, max_size: 1.megabyte)
+    return validation_result if validation_result.failure?
 
     begin
       vision = Google::Cloud::Vision.image_annotator
