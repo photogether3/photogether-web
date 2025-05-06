@@ -27,16 +27,5 @@ module PhotogetherWeb
     config.time_zone = "Asia/Seoul"
     config.active_record.default_timezone = :local
     # config.eager_load_paths << Rails.root.join("extras")
-
-    ## CORS 설정 추가
-    config.middleware.insert_before 0, Rack::Cors do
-      allow do
-        origins "*" # 필요한 도메인으로 변경 가능
-        resource "*",
-          headers: :any,
-          methods: [ :get, :post, :put, :patch, :delete, :options, :head ],
-          expose: [ "Authorization" ]
-      end
-    end
   end
 end
