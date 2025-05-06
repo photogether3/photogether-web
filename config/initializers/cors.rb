@@ -16,3 +16,5 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
     # expose: ['access-token', 'expiry', 'token-type', 'uid', 'client'], # 클라이언트(앱)에서 접근 가능하게 할 응답 헤더 목록 (필요한 경우)
   end
 end
+
+puts "[CORS] 설정 초기화 완료"
