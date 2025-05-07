@@ -97,7 +97,4 @@ Rails.application.configure do
 
   # 요청 ID 태그 추가
   config.log_tags = [ :request_id ]
-
-  # 헬스체크 경로는 로그에 기록하지 않음
-  config.silence_healthcheck_path = "/up"
 end

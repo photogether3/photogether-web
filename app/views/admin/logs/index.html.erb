@@ -8,20 +8,48 @@
     <!-- 상단 통계 및 필터 영역 -->
     <div class="p-6 bg-white border border-gray-300 shadow-sm rounded-xl">
       <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <!-- 로그 타입 선택 -->
+        <!-- 로그 환경 선택 -->
         <div class="flex items-center gap-4">
           <div class="flex items-center gap-2">
-            <%= heroicon("document-text", options: { class: "w-5 h-5 text-gray-500" }) %>
-            <span class="font-medium text-gray-700">로그 파일:</span>
+            <%= heroicon("server", options: { class: "w-5 h-5 text-gray-500" }) %>
+            <span class="font-medium text-gray-700">환경:</span>
           </div>
           <%= form_with url: admin_logs_path, method: :get, data: { turbo_frame: '_top' }, class: "flex" do |f| %>
-            <%= f.select :log_type, 
-                options_for_select(@log_types, @current_log), 
+            <%= f.select :env, 
+                options_for_select(@environments, @current_env), 
                 {}, 
                 class: "px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-1 focus:ring-secondary-40 focus:border-secondary-40" %>
+            <%= f.hidden_field :date, value: @current_date %>
             <%= f.hidden_field :lines, value: @lines_count %>
             <%= f.hidden_field :log_level, value: @log_level %>
             <%= f.hidden_field :query, value: @search_query %>
+            <%= f.submit "변경", class: "ml-2 px-4 py-2 bg-secondary-40 text-white rounded-lg hover:bg-secondary-50 transition" %>
+          <% end %>
+        </div>
+
+        <!-- 로그 날짜 선택 -->
+        <div class="flex items-center gap-4">
+          <div class="flex items-center gap-2">
+            <%= heroicon("calendar", options: { class: "w-5 h-5 text-gray-500" }) %>
+            <span class="font-medium text-gray-700">날짜:</span>
+          </div>
+          <%= form_with url: admin_logs_path, method: :get, data: { turbo_frame: '_top' }, class: "flex" do |f| %>
+            <%= f.hidden_field :env, value: @current_env %>
+            <%= f.hidden_field :lines, value: @lines_count %>
+            <%= f.hidden_field :log_level, value: @log_level %>
+            <%= f.hidden_field :query, value: @search_query %>
+            
+            <% if @log_dates.any? %>
+              <%= f.select :date, 
+                  options_for_select(@log_dates, @current_date), 
+                  {}, 
+                  class: "px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-1 focus:ring-secondary-40 focus:border-secondary-40" %>
+            <% else %>
+              <%= f.text_field :date, 
+                  value: @current_date,
+                  class: "px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-1 focus:ring-secondary-40 focus:border-secondary-40" %>
+            <% end %>
+            
             <%= f.submit "변경", class: "ml-2 px-4 py-2 bg-secondary-40 text-white rounded-lg hover:bg-secondary-50 transition" %>
           <% end %>
         </div>
@@ -33,7 +61,8 @@
             <span class="font-medium text-gray-700">로그 레벨:</span>
           </div>
           <%= form_with url: admin_logs_path, method: :get, data: { turbo_frame: '_top' }, class: "flex" do |f| %>
-            <%= f.hidden_field :log_type, value: @current_log %>
+            <%= f.hidden_field :env, value: @current_env %>
+            <%= f.hidden_field :date, value: @current_date %>
             <%= f.hidden_field :lines, value: @lines_count %>
             <%= f.hidden_field :query, value: @search_query %>
             <%= f.select :log_level, 
@@ -49,7 +78,10 @@
             <%= f.submit "필터", class: "ml-2 px-4 py-2 bg-secondary-40 text-white rounded-lg hover:bg-secondary-50 transition" %>
           <% end %>
         </div>
+      </div>
 
+      <!-- 두 번째 행 필터 -->
+      <div class="flex flex-col gap-4 mt-4 md:flex-row md:items-center md:justify-between">
         <!-- 로그 라인 수 설정 -->
         <div class="flex items-center gap-4">
           <div class="flex items-center gap-2">
@@ -57,7 +89,8 @@
             <span class="font-medium text-gray-700">로드할 줄 수:</span>
           </div>
           <%= form_with url: admin_logs_path, method: :get, data: { turbo_frame: '_top' }, class: "flex" do |f| %>
-            <%= f.hidden_field :log_type, value: @current_log %>
+            <%= f.hidden_field :env, value: @current_env %>
+            <%= f.hidden_field :date, value: @current_date %>
             <%= f.hidden_field :log_level, value: @log_level %>
             <%= f.hidden_field :query, value: @search_query %>
             <%= f.select :lines, 
@@ -72,12 +105,21 @@
             <%= f.submit "변경", class: "ml-2 px-4 py-2 bg-secondary-40 text-white rounded-lg hover:bg-secondary-50 transition" %>
           <% end %>
         </div>
+
+        <!-- 파일 경로 표시 -->
+        <div class="flex items-center gap-2 text-sm text-gray-500">
+          <span>현재 로그 파일:</span>
+          <code class="px-2 py-1 font-mono bg-gray-100 rounded">
+            <%= Rails.root.join("log", @current_env, "#{@current_date}.log") %>
+          </code>
+        </div>
       </div>
 
       <!-- 검색 -->
       <div class="pt-4 mt-6 border-t border-gray-200">
         <%= form_with url: admin_logs_path, method: :get, data: { turbo_frame: '_top' }, class: "flex w-full" do |f| %>
-          <%= f.hidden_field :log_type, value: @current_log %>
+          <%= f.hidden_field :env, value: @current_env %>
+          <%= f.hidden_field :date, value: @current_date %>
           <%= f.hidden_field :lines, value: @lines_count %>
           <%= f.hidden_field :log_level, value: @log_level %>
           <div class="relative flex-grow">
@@ -91,7 +133,7 @@
           </div>
           <%= f.submit "검색", class: "ml-2 px-6 py-2 bg-secondary-40 text-white rounded-lg hover:bg-secondary-50 transition" %>
           <% if @search_query.present? %>
-            <%= link_to "초기화", admin_logs_path(log_type: @current_log, lines: @lines_count, log_level: @log_level), 
+            <%= link_to "초기화", admin_logs_path(env: @current_env, date: @current_date, lines: @lines_count, log_level: @log_level), 
                 class: "ml-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition" %>
           <% end %>
         <% end %>
@@ -101,7 +143,9 @@
     <!-- 로그 내용 표시 영역 -->
     <div class="bg-white border border-gray-300 shadow-sm rounded-xl">
       <div class="flex items-center justify-between p-4 border-b border-gray-200">
-        <h2 class="text-lg font-semibold text-gray-700">로그 내용</h2>
+        <h2 class="text-lg font-semibold text-gray-700">
+          로그 내용 - <%= @current_env.capitalize %> (<%= @current_date %>)
+        </h2>
         <div class="flex items-center gap-2">
           <span class="text-sm text-gray-500" id="log-count"><%= @log_entries.length %> 개의 로그 항목</span>
           <button class="p-1.5 rounded hover:bg-gray-100" id="refresh-logs" data-action="log#refreshLogs">
@@ -110,7 +154,7 @@
         </div>
       </div>
       
-      <div class="p-4 max-h-[600px] overflow-y-auto font-mono text-sm bg.white" data-log-target="logContainer">
+      <div class="p-4 max-h-[600px] overflow-y-auto font-mono text-sm bg-white" data-log-target="logContainer">
         <%= turbo_frame_tag "log_entries" do %>
           <%= render partial: "admin/logs/log_entries", locals: { log_entries: @log_entries } %>
         <% end %>
@@ -119,7 +163,7 @@
       <% if @log_entries.length == 0 && @search_query.present? %>
         <div class="p-4 text-center text-gray-500 border-t border-gray-200">
           검색 결과가 없습니다. 다른 검색어를 시도해보세요.
-          <%= link_to "모든 로그 보기", admin_logs_path(log_type: @current_log, lines: @lines_count, log_level: @log_level), 
+          <%= link_to "모든 로그 보기", admin_logs_path(env: @current_env, date: @current_date, lines: @lines_count, log_level: @log_level), 
               class: "text-secondary-40 hover:underline ml-2" %>
         </div>
       <% end %>
