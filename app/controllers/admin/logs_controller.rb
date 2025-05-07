@@ -75,23 +75,18 @@ class Admin::LogsController < Admin::AdminController
     lines = content.split("\n")
     entries = []
     current_entry = nil
-    skip_current_entry = false
+    is_api_request = false  # API 요청인지 추적하는 플래그
 
     lines.each do |line|
       # 새로운 로그 엔트리의 시작을 감지
       if line.match(/^Started/) ||
-         (line.match(/^\[\d{4}-\d{2}-\d{2}/) && !line.match(/Processing/) && !line.match(/Parameters/) && !line.match(/Completed/))
+        (line.match(/^\[\d{4}-\d{2}-\d{2}/) && !line.match(/Processing/) && !line.match(/Parameters/) && !line.match(/Completed/))
 
-        # 이전 엔트리가 있고 건너뛰지 않아야 할 경우 저장
-        entries << current_entry if current_entry && !skip_current_entry
+        # 이전 엔트리가 있고 API 요청인 경우에만 저장
+        entries << current_entry if current_entry && is_api_request
 
-        # 새 로그 항목 시작 - 기본적으로 건너뛰지 않음
-        skip_current_entry = false
-
-        # Admin::LogsController 로그인지 확인
-        if line.include?("Admin::LogsController")
-          skip_current_entry = true
-        end
+        # 새 로그 항목 시작 - API 요청 여부 초기화
+        is_api_request = false
 
         # 새 엔트리 생성
         current_entry = {
@@ -105,15 +100,15 @@ class Admin::LogsController < Admin::AdminController
         current_entry[:message] += "\n#{line}"
         current_entry[:raw_content] += "\n#{line}"
 
-        # 줄이 추가되었을 때 Admin::LogsController 체크
-        if !skip_current_entry && line.include?("Processing by Admin::LogsController")
-          skip_current_entry = true
+        # API 요청인지 확인
+        if line.include?("Processing by Api")
+          is_api_request = true
         end
       end
     end
 
-    # 마지막 엔트리 추가 (건너뛰지 않을 경우)
-    entries << current_entry if current_entry && !skip_current_entry
+    # 마지막 엔트리 추가 (API 요청인 경우에만)
+    entries << current_entry if current_entry && is_api_request
 
     # 각 엔트리의 전체 내용을 검사
     entries.each do |entry|
