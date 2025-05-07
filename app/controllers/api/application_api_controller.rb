@@ -2,52 +2,73 @@ class Api::ApplicationApiController < ActionController::API
   # 모든 응답 후 camelCase 변환을 적용
   after_action :camelize_response_keys
 
+  # 모든 API 요청에서 토큰 정보 로깅 (토큰이 있는 경우만)
+  before_action :log_token_info
+
   # 모든 예외를 한 메서드에서 처리
   rescue_from StandardError, with: :handle_api_error
 
   protected
+    # 토큰 정보 로깅 메서드 - 모든 API 요청에서 실행됨
+    def log_token_info
+      auth_header = request.headers["Authorization"]
+      return unless auth_header.present?
 
+      token = extract_token(auth_header)
+      return unless token.present?
+
+      payload = decode_token(token)
+      return unless payload.present?
+
+      # 페이로드 정보 로깅
+      user_id = payload["sub"]
+      Rails.logger.info("Request with token - User ID: #{user_id}, Token Exp: #{Time.at(payload['exp']).iso8601 rescue 'N/A'}")
+
+      # 사용자 정보가 있다면 추가 로깅 (선택적)
+      if user = find_user_by_id(user_id)
+        Rails.logger.info("Request User: #{user.email_address} (#{user.nickname || 'no nickname'})")
+
+        # 현재 사용자 정보 저장 (인증 여부와 무관하게)
+        @current_user_info = user
+      end
+    end
+
+    # 사용자 인증 메서드 - 인증이 필요한 API에서만 호출
     def authenticate_user!
       auth_header = request.headers["Authorization"]
+
       unless auth_header.present?
-        render json: {
-          errorCode: 401,
-          code: "UNAUTHORIZED_001",
-          message: "토큰이 유효하지 않습니다."
-        }, status: :unauthorized and return
+        return unauthorized_error("UNAUTHORIZED_001", "토큰이 유효하지 않습니다.")
       end
 
-      token = auth_header.split("Bearer ").last
+      token = extract_token(auth_header)
       unless token.present?
-        render json: {
-          errorCode: 401,
-          code: "UNAUTHORIZED_002",
-          message: "토큰이 유효하지 않습니다."
-        }, status: :unauthorized and return
+        return unauthorized_error("UNAUTHORIZED_002", "토큰이 유효하지 않습니다.")
       end
 
-      payload = Auth::TokenManager.decode_token(token)
-      if payload.nil?
-        render json: {
-          errorCode: 401,
-          code: "UNAUTHORIZED_003",
-          message: "토큰이 유효하지 않습니다."
-        }, status: :unauthorized and return
+      payload = decode_token(token)
+      unless payload.present?
+        return unauthorized_error("UNAUTHORIZED_003", "토큰이 유효하지 않습니다.")
       end
 
-      puts "payload: #{payload}"
-
-      user = User.find_by(id: payload["sub"].to_i)
-      if user.nil?
-        render json: {
-          errorCode: 401,
-          code: "UNAUTHORIZED_004",
-          message: "사용자를 찾을 수 없습니다."
-        }, status: :unauthorized and return
+      user = find_user_by_id(payload["sub"])
+      unless user.present?
+        return unauthorized_error("UNAUTHORIZED_004", "사용자를 찾을 수 없습니다.")
       end
 
-      # 현재 사용자를 인스턴스 변수에 저장
+      # 인증된 현재 사용자 저장
       @current_user = user
+      Rails.logger.info("Authenticated User ID: #{@current_user.id}")
+    end
+
+    # 현재 사용자 반환 (인증 메서드를 통과한 경우만 유효)
+    def current_user
+      @current_user
+    end
+
+    # 현재 사용자 정보 반환 (인증 여부와 무관하게 토큰이 있었다면 제공)
+    def current_user_info
+      @current_user_info
     end
 
     # ------------------------------------------------
@@ -66,6 +87,36 @@ class Api::ApplicationApiController < ActionController::API
     end
 
   private
+    # 인증 토큰 추출 헬퍼
+    def extract_token(auth_header)
+      auth_header.split("Bearer ").last if auth_header.present?
+    end
+
+    # 토큰 디코딩 헬퍼
+    def decode_token(token)
+      Auth::TokenManager.decode_token(token)
+    rescue => e
+      Rails.logger.warn("Token decode error: #{e.message}")
+      nil
+    end
+
+    # 사용자 조회 헬퍼
+    def find_user_by_id(user_id)
+      User.find_by(id: user_id.to_i) if user_id.present?
+    rescue => e
+      Rails.logger.warn("User lookup error: #{e.message}")
+      nil
+    end
+
+    # 인증 오류 응답 헬퍼
+    def unauthorized_error(code, message)
+      Rails.logger.warn("Authentication failed: #{code}")
+      render json: {
+        errorCode: 401,
+        code: code,
+        message: message
+      }, status: :unauthorized and return
+    end
 
     # JSON 응답의 모든 키를 camelCase로 변환
     def camelize_response_keys

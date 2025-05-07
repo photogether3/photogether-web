@@ -18,7 +18,7 @@ class Result
 
   # 클래스 메서드 - 성공 결과 생성
   def self.success(data = nil)
-    Rails.logger.info("INFO: Success, Data: #{data}")
+    Rails.logger.info("INFO: Success")
     new(true, data)
   end
 
