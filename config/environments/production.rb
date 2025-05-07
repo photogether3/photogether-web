@@ -84,7 +84,10 @@ Rails.application.configure do
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
   # 날짜별 로그 파일 설정
-  log_file_path = Rails.root.join("log", "production", "#{Date.current}.log")
+  log_dir = Rails.root.join("log", "production")
+  # 디렉토리가 없으면 생성
+  FileUtils.mkdir_p(log_dir) unless File.directory?(log_dir)
+  log_file_path = File.join(log_dir, "#{Date.current}.log")
   config.logger = ActiveSupport::TaggedLogging.new(
     Logger.new(log_file_path)
   )
