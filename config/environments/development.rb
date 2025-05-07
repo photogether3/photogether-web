@@ -100,4 +100,13 @@ Rails.application.configure do
   # config.action_controller.raise_on_missing_callback_actions = true
 
   # config.generators.apply_rubocop_autocorrect_after_generate!
+
+  # 날짜별 로그 파일 설정
+  log_file_path = Rails.root.join("log", "development", "#{Date.current}.log")
+  config.logger = ActiveSupport::TaggedLogging.new(
+    Logger.new(log_file_path)
+  )
+
+  # 모든 레벨의 로그 기록 (DEBUG, INFO, WARN, ERROR, FATAL)
+  config.log_level = :info
 end

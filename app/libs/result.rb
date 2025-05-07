@@ -18,11 +18,13 @@ class Result
 
   # 클래스 메서드 - 성공 결과 생성
   def self.success(data = nil)
+    Rails.logger.info("INFO: Success, Data: #{data}")
     new(true, data)
   end
 
   # 클래스 메서드 - 실패 결과 생성 (에러 코드 추가)
   def self.failure(error_message, error_code = nil)
+    Rails.logger.warn("WARN: #{error_message}, Code: #{error_code}")
     new(false, nil, error_message, error_code)
   end
 end

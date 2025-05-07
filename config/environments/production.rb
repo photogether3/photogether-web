@@ -36,35 +36,6 @@ Rails.application.configure do
   # Skip http-to-https redirect for the default health check endpoint.
   # config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
 
-  # 파일로 로그 출력하도록 수정
-  config.log_tags = [ :request_id ]
-  config.logger = ActiveSupport::TaggedLogging.new(
-    Logger.new(
-      Rails.root.join("log", "#{Rails.env}.log"),
-      10,     # 파일 수 (로그 로테이션)
-      10.megabytes  # 각 파일 최대 크기 (10MB)
-    )
-  )
-
-  # 로그 레벨 설정 (환경 변수에서 가져옴, 기본값은 info)
-  config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
-
-  # 예방 조치: 헬스체크 경로는 로그에 기록하지 않음
-  config.silence_healthcheck_path = "/up"
-
-  # TODO: 관리자 활동 로그를 위한 개선 방안
-  # 1. AdminLogger 서비스 클래스 구현 (app/services/admin_logger.rb)
-  # 2. admin_activity.log 파일에 구조화된 JSON 형식으로 기록
-  # 3. 관리자 컨트롤러에서 after_action으로 중요 활동 로깅
-  # 예시 코드:
-  # class AdminLogger
-  #   def self.log(action, user_id, details = {})
-  #     log_file = Rails.root.join('log', 'admin_activity.log')
-  #     message = { timestamp: Time.current, action: action, user_id: user_id, details: details }
-  #     File.open(log_file, 'a') { |f| f.puts(message.to_json) }
-  #   end
-  # end
-
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
 
@@ -111,4 +82,19 @@ Rails.application.configure do
   #
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+
+  # 날짜별 로그 파일 설정
+  log_file_path = Rails.root.join("log", "production", "#{Date.current}.log")
+  config.logger = ActiveSupport::TaggedLogging.new(
+    Logger.new(log_file_path)
+  )
+
+  # INFO 이상 레벨의 로그 기록 (INFO, WARN, ERROR, FATAL)
+  config.log_level = :info
+
+  # 요청 ID 태그 추가
+  config.log_tags = [ :request_id ]
+
+  # 헬스체크 경로는 로그에 기록하지 않음
+  config.silence_healthcheck_path = "/up"
 end
