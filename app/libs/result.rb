@@ -23,7 +23,7 @@ class Result
   end
 
   # 클래스 메서드 - 실패 결과 생성 (에러 코드 추가)
-  def self.failure(error_message, error_code = nil)
+  def self.failure(error_message, error_code = "C_BAD_REQUEST")
     Rails.logger.warn("WARN: #{error_message}, Code: #{error_code}")
     new(false, nil, error_message, error_code)
   end

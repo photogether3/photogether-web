@@ -80,7 +80,7 @@ class Api::ApplicationApiController < ActionController::API
       else
         render json: {
           errorCode: 400,
-          code: result.error_code || "C_BAD_REQUEST", # 에러 코드가 있으면 사용, 없으면 기본값
+          code: result.error_code, # 에러 코드가 있으면 사용, 없으면 기본값
           message: result.error_message
         }, status: failure_status
       end
@@ -138,18 +138,18 @@ class Api::ApplicationApiController < ActionController::API
 
     # API 예외 처리
     def handle_api_error(exception)
-      # 공통 기본 로깅 (유지)
+      # 공통 기본 로깅
       Rails.logger.error "Caught exception: #{exception.class}"
       Rails.logger.error(exception.message)
 
-      # 테스트 환경에서는 더 자세한 정보 출력
-      if Rails.env.test?
-        puts "\n===== API Error Details =====\n"
-        puts "Exception class: #{exception.class}"
-        puts "Message: #{exception.message}"
-        puts "Controller: #{controller_name}##{action_name}"
-        puts "Backtrace (first 3 lines):"
-        puts exception.backtrace.first(3).join("\n")
+      # 모든 환경에서 상세 에러 로그 기록
+      Rails.logger.error("===== API Error Details =====")
+      Rails.logger.error("Exception class: #{exception.class}")
+      Rails.logger.error("Message: #{exception.message}")
+      Rails.logger.error("Controller: #{controller_name}##{action_name}")
+      Rails.logger.error("Backtrace (first 3 lines):")
+      exception.backtrace.first(3).each do |line|
+        Rails.logger.error("  #{line}")
       end
 
       case exception
@@ -158,17 +158,12 @@ class Api::ApplicationApiController < ActionController::API
         record = exception.record
         full_messages = record&.errors&.full_messages || []
 
-        Rails.logger.error("[VALIDATION_ERROR] Model: #{record.class.name}")
-        Rails.logger.error("[VALIDATION_ERROR] Errors: #{full_messages.join(', ')}")
-
-        if Rails.env.test?
-          puts "\n===== Validation Error Details ====="
-          puts "Model: #{record.class.name}"
-          puts "Attributes: #{record.attributes.inspect}"
-          puts "Errors by field:"
-          record.errors.messages.each do |field, msgs|
-            puts "  #{field}: #{msgs.join(', ')}"
-          end
+        Rails.logger.error("===== Validation Error Details =====")
+        Rails.logger.error("Model: #{record.class.name}")
+        Rails.logger.error("Attributes: #{record.attributes.inspect}")
+        Rails.logger.error("Errors by field:")
+        record.errors.messages.each do |field, msgs|
+          Rails.logger.error("  #{field}: #{msgs.join(', ')}")
         end
 
         message = record&.errors&.full_messages&.first || exception.message
@@ -183,14 +178,10 @@ class Api::ApplicationApiController < ActionController::API
         model = exception.model
         id = exception.id
 
-        Rails.logger.error("[NOTFOUND_ERROR] Model: #{model}, ID: #{id}")
-
-        if Rails.env.test?
-          puts "\n===== Record Not Found Details ====="
-          puts "Model: #{model}"
-          puts "ID: #{id}"
-          puts "Primary Key: #{exception.primary_key}"
-        end
+        Rails.logger.error("===== Record Not Found Details =====")
+        Rails.logger.error("Model: #{model}")
+        Rails.logger.error("ID: #{id}")
+        Rails.logger.error("Primary Key: #{exception.primary_key}")
 
         render json: {
           errorCode: 400,
@@ -200,14 +191,9 @@ class Api::ApplicationApiController < ActionController::API
 
       when ArgumentError
         # 인자 에러 상세 로깅
-        Rails.logger.error("[ARGUMENT_ERROR] #{exception.message}")
-        Rails.logger.error("[ARGUMENT_ERROR] Params: #{params.to_unsafe_h}")
-
-        if Rails.env.test?
-          puts "\n===== Argument Error Details ====="
-          puts "Params: #{params.to_unsafe_h}"
-          puts "Request body: #{request.raw_post}" if request.raw_post.present?
-        end
+        Rails.logger.error("===== Argument Error Details =====")
+        Rails.logger.error("Params: #{params.to_unsafe_h}")
+        Rails.logger.error("Request body: #{request.raw_post}") if request.raw_post.present?
 
         render json: {
           errorCode: 400,
@@ -219,17 +205,10 @@ class Api::ApplicationApiController < ActionController::API
         # CustomError 상세 로깅
         error_code = exception.respond_to?(:error_code) ? exception.error_code : "C_BAD_REQUEST"
 
-        Rails.logger.error("[CUSTOM_ERROR:#{error_code}] #{exception.message}")
-        if exception.respond_to?(:details) && exception.details.present?
-          Rails.logger.error("[CUSTOM_ERROR:#{error_code}] Details: #{exception.details}")
-        end
-
-        if Rails.env.test?
-          puts "\n===== Custom Error Details ====="
-          puts "Error Code: #{error_code}"
-          puts "Message: #{exception.message}"
-          puts "Details: #{exception.details}" if exception.respond_to?(:details)
-        end
+        Rails.logger.error("===== Custom Error Details =====")
+        Rails.logger.error("Error Code: #{error_code}")
+        Rails.logger.error("Message: #{exception.message}")
+        Rails.logger.error("Details: #{exception.details}") if exception.respond_to?(:details)
 
         render json: {
           errorCode: 400,
@@ -239,20 +218,12 @@ class Api::ApplicationApiController < ActionController::API
 
       else
         # 예상치 못한 서버 오류 상세 로깅
-        Rails.logger.error("[INTERNAL_SERVER_ERROR] #{exception.class}: #{exception.message}")
-        Rails.logger.error("[INTERNAL_SERVER_ERROR] Backtrace:")
+        Rails.logger.error("===== Server Error Details =====")
+        Rails.logger.error("Exception: #{exception.class}")
+        Rails.logger.error("Message: #{exception.message}")
+        Rails.logger.error("Backtrace (first 10 lines):")
         exception.backtrace.first(10).each_with_index do |line, i|
           Rails.logger.error("  #{i+1}. #{line}")
-        end
-
-        if Rails.env.test?
-          puts "\n===== Server Error Details ====="
-          puts "Exception: #{exception.class}"
-          puts "Message: #{exception.message}"
-          puts "Backtrace (first 10 lines):"
-          exception.backtrace.first(10).each_with_index do |line, i|
-            puts "  #{i+1}. #{line}"
-          end
         end
 
         render json: {
