@@ -5,12 +5,7 @@ export default class extends Controller {
   static targets = ["logContainer"]
   
   connect() {
-    // 자동 새로고침 타이머 설정 (선택사항)
-    // this.startAutoRefresh()
-  }
-  
-  disconnect() {
-    this.stopAutoRefresh()
+    // console.log("Log controller connected")
   }
   
   refreshLogs() {
@@ -30,17 +25,5 @@ export default class extends Controller {
       .catch(error => {
         console.error("로그 새로고침 오류:", error)
       })
-  }
-  
-  startAutoRefresh() {
-    this.refreshInterval = setInterval(() => {
-      this.refreshLogs()
-    }, 10000) // 10초마다 자동 새로고침
-  }
-  
-  stopAutoRefresh() {
-    if (this.refreshInterval) {
-      clearInterval(this.refreshInterval)
-    }
   }
 }
