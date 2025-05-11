@@ -4,18 +4,17 @@ class Collection::Index
 
   def initialize(user_id, params = {})
     @user_id = user_id
-    @keyword = params[:keyword] # 검색 키워드 추가
+    @keyword = params[:keyword]
     @page = params[:page] || 1
     @per_page = params[:perPage] || 10
+
     @sort_order = params[:sortOrder] || "desc"
     @sort_by = params[:sortBy] || "created_at"
-
-    # 정렬 방향 유효성 검사 추가
     @sort_order = "desc" unless [ "asc", "desc" ].include?(@sort_order.to_s.downcase)
-
-    # 정렬 필드 유효성 검사 추가
     valid_sort_fields = [ "created_at", "updated_at", "title" ]
     @sort_by = "created_at" unless valid_sort_fields.include?(@sort_by.to_s.downcase)
+
+    @category_id = params[:categoryId] || nil
   end
 
   def call
@@ -37,6 +36,11 @@ class Collection::Index
     else
       # 키워드가 없으면 모든 컬렉션 조회
       collections = base_query
+    end
+    
+    # category_id가 있는 경우 필터링
+    if @category_id.present?
+      collections = collections.where(category_id: @category_id)
     end
     
     # 정렬, 관계 로딩 등 적용

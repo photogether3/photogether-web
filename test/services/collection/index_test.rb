@@ -215,4 +215,39 @@ class Collection::IndexTest < ActiveSupport::TestCase
     # 총 아이템 수는 시스템 컬렉션 2개여야 함
     assert_equal 2, result.data[:total_item_count]
   end
+
+  test "카테고리 ID로 컬렉션을 필터링할 수 있다" do
+    # 추가 카테고리 생성
+    second_category = Category.create!(name: "두번째 카테고리")
+    
+    # 새 카테고리에 속한 컬렉션 생성
+    collection_in_second_category = Collection.create!(
+      title: "다른 카테고리 컬렉션",
+      category_id: second_category.id,
+      user_id: @user.id,
+      type: "DEFAULT"
+    )
+
+    # 카테고리 ID로 필터링
+    result = Collection::Index.new(@user.id, { categoryId: second_category.id }).call
+
+    # 결과 확인
+    assert result.success?
+    
+    # 지정한 카테고리에 속한 컬렉션만 포함되어야 함
+    item_ids = result.data[:items].map { |item| item[:id] }
+    assert_includes item_ids, collection_in_second_category.id
+    
+    # 다른 카테고리의 컬렉션은 포함되지 않아야 함
+    assert_not_includes item_ids, @collection1.id
+    assert_not_includes item_ids, @collection2.id
+    assert_not_includes item_ids, @collection3.id
+    
+    # 시스템 컬렉션은 카테고리가 없으므로 포함되지 않아야 함
+    assert_not_includes item_ids, @trash_collection.id
+    assert_not_includes item_ids, @uncategorized_collection.id
+    
+    # 총 아이템 수는 필터링된 컬렉션 1개여야 함
+    assert_equal 1, result.data[:total_item_count]
+  end
 end
