@@ -1070,6 +1070,13 @@ paths:
           example: title | created_at
           schema:
             type: string
+        - name: categoryId
+          in: query
+          description: 특정 카테고리에 속한 컬렉션만 필터링
+          required: false
+          example: 1001
+          schema:
+            type: integer
       responses:
         '200':
           description: ''
