@@ -1,2 +1,28 @@
 #!/usr/bin/env ruby
-exec "./bin/rails", "server", *ARGV
+require "fileutils"
+
+# 현재 실행중인 프로세스 종료를 위한 pid 파일 생성 경로
+APP_ROOT = File.expand_path("..", __dir__)
+FileUtils.mkdir_p(File.join(APP_ROOT, "tmp/pids"))
+
+# Procfile.dev 파일을 사용하여 foreman으로 서버 실행
+def system!(*args)
+  system(*args) || abort("\n== Command #{args} failed ==")
+end
+
+# foreman 또는 overmind가 설치되어 있는지 확인
+if system("which foreman > /dev/null") || system("which overmind > /dev/null")
+  if system("which overmind > /dev/null")
+    exec "overmind start -f Procfile.dev"
+  else
+    exec "foreman start -f Procfile.dev"
+  end
+else
+  # 설치되어 있지 않으면 설치 안내
+  puts "Foreman or Overmind is not installed. Please install one of them:"
+  puts "  gem install foreman"
+  puts "or"
+  puts "  brew install overmind (macOS)"
+  puts "  apt install overmind (Linux)"
+  abort
+end
