@@ -1,0 +1,9 @@
+{
+  "name": "photogether-web-client",
+  "description": "포토게더 백엔드 클라이언트 리소스 관리",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "dev.goraebap",
+  "license": "ISC"
+}
