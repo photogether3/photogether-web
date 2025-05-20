@@ -1,5 +1,4 @@
-class Pages::HomeController < ApplicationController
+class Pages::HomeController < PageController
   def index
-    render "pages/home/index"
   end
 end
