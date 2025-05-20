@@ -1,4 +1,4 @@
 import * as Turbo from "@hotwired/turbo";
-import "./tailwind.css";
+import "./stylesheets/app.css";
 
 window.Turbo = Turbo;
