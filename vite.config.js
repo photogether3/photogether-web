@@ -6,7 +6,7 @@ export default defineConfig({
   build: {
     outDir: "app/assets/builds",
     rollupOptions: {
-      input: "./resources/main.js"
+      input: "./app/assets/main.js"
     }
   }
 })
