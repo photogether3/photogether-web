@@ -36,3 +36,5 @@
 node_modules
 app/assets/builds
 config/vision-key.json
+
+docker-compose.yml
