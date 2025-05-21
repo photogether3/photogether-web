@@ -1,4 +1,4 @@
-class Pages::PoliciesController < PageController
+class Pages::PoliciesController < PagesController
   def show
   end
 

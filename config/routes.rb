@@ -8,4 +8,10 @@ Rails.application.routes.draw do
     get ":kind", to: "pages/policies#show", as: :policy
     get ":kind/:version", to: "pages/policies#show", as: :policy_version
   end
+
+  # 관리자 페이지 라우트 설정
+  scope "admin" do
+    get "", to: "pages/admin#index", as: :admin
+    get "users", to: "pages/admin/user#index", as: :admin_users
+  end
 end

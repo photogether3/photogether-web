@@ -1,4 +1,4 @@
-class Pages::HomeController < PageController
+class Pages::HomeController < PagesController
   def index
   end
 end
