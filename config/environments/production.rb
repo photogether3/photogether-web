@@ -101,4 +101,7 @@ Rails.application.configure do
     authentication:       "plain",
     enable_starttls_auto: true
   }
+
+  # URL 생성을 위한 기본 호스트 설정
+  Rails.application.routes.default_url_options[:host] = "photogether.app"
 end
