@@ -1,7 +1,6 @@
 class Shared::ImageValidator
   # 클래스 메서드로 변경
   def self.validate_image_file(file, options = {})
-
     puts "validate_image_file called with file: #{file.inspect}"
 
     # 파일이 없는 경우
@@ -27,10 +26,10 @@ class Shared::ImageValidator
     end
 
     # 파일 크기 제한
-    max_size = options[:max_size] || 3.megabytes
+    max_size = options[:max_size] || 5.megabytes
     if file.size > max_size
       Rails.logger.warn "이미지 크기 초과: #{file.size} bytes"
-      return Result.failure("이미지 파일 크기는 #{(max_size / 3.megabyte).to_i}MB 이하여야 합니다.", "FILE_TOO_LARGE")
+      return Result.failure("이미지 파일 크기는 #{(max_size / 5.megabyte).to_i}MB 이하여야 합니다.", "FILE_TOO_LARGE")
     end
 
     # 모든 검증 통과
