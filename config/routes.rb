@@ -13,6 +13,8 @@ Rails.application.routes.draw do
   scope "admin" do
     get "", to: "pages/admin#index", as: :admin
     get "users", to: "pages/admin/user#index", as: :admin_users
+
+    mount Scalar::UI, at: "/docs"
   end
 
   # API 제공
