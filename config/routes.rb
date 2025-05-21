@@ -3,16 +3,16 @@ Rails.application.routes.draw do
   root "pages/home#index"
 
   # 정책 라우트 설정
-  scope "policies" do
-    get "data-deletion", to: "pages/policies#data_deletion"
-    get ":kind", to: "pages/policies#show", as: :policy
-    get ":kind/:version", to: "pages/policies#show", as: :policy_version
+  namespace :policies, module: "pages" do
+    get "data-deletion", to: "policies#data_deletion"
+    get ":kind", to: "policies#show", as: :policy
+    get ":kind/:version", to: "policies#show", as: :policy_version
   end
 
   # 관리자 페이지 라우트 설정
-  scope "admin" do
-    get "", to: "pages/admin#index", as: :admin
-    get "users", to: "pages/admin/user#index", as: :admin_users
+  namespace :admin, module: "pages" do
+    root to: "admin#index"
+    get "users", to: "admin/user#index", as: :users
 
     mount Scalar::UI, at: "/docs"
   end
