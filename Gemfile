@@ -54,12 +54,29 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+
+  # ---------------------------------
+  # 추가된 Gem
+  # describe 구문을 위해 사용
+  # ---------------------------------
+  gem "minitest-spec-rails"
 end
 
-# 직접 추가한 Gems
+# ---------------------------------
+# 추가된 Gem들
+# ---------------------------------
+
+# 비밀번호 암호화를 위한 라이브러리
 gem "bcrypt", "~> 3.1.7"
+# 이미지 처리 및 변환을 위한 라이브러리
 gem "image_processing", ">= 1.2"
+# API 문서화 도구
 gem "scalar_ruby", "~> 1.1"
+# PostgreSQL 데이터베이스 어댑터
 gem "pg"
+# Google Cloud Vision API를 사용한 이미지 분석
 gem "google-cloud-vision"
+# Cross-Origin Resource Sharing 설정을 위한 라이브러리
 gem "rack-cors"
+# 페이지네이션 처리를 위한 라이브러리
+gem "kaminari", "~> 1.2", ">= 1.2.2"
