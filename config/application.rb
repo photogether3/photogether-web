@@ -23,5 +23,13 @@ module Photogether
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # 사용자 지정 경로 추가
+    config.autoload_paths << Rails.root.join("app", "errors")
+    config.autoload_paths << Rails.root.join("app", "services")
+    config.autoload_paths << Rails.root.join("app", "libs")
+    # 타임존 설정
+    config.time_zone = "Asia/Seoul"
+    config.active_record.default_timezone = :local
   end
 end

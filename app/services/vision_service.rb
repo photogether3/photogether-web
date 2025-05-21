@@ -1,5 +1,3 @@
-# app/services/vision_service.rb
-
 class VisionService
   def self.extract_text_lines(file)
     vision = Google::Cloud::Vision.image_annotator
