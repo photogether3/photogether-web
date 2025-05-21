@@ -1,23 +1,9 @@
-<div class="relative min-h-screen py-24">
-  <!-- 흩어지는 이미지 배경 -->
-  <div class="absolute inset-0 -z-10 overflow-hidden">
-    <div class="absolute -top-10 -right-10 w-48 h-48 md:w-64 md:h-64 opacity-20 rotate-12">
-      <img src="/images/landing-item06.jpg" class="rounded-xl w-full h-full object-cover" alt="" />
-    </div>
-    <div class="absolute top-1/3 -left-12 w-36 h-36 md:w-52 md:h-52 opacity-15 -rotate-12">
-      <img src="/images/landing-item07.jpg" class="rounded-xl w-full h-full object-cover" alt="" />
-    </div>
-    <div class="absolute bottom-1/4 right-10 w-40 h-40 md:w-56 md:h-56 opacity-20 rotate-6">
-      <img src="/images/landing-item08.jpg" class="rounded-xl w-full h-full object-cover" alt="" />
-    </div>
-    <div class="absolute -bottom-10 left-1/3 w-32 h-32 md:w-48 md:h-48 opacity-15 rotate-[-8deg]">
-      <img src="/images/landing-item09.jpg" class="rounded-xl w-full h-full object-cover" alt="" />
-    </div>
-  </div>
+<div class="relative h-screen py-24">
+
 
   <!-- 메인 컨텐츠 -->
-  <div class="container mx-auto px-4 pt-12">
-    <div class="flex flex-col gap-8 items-center">
+  <div class="relative container mx-auto h-full flex items-center justify-center">
+    <div class="flex flex-col gap-8 items-center w-full">
       <div class="text-center lg:text-center lg:w-1/2">
         <h1 class="text-5xl font-bold text-accent">포토게더</h1>
         <p class="py-6 text-xl">구매하기 위해 캡처한 사진, 포토게더를 통해 정리해보세요!</p>
@@ -37,7 +23,24 @@
         </div>
       </div>
     </div>
+
+    <!-- 흩어지는 이미지 배경 -->
+    <div class="absolute inset-0 -z-10">
+      <div class="absolute -top-10 -right-10 w-48 h-48 md:w-64 md:h-64 opacity-20 rotate-12">
+        <img src="/images/landing-item06.jpg" class="rounded-xl w-full h-full object-cover" alt="" />
+      </div>
+      <div class="absolute top-1/3 -left-12 w-36 h-36 md:w-52 md:h-52 opacity-15 -rotate-12">
+        <img src="/images/landing-item07.jpg" class="rounded-xl w-full h-full object-cover" alt="" />
+      </div>
+      <div class="absolute bottom-1/4 right-10 w-40 h-40 md:w-56 md:h-56 opacity-20 rotate-6">
+        <img src="/images/landing-item08.jpg" class="rounded-xl w-full h-full object-cover" alt="" />
+      </div>
+      <div class="absolute -bottom-10 left-1/3 w-32 h-32 md:w-48 md:h-48 opacity-15 rotate-[-8deg]">
+        <img src="/images/landing-item09.jpg" class="rounded-xl w-full h-full object-cover" alt="" />
+      </div>
+    </div>
   </div>
+
 
   <!-- 푸터 -->
   <footer class="footer footer-center p-6 text-base-content absolute bottom-0 w-full">
