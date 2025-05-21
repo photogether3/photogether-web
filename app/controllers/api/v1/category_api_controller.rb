@@ -1,4 +1,4 @@
-class Api::V1::CategoryApiController < Api::ApplicationApiController
+class Api::V1::CategoryApiController < ApiController
   before_action :authenticate_user!, only: [ :index_with_favorites ]
 
   def index

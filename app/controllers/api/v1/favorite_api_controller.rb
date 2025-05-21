@@ -1,4 +1,4 @@
-class Api::V1::FavoriteApiController < Api::ApplicationApiController
+class Api::V1::FavoriteApiController < ApiController
   before_action :authenticate_user!
 
   def index

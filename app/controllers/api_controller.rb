@@ -1,4 +1,4 @@
-class Api::ApplicationApiController < ActionController::API
+class ApiController < ActionController::API
   # 모든 응답 후 camelCase 변환을 적용
   after_action :camelize_response_keys
 

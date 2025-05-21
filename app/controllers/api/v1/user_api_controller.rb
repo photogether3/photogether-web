@@ -1,4 +1,4 @@
-class Api::V1::UserApiController < Api::ApplicationApiController
+class Api::V1::UserApiController < ApiController
   before_action :authenticate_user!, except: [ :is_email_taken, :update_password_by_otp ]
 
   def is_email_taken

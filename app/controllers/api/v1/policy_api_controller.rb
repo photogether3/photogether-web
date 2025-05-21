@@ -1,4 +1,4 @@
-class Api::V1::PolicyApiController < Api::ApplicationApiController
+class Api::V1::PolicyApiController < ApiController
   # 약관 목록 조회
   def index
     # 활성화된 최신 버전의 정책들만 반환

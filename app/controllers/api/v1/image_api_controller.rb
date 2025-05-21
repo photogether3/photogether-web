@@ -1,4 +1,4 @@
-class Api::V1::ImageApiController < Api::ApplicationApiController
+class Api::V1::ImageApiController < ApiController
   before_action :authenticate_user!
 
   def preview

@@ -1,4 +1,4 @@
-class Api::V1::PostApiController < Api::ApplicationApiController
+class Api::V1::PostApiController < ApiController
   include Api::PaginationRenderer
   before_action :authenticate_user!
 
