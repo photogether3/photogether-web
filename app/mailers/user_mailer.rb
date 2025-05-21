@@ -3,7 +3,8 @@ class UserMailer < ApplicationMailer
     @user = user
     mail(
       to: @user.email_address,
-      subject: "Your OTP Code"
+      subject: "Your OTP Code",
+      template_path: "shared/mailers/user_mailer"
     )
   end
 end
