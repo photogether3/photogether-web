@@ -56,5 +56,9 @@ group :test do
   gem "selenium-webdriver"
 end
 
+# 직접 추가한 Gems
 gem "bcrypt", "~> 3.1.7"
 gem "image_processing", ">= 1.2"
+gem "scalar_ruby", "~> 1.1"
+gem "pg"
+gem "google-cloud-vision"
