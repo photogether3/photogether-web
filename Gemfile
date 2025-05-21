@@ -56,4 +56,5 @@ group :test do
   gem "selenium-webdriver"
 end
 
+gem "bcrypt", "~> 3.1.7"
 gem "image_processing", ">= 1.2"
