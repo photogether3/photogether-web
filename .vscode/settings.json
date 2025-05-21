@@ -1,0 +1,21 @@
+{
+  
+  "tailwindCSS.includeLanguages": {
+    "ruby": "html",
+    "erb": "html",
+    "haml": "html",
+    "slim": "html",
+    "phlex": "html"
+  },
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  "tailwindCSS.experimental.classRegex": [
+    "class:\\s*\"([^\"]*)\"",
+    ["class: ['\"]([^'\"]*)['\"]", "'([^']*)'"],
+    ["class: ['\"]([^'\"]*)['\"]", "\"([^\"]*)\""],
+    ["class:\\s*['\"]([^'\"]*)['\"]", "['\"]([^'\"]*)['\"]"],
+    ["class:\\s*\"([^\"]*)\"", "\"([^\"]*)\""],
+    
+  ]
+}
