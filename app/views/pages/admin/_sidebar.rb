@@ -2,7 +2,7 @@ class Views::Pages::Admin::Sidebar < Views::Base
   def view_template
     # 사이드바
     aside(
-      class: "sticky top-0 border-r border-dashed border-base-300 h-full w-[30%] min-w-[300px]
+      class: "sticky top-0 border-r-2 border-dashed border-base-300 h-full w-[30%] min-w-[300px]
       flex flex-col items-end justify-center p-4") do
       div(class: "flex flex-col items-center gap-6") do
         ul(class: "flex flex-col gap-4") do

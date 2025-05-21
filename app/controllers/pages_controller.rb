@@ -1,4 +1,6 @@
 class PagesController < ActionController::Base
+  helper ViteHelper
+
   # 최신 브라우저만 접근을 허용합니다.
   # 이 설정은 다음 기능들을 지원하는 최신 브라우저만 허용합니다:
   # - webp 이미지 포맷 지원

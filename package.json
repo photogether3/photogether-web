@@ -3,7 +3,7 @@
   "description": "포토게더 백엔드 클라이언트 리소스 관리",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite build --watch",
     "build": "vite build",
     "preview": "vite preview"
   },

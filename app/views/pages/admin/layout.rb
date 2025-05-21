@@ -15,7 +15,7 @@ class Views::Pages::Admin::Layout < Views::Base
         # 사이드바
         render Sidebar.new
         # 메인 컨텐츠
-        main do
+        main(class: "p-4") do
           yield
         end
       end
