@@ -80,3 +80,5 @@ gem "google-cloud-vision"
 gem "rack-cors"
 # 페이지네이션 처리를 위한 라이브러리
 gem "kaminari", "~> 1.2", ">= 1.2.2"
+# Ruby 기반 HTML 작성 라이브러리
+gem "phlex-rails", "~> 2.2"
