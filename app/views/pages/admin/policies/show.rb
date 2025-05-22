@@ -20,6 +20,7 @@ class Views::Pages::Admin::Policies::Show < Views::Base
           # @policy.title
         }
       end
+      # html 컨텐츠 랜더링
       div(class: "prose prose-lg max-w-none mt-6 text-sm") do
         raw(@policy.content.to_s.html_safe)
       end
