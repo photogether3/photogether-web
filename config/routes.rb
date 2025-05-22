@@ -24,6 +24,7 @@ Rails.application.routes.draw do
     get "policies/:id", to: "admin/policies#show"
     get "policies/:id/edit", to: "admin/policies#edit"
     post "policies/:id/edit", to: "admin/policies#update"
+    delete "policies/:id", to: "admin/policies#destroy"
 
     mount Scalar::UI, at: "/docs"
   end

@@ -43,6 +43,15 @@ class Views::Pages::Admin::Policies::Edit < Views::Base
       end
 
       render Policies::Form.new(policy: @policy, is_edit: true)
+
+      div(class: "p-6 w-full text-center") do
+        a(href: "/admin/policies/#{@policy.id}",
+          class: "btn btn-soft btn-error",
+          data: {
+            turbo_method: "delete",
+            turbo_confirm: "정말로 이 약관을 삭제하시겠습니까?"
+          }) { "약관 삭제" }
+      end
     end
   end
 end

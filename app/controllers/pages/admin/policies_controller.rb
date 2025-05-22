@@ -59,6 +59,17 @@ class Pages::Admin::PoliciesController < Pages::AdminController
     end
   end
 
+  def destroy
+    policy = Policy.find(params[:id])
+
+    if policy.destroy
+      # 303 See Other 상태 코드로 GET 메서드로 전환되도록 설정
+      redirect_to admin_policies_path, notice: "약관이 성공적으로 삭제되었습니다.", status: :see_other
+    else
+      redirect_to "/admin/policies/#{policy.id}/edit", alert: "약관 삭제에 실패했습니다."
+    end
+  end
+
   private
 
   def policy_params
