@@ -11,8 +11,14 @@ Rails.application.routes.draw do
 
   # 관리자 페이지 라우트 설정
   namespace :admin, module: "pages" do
-    root to: "admin/dashboard#index", as: :dashboard
-    get "users", to: "admin/user#index", as: :users
+    # 대시보드
+    root to: "admin/dashboard#index"
+
+    # 회원관리
+    get "users", to: "admin/users#index"
+
+    # 약관관리
+    get "policies", to: "admin/policies#index"
 
     mount Scalar::UI, at: "/docs"
   end
