@@ -17,6 +17,7 @@ class Views::Pages::Admin::Policies::Index < Views::Base
               th
               th { "제목" }
               th { "구분" }
+              th { "버전" }
               th { "활성여부" }
               th { "정책활성일자" }
               th { "필수동의여부" }
@@ -34,6 +35,7 @@ class Views::Pages::Admin::Policies::Index < Views::Base
                 td do
                   span(class: "badge badge-secondary text-xs font-semibold text-white") { policy[:kind].upcase }
                 end
+                td { policy[:version] }
                 td { policy[:is_active] ? "활성" : "비활성" }
                 td { policy[:effective_date]&.strftime("%Y-%m-%d") || "없음" }
                 td { policy[:is_required] ? "필수" : "선택" }

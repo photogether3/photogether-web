@@ -1,6 +1,6 @@
 class Pages::Admin::PoliciesController < Pages::AdminController
   def index
-    policies = Policy.all
+    policies = Policy.order(kind: :asc, version: :desc)
     render Policies::Index.new(policies: policies)
   end
 
