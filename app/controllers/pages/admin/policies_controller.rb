@@ -5,12 +5,32 @@ class Pages::Admin::PoliciesController < Pages::AdminController
   end
 
   def new
-    policy = Policy.new
-    render Policies::New.new(policy: policy)
+    policy_attributes = flash[:policy] || {}
+    alert = flash[:alert] || nil
+
+    policy = if policy_attributes.present?
+      Policy.new(policy_attributes)
+    else
+      Policy.new(
+        is_active: true,
+        is_required: true,
+        version: 1.0
+      )
+    end
+
+    render Policies::New.new(policy: policy, alert: alert)
   end
 
   def create
-    puts params.inspect
+    result = Admin::Policy::Create.new(params).call
+
+    if result.success?
+      redirect_to admin_policies_path, alert: "약관이 성공적으로 등록되었습니다."
+    else
+      flash[:alert] = result.error_message
+      flash[:policy] = policy_params.to_h
+      redirect_to admin_policies_new_path
+    end
   end
 
   def show
@@ -20,5 +40,11 @@ class Pages::Admin::PoliciesController < Pages::AdminController
   end
 
   def edit
+  end
+
+  private
+
+  def policy_params
+    params.require(:policy).permit(:title, :content, :kind, :is_active, :is_required, :version, :effective_date)
   end
 end
