@@ -1,8 +1,5 @@
-class Views::Pages::Admin::User::Index < Views::Base
+class Views::Pages::Admin::Users::Index < Views::Base
   include Views::Pages::Admin
-
-  def initialize
-  end
 
   def view_template
     render Layout.new do
