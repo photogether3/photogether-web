@@ -79,7 +79,7 @@ class Views::Pages::Admin::Policies::New < Views::Base
           # 정책 버전
           fieldset(class: "fieldset") do
             legend(class: "fieldset-legend") { "정책 버전" }
-            input(type: "number", class: "input bg-white")
+            input(name: "policy[version]", type: "number", class: "input bg-white")
           end
 
           div(class: "absolute right-0 bottom-0 p-4") do
