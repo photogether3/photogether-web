@@ -9,6 +9,7 @@ class Post::Index
     @per_page = params[:perPage] || 10
     @sort_order = params[:sortOrder] || "desc"
     @sort_by = params[:sortBy] || "created_at"
+    @keyword = params[:keyword]  # 키워드 파라미터 추가
 
     # 정렬 방향 유효성 검사 추가
     @sort_order = "desc" unless [ "asc", "desc" ].include?(@sort_order.to_s.downcase)
@@ -23,8 +24,16 @@ class Post::Index
     return collection_result if collection_result.failure?
     collection = collection_result.data
 
-    posts = Post
-      .where(user_id: @user_id, collection_id: collection.id)
+    # 기본 쿼리 생성
+    query = Post.where(user_id: @user_id, collection_id: collection.id)
+
+    # 키워드가 있으면 title과 content에 LIKE 검색 추가
+    if @keyword.present?
+      query = query.where("title LIKE :keyword OR content LIKE :keyword", keyword: "%#{@keyword}%")
+    end
+
+    # 정렬, 관계 로딩, 페이지네이션 적용
+    posts = query
       .order(@sort_by => @sort_order)
       .includes(:collection, :post_metadata)
       .page(@page).per(@per_page)

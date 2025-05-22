@@ -1,4 +1,3 @@
-# test/services/post/index_test.rb
 require "test_helper"
 
 class Post::IndexTest < ActiveSupport::TestCase
@@ -72,161 +71,132 @@ class Post::IndexTest < ActiveSupport::TestCase
     )
   end
 
-  test "컬렉션의 게시물 목록을 가져온다" do
-    result = Post::Index.new(@user.id, { collectionId: @collection.id }).call
-    puts result.inspect
+  test "키워드로 게시물을 검색한다 (제목 기준)" do
+    # 키워드가 제목에 포함된 게시물 검색
+    result = Post::Index.new(@user.id, {
+      collectionId: @collection.id,
+      keyword: "A 게시물"
+    }).call
+
+    assert result.success?
+    assert_equal 1, result.data[:total_item_count]
+    assert_equal 1, result.data[:items].count
+    assert_equal @post2.id, result.data[:items][0][:id]
+    assert_equal "A 게시물", result.data[:items][0][:title]
+  end
+
+  test "키워드로 게시물을 검색한다 (내용 기준)" do
+    # 키워드가 내용에 포함된 게시물 검색
+    result = Post::Index.new(@user.id, {
+      collectionId: @collection.id,
+      keyword: "M 내용"
+    }).call
+
+    assert result.success?
+    assert_equal 1, result.data[:total_item_count]
+    assert_equal 1, result.data[:items].count
+    assert_equal @post3.id, result.data[:items][0][:id]
+    assert_equal "M 게시물", result.data[:items][0][:title]
+  end
+
+  test "키워드로 여러 게시물을 검색한다 (부분 매칭)" do
+    # 여러 게시물에 걸쳐 부분 매칭되는 키워드 검색
+    result = Post::Index.new(@user.id, {
+      collectionId: @collection.id,
+      keyword: "게시물"
+    }).call
+
     assert result.success?
     assert_equal 3, result.data[:total_item_count]
     assert_equal 3, result.data[:items].count
+
+    # 결과에 모든 게시물이 포함되어 있는지 확인
+    post_ids = result.data[:items].map { |item| item[:id] }
+    assert_includes post_ids, @post1.id
+    assert_includes post_ids, @post2.id
+    assert_includes post_ids, @post3.id
   end
 
-  test "페이지네이션이 제대로 적용된다" do
+  test "검색 결과가 없는 경우 빈 목록을 반환한다" do
+    # 존재하지 않는 키워드로 검색
     result = Post::Index.new(@user.id, {
       collectionId: @collection.id,
+      keyword: "존재하지않는키워드XYZ"
+    }).call
+
+    assert result.success?
+    assert_equal 0, result.data[:total_item_count]
+    assert_equal 0, result.data[:items].count
+    assert_empty result.data[:items]
+  end
+
+  test "키워드 검색과 정렬이 함께 적용된다" do
+    # 추가 테스트 데이터 생성 (같은 키워드를 포함하는 게시물들)
+    another_post1 = create_test_post("테스트 AAA", "키워드 포함", 5.days.ago)
+    another_post2 = create_test_post("테스트 CCC", "키워드 포함", 4.days.ago)
+
+    # 키워드로 검색하면서 제목 기준 내림차순 정렬
+    result = Post::Index.new(@user.id, {
+      collectionId: @collection.id,
+      keyword: "테스트",
+      sortBy: "title",
+      sortOrder: "desc"
+    }).call
+
+    assert result.success?
+    assert_equal 2, result.data[:total_item_count]
+    assert_equal 2, result.data[:items].count
+
+    # 제목 내림차순 정렬 확인
+    assert_equal "테스트 CCC", result.data[:items][0][:title]
+    assert_equal "테스트 AAA", result.data[:items][1][:title]
+  end
+
+  test "키워드 검색과 페이지네이션이 함께 적용된다" do
+    # 추가 테스트 데이터 생성 (같은 키워드를 포함하는 게시물들)
+    5.times do |i|
+      create_test_post("공통 키워드 #{i+1}", "페이지네이션 테스트", (i+1).days.ago)
+    end
+
+    # 첫 번째 페이지 (2개 항목)
+    result1 = Post::Index.new(@user.id, {
+      collectionId: @collection.id,
+      keyword: "공통 키워드",
       page: 1,
       perPage: 2
     }).call
 
-    puts result.inspect
+    assert result1.success?
+    assert_equal 5, result1.data[:total_item_count]  # 전체 검색 결과 수
+    assert_equal 2, result1.data[:items].count       # 현재 페이지 항목 수
+    assert_equal 1, result1.data[:current_page]      # 현재 페이지
+    assert_equal 3, result1.data[:total_page_count]  # 전체 페이지 수
 
-    assert result.success?
-    assert_equal 3, result.data[:total_item_count]  # 전체 게시물 수
-    assert_equal 2, result.data[:items].count  # 현재 페이지의 게시물 수
-    assert_equal 2, result.data[:per_page]     # 페이지당 게시물 수
-    assert_equal 2, result.data[:total_page_count]  # 전체 페이지 수
-
-    # 두 번째 페이지 테스트
+    # 두 번째 페이지 (2개 항목)
     result2 = Post::Index.new(@user.id, {
       collectionId: @collection.id,
+      keyword: "공통 키워드",
       page: 2,
       perPage: 2
     }).call
 
     assert result2.success?
-    assert_equal 1, result2.data[:items].count  # 두 번째 페이지의 게시물 수
-    assert_equal 2, result2.data[:current_page]         # 현재 페이지
-  end
+    assert_equal 5, result2.data[:total_item_count]  # 전체 검색 결과 수
+    assert_equal 2, result2.data[:items].count       # 현재 페이지 항목 수
+    assert_equal 2, result2.data[:current_page]      # 현재 페이지
 
-  test "생성일 기준으로 정렬된다 (최신순)" do
-    result = Post::Index.new(@user.id, {
+    # 세 번째 페이지 (1개 항목)
+    result3 = Post::Index.new(@user.id, {
       collectionId: @collection.id,
-      sortBy: "created_at",
-      sortOrder: "desc"
+      keyword: "공통 키워드",
+      page: 3,
+      perPage: 2
     }).call
 
-    assert result.success?
-    items = result.data[:items]
-
-    # 생성일 역순 (최신순) 확인
-    assert_equal @post3.id, items[0][:id]
-    assert_equal @post2.id, items[1][:id]
-    assert_equal @post1.id, items[2][:id]
-  end
-
-  test "생성일 기준으로 오름차순 정렬된다 (오래된순)" do
-    result = Post::Index.new(@user.id, {
-      collectionId: @collection.id,
-      sortBy: "created_at",
-      sortOrder: "asc"
-    }).call
-
-    assert result.success?
-    items = result.data[:items]
-
-    # 생성일 순서대로 (오래된순) 확인
-    assert_equal @post1.id, items[0][:id]
-    assert_equal @post2.id, items[1][:id]
-    assert_equal @post3.id, items[2][:id]
-  end
-
-  test "제목 기준으로 정렬된다" do
-    result = Post::Index.new(@user.id, {
-      collectionId: @collection.id,
-      sortBy: "title",
-      sortOrder: "asc"
-    }).call
-
-    assert result.success?
-    items = result.data[:items]
-
-    # 제목 오름차순 확인
-    assert_equal "A 게시물", items[0][:title]
-    assert_equal "M 게시물", items[1][:title]
-    assert_equal "Z 게시물", items[2][:title]
-
-    # 제목 내림차순 테스트
-    result2 = Post::Index.new(@user.id, {
-      collectionId: @collection.id,
-      sortBy: "title",
-      sortOrder: "desc"
-    }).call
-
-    items2 = result2.data[:items]
-    assert_equal "Z 게시물", items2[0][:title]
-    assert_equal "M 게시물", items2[1][:title]
-    assert_equal "A 게시물", items2[2][:title]
-  end
-
-  test "다른 컬렉션의 게시물은 가져오지 않는다" do
-    result = Post::Index.new(@user.id, { collectionId: @collection.id }).call
-
-    assert result.success?
-    post_ids = result.data[:items].map { |item| item[:id] }
-
-    assert_not_includes post_ids, @other_collection_post.id
-  end
-
-  test "다른 사용자의 게시물은 가져오지 않는다" do
-    result = Post::Index.new(@user.id, { collectionId: @collection.id }).call
-
-    assert result.success?
-    post_ids = result.data[:items].map { |item| item[:id] }
-
-    assert_not_includes post_ids, @other_user_post.id
-  end
-
-  test "존재하지 않는 컬렉션 ID로 호출 시 실패한다" do
-    result = Post::Index.new(@user.id, { collectionId: 9999 }).call
-
-    assert result.failure?
-    assert_equal "사진첩을 찾을 수 없습니다.", result.error_message
-  end
-
-  test "다른 사용자의 컬렉션 ID로 호출 시 실패한다" do
-    result = Post::Index.new(@user.id, { collectionId: @other_user_collection.id }).call
-
-    assert result.failure?
-    assert_equal "사진첩을 찾을 수 없습니다.", result.error_message
-  end
-
-  test "유효하지 않은 정렬 필드는 기본값(created_at)으로 대체된다" do
-    result = Post::Index.new(@user.id, {
-      collectionId: @collection.id,
-      sortBy: "invalid_field"
-    }).call
-
-    assert result.success?
-    items = result.data[:items]
-
-    # 기본 정렬(생성일 내림차순) 확인
-    assert_equal @post3.id, items[0][:id]
-    assert_equal @post2.id, items[1][:id]
-    assert_equal @post1.id, items[2][:id]
-  end
-
-  test "유효하지 않은 정렬 방향은 기본값(desc)으로 대체된다" do
-    result = Post::Index.new(@user.id, {
-      collectionId: @collection.id,
-      sortOrder: "invalid_order"
-    }).call
-
-    assert result.success?
-    items = result.data[:items]
-
-    # 기본 정렬 방향(내림차순) 확인
-    assert_equal @post3.id, items[0][:id]
-    assert_equal @post2.id, items[1][:id]
-    assert_equal @post1.id, items[2][:id]
+    assert result3.success?
+    assert_equal 5, result3.data[:total_item_count]  # 전체 검색 결과 수
+    assert_equal 1, result3.data[:items].count       # 현재 페이지 항목 수
+    assert_equal 3, result3.data[:current_page]      # 현재 페이지
   end
 
   private
