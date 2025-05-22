@@ -1077,6 +1077,13 @@ paths:
           example: 1001
           schema:
             type: integer
+        - name: keyword
+          in: query
+          description: "사진첩 제목에 포함된 키워드로 검색"
+          required: false
+          example: "여행"
+          schema:
+            type: string
       responses:
         '200':
           description: ''
@@ -1476,6 +1483,13 @@ paths:
           description: collectionId
           required: false
           example: '123'
+          schema:
+            type: string
+        - name: keyword
+          in: query
+          description: "제목 또는 내용에 포함된 키워드로 검색"
+          required: false
+          example: "여행"
           schema:
             type: string
       responses:
