@@ -6,4 +6,13 @@ class Pages::Admin::PoliciesController < Pages::AdminController
 
   def new
   end
+
+  def show
+    puts params[:id].inspect
+    policy = Policy.find(params[:id])
+    render Policies::Show.new(policy: policy)
+  end
+
+  def edit
+  end
 end

@@ -19,6 +19,9 @@ Rails.application.routes.draw do
 
     # 약관관리
     get "policies", to: "admin/policies#index"
+    get "policies/new", to: "admin/policies#new"
+    get "policies/:id", to: "admin/policies#show"
+    get "policies/:id/edit", to: "admin/policies#edit"
 
     mount Scalar::UI, at: "/docs"
   end
