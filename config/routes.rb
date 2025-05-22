@@ -20,6 +20,7 @@ Rails.application.routes.draw do
     # 약관관리
     get "policies", to: "admin/policies#index"
     get "policies/new", to: "admin/policies#new"
+    post "policies", to: "admin/policies#create"
     get "policies/:id", to: "admin/policies#show"
     get "policies/:id/edit", to: "admin/policies#edit"
 
