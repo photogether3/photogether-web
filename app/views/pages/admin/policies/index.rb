@@ -8,7 +8,10 @@ class Views::Pages::Admin::Policies::Index < Views::Base
 
   def view_template
     render Layout.new do
-      h1(class: "text-3xl font-bold") { "약관 관리" }
+      div(class: "flex justify-between") do
+        h1(class: "text-2xl") { "약관 관리" }
+        a(href: "/admin/policies/new", class: "btn btn-soft btn-primary") { "약관 등록" }
+      end
       br(class: "my-10")
       div(class: "overflow-x-auto border border-base-200 bg-base-100") do
         table(class: "table") do
