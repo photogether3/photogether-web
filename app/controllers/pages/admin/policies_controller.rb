@@ -5,6 +5,8 @@ class Pages::Admin::PoliciesController < Pages::AdminController
   end
 
   def new
+    policy = Policy.new
+    render Policies::New.new(policy: policy)
   end
 
   def show
