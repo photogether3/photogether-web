@@ -1,6 +1,7 @@
 class Pages::Admin::PoliciesController < Pages::AdminController
   def index
-    render Policies::Index.new
+    policies = Policy.all
+    render Policies::Index.new(policies: policies)
   end
 
   def new

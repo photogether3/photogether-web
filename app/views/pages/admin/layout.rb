@@ -13,9 +13,13 @@ class Views::Pages::Admin::Layout < Views::Base
       # 컨텐츠
       div(class: "flex h-[calc(100vh-56px)] overflow-x-auto") do
         # 사이드바
-        render Sidebar.new
+        aside(
+          class: "sticky top-0 border-r border-dashed border-base-300 h-full w-[30%] min-w-[300px]
+          flex flex-col items-end justify-center p-4") do
+          render Sidebar.new
+        end
         # 메인 컨텐츠
-        main(class: "p-4") do
+        main(class: "p-4 w-[70%] max-w-[1000px]") do
           yield
         end
       end
