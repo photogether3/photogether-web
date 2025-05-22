@@ -40,6 +40,23 @@ class Pages::Admin::PoliciesController < Pages::AdminController
   end
 
   def edit
+    alert = flash[:alert] || nil
+    policy = Policy.find(params[:id])
+    render Policies::Edit.new(policy: policy, alert: alert)
+  end
+
+  def update
+    policy = Policy.find(params[:id])
+    puts policy.inspect
+    result = Admin::Policy::Update.new(policy: policy, params: params).call
+
+    if result.success?
+      redirect_to "/admin/policies", notice: "약관이 성공적으로 수정되었습니다."
+    else
+      flash[:alert] = result.error_message
+      flash[:policy] = policy_params.to_h
+      redirect_to "/admin/policies/#{policy.id}/edit"
+    end
   end
 
   private

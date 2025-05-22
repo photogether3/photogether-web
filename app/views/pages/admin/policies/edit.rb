@@ -1,9 +1,19 @@
-class Views::Pages::Admin::Policies::New < Views::Base
+class Views::Pages::Admin::Policies::Edit < Views::Base
   include Views::Pages::Admin
 
   def initialize(policy:, alert: nil)
     @policy = policy
     @alert = alert
+  end
+
+  def safe_date_string(date_value)
+    return Date.current.to_s if date_value.nil?
+
+    begin
+      date_value.respond_to?(:to_date) ? date_value.to_date.to_s : Date.current.to_s
+    rescue
+      Date.current.to_s
+    end
   end
 
   def view_template
@@ -32,7 +42,7 @@ class Views::Pages::Admin::Policies::New < Views::Base
         end
       end
 
-      render Policies::Form.new(policy: @policy)
+      render Policies::Form.new(policy: @policy, is_edit: true)
     end
   end
 end
