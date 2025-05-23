@@ -17,6 +17,8 @@ class PagesController < ActionController::Base
   allow_browser versions: :modern
 
   layout -> { Layouts::Application.new(
-    layout: Pages::Layout.new
+    layout: Pages::Layout.new(
+      nav_component: Pages::Sidebar.new
+    )
   ) }
 end

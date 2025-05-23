@@ -1,12 +1,6 @@
 class Views::Pages::Layout < Views::Base
-  def initialize(
-    title: "포토게더",
-    content_padding: true
-  )
-    @title = title
-    # 기본적으로는 컨텐츠 영역에 패딩이 들어가있음
-    # 레이아웃을 사용하는 시점에 명시적으로 false 값을 주어 패딩을 사용하지 않을 수 있음
-    @content_padding = content_padding
+  def initialize(nav_component: nil)
+    @nav_component = nav_component
   end
 
   def view_template
@@ -31,9 +25,9 @@ class Views::Pages::Layout < Views::Base
       end
 
       # 컨텐츠 영역
-      div(class: "h-[calc(100%-56px)] flex flex-col z-10 relative") do
+      div(class: "h-[calc(100%-56px)] flex flex-col z-10") do
         # 메인 컨텐츠
-        div(class: "mx-auto container max-w-5xl flex-grow border-x-2 border-dashed border-base-300") do
+        div(class: "mx-auto container max-w-5xl flex-grow lg:border-x-2 lg:border-dashed lg:border-base-300 relative") do
           header(class: "p-6 h-24") do
             a(href: "/", class: "") do
               img(src: "/images/photogether-logo.png", class: "h-full")
@@ -41,6 +35,15 @@ class Views::Pages::Layout < Views::Base
           end
           main do
             yield
+          end
+
+          # 메뉴
+          div(class: "hidden lg:block w-24 absolute left-[-96px] top-0 h-full") do
+            div(class: "sticky top-0 left-0 w-full p-4") do
+              if @nav_component.present?
+                render @nav_component
+              end
+            end
           end
         end
 
