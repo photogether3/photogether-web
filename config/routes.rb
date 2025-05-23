@@ -16,6 +16,7 @@ Rails.application.routes.draw do
 
     # 회원관리
     get "users", to: "admin/users#index"
+    get "users/:id", to: "admin/users#show"
 
     # 약관관리
     get "policies", to: "admin/policies#index"
