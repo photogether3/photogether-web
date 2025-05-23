@@ -1,5 +1,6 @@
 class Pages::PoliciesController < PagesController
   def show
+    render Pages::Policies::Show.new
   end
 
   def data_deletion

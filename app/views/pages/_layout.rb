@@ -28,18 +28,18 @@ class Views::Pages::Layout < Views::Base
       div(class: "h-[calc(100%-56px)] flex flex-col z-10") do
         # 메인 컨텐츠
         div(class: "mx-auto container max-w-5xl flex-grow lg:border-x-2 lg:border-dashed lg:border-base-300 relative") do
-          header(class: "p-6 h-24") do
-            a(href: "/", class: "") do
-              img(src: "/images/photogether-logo.png", class: "h-full")
-            end
-          end
+          # header(class: "p-6 h-24") do
+          #   a(href: "/", class: "") do
+          #     img(src: "/images/photogether-logo.png", class: "h-full")
+          #   end
+          # end
           main do
             yield
           end
 
           # 메뉴
-          div(class: "hidden lg:block w-24 absolute left-[-96px] top-0 h-full") do
-            div(class: "sticky top-0 left-0 w-full p-4") do
+          div(class: "hidden lg:block w-32 absolute left-[-128px] top-0 h-full") do
+            div(class: "sticky top-0 left-0 w-full p-6") do
               if @nav_component.present?
                 render @nav_component
               end

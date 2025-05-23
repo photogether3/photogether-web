@@ -1,12 +1,5 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 @plugin "daisyui" {
-  themes: light --default, dark --prefersdark, cupcake, lemonade;
-}
-
-.border-dashed-wide {
-  border-style: dashed;
-  border-width: 0 1px;
-  border-image: linear-gradient(to bottom, currentColor 25%, transparent 25%, transparent 75%, currentColor 75%) 0 20 0 20 repeat;
-  background-clip: padding-box;
+  themes: light --default, dark --prefersdark, cupcake, lemonade, forest, retro;
 }

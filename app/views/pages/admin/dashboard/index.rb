@@ -5,8 +5,6 @@ class Views::Pages::Admin::Dashboard::Index < Views::Base
   end
 
   def view_template
-    render Layout.new do
-      div { "대시보드 페이지" }
-    end
+    div { "대시보드 페이지" }
   end
 end
