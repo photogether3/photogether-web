@@ -1,0 +1,2 @@
+class IpWhitelist < ApplicationRecord
+end

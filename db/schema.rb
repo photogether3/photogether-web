@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_04_114220) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_23_103313) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -65,6 +65,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_04_114220) do
     t.index ["category_id"], name: "index_favorites_on_category_id"
     t.index ["user_id", "category_id"], name: "index_favorites_on_user_id_and_category_id", unique: true
     t.index ["user_id"], name: "index_favorites_on_user_id"
+  end
+
+  create_table "ip_whitelists", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "ip", limit: 50, null: false
+    t.string "description", limit: 50, null: false
+    t.boolean "is_active", default: true
   end
 
   create_table "policies", force: :cascade do |t|
