@@ -12,8 +12,8 @@ class Views::Pages::Admin::Policies::Index < Views::Base
       a(href: "/admin/policies/new", class: "btn btn-soft btn-primary") { "약관 등록" }
     end
     div(class: "bg-base-100 p-6 border-t border-dashed border-base-300") do
-      div(class: "overflow-x-auto border border-base-300 rounded-box") do
-        table(class: "table") do
+      div(class: "overflow-x-auto") do
+        table(class: "table table-xs") do
           thead(class: "bg-base-200") do
             tr do
               th
@@ -35,7 +35,7 @@ class Views::Pages::Admin::Policies::Index < Views::Base
                   class: "text-primary") { policy[:title] }
                 end
                 td do
-                  span(class: "badge badge-secondary text-xs font-semibold text-white") { policy[:kind].upcase }
+                  span(class: "badge badge-primary text-xs text-white") { policy[:kind].upcase }
                 end
                 td { policy[:version] }
                 td { policy[:is_active] ? "활성" : "비활성" }
