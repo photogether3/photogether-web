@@ -1,5 +1,6 @@
 class PagesController < ActionController::Base
   include Views
+
   helper ViteHelper
 
   # 최신 브라우저만 접근을 허용합니다.

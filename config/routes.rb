@@ -27,6 +27,11 @@ Rails.application.routes.draw do
     put "policies/:id", to: "admin/policies#update"
     delete "policies/:id", to: "admin/policies#destroy"
 
+    # Ip 화이트리스트
+    get "ip-whitelist", to: "admin/ip_whitelist#index"
+    get "ip-whitelist/new", to: "admin/ip_whitelist#new"
+    post "ip-whitelist", to: "admin/ip_whitelist#create"
+
     mount Scalar::UI, at: "/docs"
   end
 

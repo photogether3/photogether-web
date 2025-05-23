@@ -1,7 +1,7 @@
 class Pages::Admin::PoliciesController < Pages::AdminController
   def index
     policies = Policy.order(kind: :asc, version: :desc)
-    render Policies::Index.new(policies: policies)
+    render Pages::Admin::Policies::Index.new(policies: policies)
   end
 
   def new
@@ -18,7 +18,7 @@ class Pages::Admin::PoliciesController < Pages::AdminController
       )
     end
 
-    render Policies::New.new(policy: policy, alert: alert)
+    render Pages::Admin::Policies::New.new(policy: policy, alert: alert)
   end
 
   def create
@@ -36,13 +36,13 @@ class Pages::Admin::PoliciesController < Pages::AdminController
   def show
     puts params[:id].inspect
     policy = Policy.find(params[:id])
-    render Policies::Show.new(policy: policy)
+    render Pages::Admin::Policies::Show.new(policy: policy)
   end
 
   def edit
     alert = flash[:alert] || nil
     policy = Policy.find(params[:id])
-    render Policies::Edit.new(policy: policy, alert: alert)
+    render Pages::Admin::Policies::Edit.new(policy: policy, alert: alert)
   end
 
   def update

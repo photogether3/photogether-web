@@ -1,5 +1,5 @@
 class Pages::Admin::DashboardController < Pages::AdminController
   def index
-    render Dashboard::Index.new
+    render Pages::Admin::Dashboard::Index.new
   end
 end
