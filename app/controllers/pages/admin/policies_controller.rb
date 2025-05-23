@@ -6,7 +6,6 @@ class Pages::Admin::PoliciesController < Pages::AdminController
 
   def new
     policy_attributes = flash[:policy] || {}
-    alert = flash[:alert] || nil
 
     policy = if policy_attributes.present?
       Policy.new(policy_attributes)
@@ -18,7 +17,7 @@ class Pages::Admin::PoliciesController < Pages::AdminController
       )
     end
 
-    render Pages::Admin::Policies::New.new(policy: policy, alert: alert)
+    render Pages::Admin::Policies::New.new(policy: policy)
   end
 
   def create
@@ -40,9 +39,8 @@ class Pages::Admin::PoliciesController < Pages::AdminController
   end
 
   def edit
-    alert = flash[:alert] || nil
     policy = Policy.find(params[:id])
-    render Pages::Admin::Policies::Edit.new(policy: policy, alert: alert)
+    render Pages::Admin::Policies::Edit.new(policy: policy)
   end
 
   def update

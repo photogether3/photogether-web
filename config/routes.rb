@@ -31,6 +31,7 @@ Rails.application.routes.draw do
     get "ip-whitelist", to: "admin/ip_whitelist#index"
     get "ip-whitelist/new", to: "admin/ip_whitelist#new"
     post "ip-whitelist", to: "admin/ip_whitelist#create"
+    delete "ip-whitelist/:id", to: "admin/ip_whitelist#destroy"
 
     mount Scalar::UI, at: "/docs"
   end
