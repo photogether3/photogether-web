@@ -83,6 +83,7 @@ class User < ApplicationRecord
       bio: bio,
       created_at: created_at,
       updated_at: updated_at,
+      is_email_verified: is_email_verified,
       email: email_address
     }
 
@@ -90,8 +91,6 @@ class User < ApplicationRecord
     if image.attached?
       # variant(:profile)을 사용하여 미리 정의된 250x250 크기의 이미지 제공
       result[:image_url] = Rails.application.routes.url_helpers.url_for(image.variant(:profile))
-
-      # 필요한 경우 원본 이미지 URL도 추가할 수 있습니다
       result[:original_image_url] = Rails.application.routes.url_helpers.url_for(image)
     else
       result[:image_url] = nil
