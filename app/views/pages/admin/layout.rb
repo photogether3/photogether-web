@@ -1,7 +1,11 @@
 class Views::Pages::Admin::Layout < Views::Base
   include Views::Pages::Admin
 
-  def initialize(content_padding: true)
+  def initialize(
+    title: "포토게더",
+    content_padding: true
+  )
+    @title = title
     # 기본적으로는 컨텐츠 영역에 패딩이 들어가있음
     # 레이아웃을 사용하는 시점에 명시적으로 false 값을 주어 패딩을 사용하지 않을 수 있음
     @content_padding = content_padding
@@ -14,7 +18,7 @@ class Views::Pages::Admin::Layout < Views::Base
         div(class: "h-full p-2") do
           img(src: "/images/photogether-logo.png", class: "h-full")
         end
-        div(class: "text-lg font-semibold") { "포토게더 관리" }
+        div(class: "text-lg font-semibold") { @title }
       end
       # 컨텐츠
       div(class: "flex h-[calc(100vh-56px)] overflow-x-auto") do

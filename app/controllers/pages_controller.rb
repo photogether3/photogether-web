@@ -1,5 +1,5 @@
 class PagesController < ActionController::Base
-  include Views::Pages
+  include Views
   helper ViteHelper
 
   # 최신 브라우저만 접근을 허용합니다.
@@ -16,5 +16,7 @@ class PagesController < ActionController::Base
   # 레거시 브라우저 지원에 따른 개발 부담을 줄일 수 있습니다.
   allow_browser versions: :modern
 
-  layout "application"
+  layout -> { Layouts::Application.new(
+    layout: Pages::Layout.new
+  ) }
 end
