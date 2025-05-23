@@ -17,8 +17,8 @@ class Views::Pages::Admin::Policies::Form < Views::Base
   def view_template
     # 폼 영역
     form(
-      action: @is_edit ? "/admin/policies/#{@policy.id}/edit" : "/admin/policies",
-      method: "post",
+      action: @is_edit ? "/admin/policies/#{@policy.id}" : "/admin/policies",
+      method: @is_edit ? "put" : "post",
       data: { controller: "tinymce" },
       class: "border-y border-dashed border-base-300 flex justify-between") do
       # CSRF 토큰 추가

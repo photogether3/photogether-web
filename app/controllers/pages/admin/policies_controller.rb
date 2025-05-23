@@ -25,7 +25,7 @@ class Pages::Admin::PoliciesController < Pages::AdminController
     result = Admin::Policy::Create.new(params).call
 
     if result.success?
-      redirect_to admin_policies_path, alert: "약관이 성공적으로 등록되었습니다."
+      redirect_to admin_policies_path, alert: "약관이 성공적으로 등록되었습니다.", status: :see_other
     else
       flash[:alert] = result.error_message
       flash[:policy] = policy_params.to_h
@@ -51,7 +51,7 @@ class Pages::Admin::PoliciesController < Pages::AdminController
     result = Admin::Policy::Update.new(policy: policy, params: params).call
 
     if result.success?
-      redirect_to "/admin/policies", notice: "약관이 성공적으로 수정되었습니다."
+      redirect_to "/admin/policies", notice: "약관이 성공적으로 수정되었습니다.", status: :see_other
     else
       flash[:alert] = result.error_message
       flash[:policy] = policy_params.to_h
