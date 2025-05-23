@@ -2,6 +2,9 @@ Rails.application.routes.draw do
   # 메인 페이지 라우트 설정
   root "pages/home#index"
 
+  # 접근 거부 페이지
+  get "access-denied", to: "pages/access#denied", as: :access_denied
+
   # 정책 라우트 설정
   namespace :policies, module: "pages" do
     get "data-deletion", to: "policies#data_deletion"
