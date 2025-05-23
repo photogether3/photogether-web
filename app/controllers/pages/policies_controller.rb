@@ -3,6 +3,6 @@ class Pages::PoliciesController < PagesController
   end
 
   def data_deletion
-    render Policies::DataDeletion.new
+    render Pages::Policies::DataDeletion.new
   end
 end
