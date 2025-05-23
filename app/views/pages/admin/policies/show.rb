@@ -4,7 +4,7 @@ class Views::Pages::Admin::Policies::Show < Views::Base
   end
 
   def view_template
-    div(class: "flex items-center gap-2") do
+    div(class: "flex flex-col gap-2 p-6") do
       a(href: "/admin/policies",
         class: "text-xl") do
         raw(<<~SVG.html_safe)
@@ -13,13 +13,10 @@ class Views::Pages::Admin::Policies::Show < Views::Base
           </svg>
         SVG
       end
-      h1(class: "text-3xl font-bold") {
-        # @policy.title
-      }
-    end
-    # html 컨텐츠 랜더링
-    div(class: "prose prose-lg max-w-none mt-6 text-sm") do
-      raw(@policy.content.to_s.html_safe)
+      # html 컨텐츠 랜더링
+      div(class: "prose prose-sm max-w-none") do
+        raw(@policy.content.to_s.html_safe)
+      end
     end
   end
 end

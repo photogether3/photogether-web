@@ -27,7 +27,7 @@ class Views::Pages::Layout < Views::Base
       # 컨텐츠 영역
       div(class: "h-[calc(100%-56px)] flex flex-col z-10") do
         # 메인 컨텐츠
-        div(class: "mx-auto container max-w-5xl flex-grow lg:border-x-2 lg:border-dashed lg:border-base-300 relative") do
+        div(class: "mx-auto container max-w-5xl flex-grow lg:border-x lg:border-dashed lg:border-base-300 relative") do
           # header(class: "p-6 h-24") do
           #   a(href: "/", class: "") do
           #     img(src: "/images/photogether-logo.png", class: "h-full")
