@@ -9,7 +9,7 @@ class Views::Layouts::Application < Views::Base
 
   def view_template
     doctype
-    html(data: { theme: "lemonade" }, lang: "ko") do
+    html(data: { theme: "dark" }, lang: "ko") do
       head do
         title { content_for(:title) || "포토게더" }
         meta(name: "viewport", content: "width=device-width,initial-scale=1")

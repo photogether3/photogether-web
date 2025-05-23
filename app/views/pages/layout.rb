@@ -13,7 +13,7 @@ class Views::Pages::Layout < Views::Base
     # 전체 컨테이너에 상대 위치 설정
     div(class: "flex flex-col h-screen relative") do
       # 알림박스
-      div(class: "h-[56px] border-b border-base-300 flex justify-center items-center p-3 gap-2 bg-primary/10 relative z-20") do
+      div(class: "h-[56px] border-b border-base-300 flex justify-center items-center p-3 gap-2 bg-primary/10 relative z-10") do
         div(class: "flex items-center gap-2") do
           # 정보 아이콘 추가
           raw(<<~SVG.html_safe)
@@ -32,17 +32,20 @@ class Views::Pages::Layout < Views::Base
 
       # 컨텐츠 영역
       div(class: "h-[calc(100%-56px)] flex flex-col z-10 relative") do
-        # 배경 점선 요소 (절대 위치)
-        div(class: "hidden lg:block absolute inset-0 mx-auto container max-w-5xl h-full border-x border-dashed border-base-300 pointer-events-none") do
-        end
-
         # 메인 컨텐츠
-        main(class: "mx-auto container max-w-5xl flex-grow") do
-          yield
+        div(class: "mx-auto container max-w-5xl flex-grow border-x-2 border-dashed border-base-300") do
+          header(class: "p-6 h-24") do
+            a(href: "/", class: "") do
+              img(src: "/images/photogether-logo.png", class: "h-full")
+            end
+          end
+          main do
+            yield
+          end
         end
 
         # 푸터
-        footer(class: "footer footer-center p-6 text-base-content w-full bg-secondary/10") do
+        footer(class: "footer footer-center p-6 text-base-content w-full bg-primary/10 border-t border-base-300") do
           div(class: "mx-auto container max-w-5xl flex justify-between px-6") do
             div(class: "flex gap-2") do
               p(class: "mr-3") { "© 2025 AZA, Inc. All rights reserved." }
