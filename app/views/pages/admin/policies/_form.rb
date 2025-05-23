@@ -19,7 +19,7 @@ class Views::Pages::Admin::Policies::Form < Views::Base
     form(
       action: @is_edit ? "/admin/policies/#{@policy.id}" : "/admin/policies",
       method: @is_edit ? "put" : "post",
-      data: { controller: "tinymce" },
+      data: { controller: "tinymce", turbo_cache: "false" },
       class: "border-y border-dashed border-base-300 flex justify-between") do
       # CSRF 토큰 추가
       input(type: "hidden", name: "authenticity_token", value: helpers.form_authenticity_token)

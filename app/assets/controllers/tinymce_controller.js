@@ -2,81 +2,82 @@ import { Controller } from "@hotwired/stimulus";
 
 export class TinymceController extends Controller {
   connect() {
+    console.log('init tinymce');
+    
+    // 이미 존재하는 인스턴스 제거 - 초기화 전에 항상 수행
+    if (typeof tinymce !== "undefined" && tinymce.get("tinymce-editor")) {
+      tinymce.get("tinymce-editor").remove();
+    }
+    
+    // 이미 로드 중인지 확인
+    if (this.isLoading) return;
+    this.isLoading = true;
+    
+    // Turbo 페이지 이벤트 핸들러 등록
+    document.addEventListener("turbo:before-render", this.cleanup);
+    
+    // 초기화 지연 적용 (10ms 정도만 지연)
+    setTimeout(() => {
+      this.initEditor();
+      this.isLoading = false;
+    }, 10);
+  }
+  
+  disconnect() {
+    document.removeEventListener("turbo:before-render", this.cleanup);
+    this.cleanup();
+  }
+  
+  cleanup = () => {
+    try {
+      if (typeof tinymce !== "undefined") {
+        const editor = tinymce.get("tinymce-editor");
+        if (editor) {
+          // 내용 저장 후 제거
+          const content = editor.getContent();
+          const hiddenField = document.getElementById('policy_content_hidden');
+          if (hiddenField) hiddenField.value = content;
+          
+          // 에디터 인스턴스 제거
+          editor.remove();
+          console.log("TinyMCE 에디터 인스턴스가 제거되었습니다.");
+        }
+      }
+    } catch (error) {
+      console.warn("TinyMCE 정리 중 오류:", error);
+    }
+  }
+  
+  initEditor() {
     tinymce.init({
       selector: "#tinymce-editor",
+      // 핵심 플러그인만 로드하여 초기화 속도 향상
       plugins: [
-        // Core editing features
-        "anchor",
-        "autolink",
-        "charmap",
-        "codesample",
-        "emoticons",
-        "image",
-        "link",
-        "lists",
-        "media",
-        "searchreplace",
-        "table",
-        "visualblocks",
-        "wordcount",
-        // Your account includes a free trial of TinyMCE premium features
-        // Try the most popular premium features until Jun 5, 2025:
-        "checklist",
-        "mediaembed",
-        "casechange",
-        "formatpainter",
-        "pageembed",
-        "a11ychecker",
-        "tinymcespellchecker",
-        "permanentpen",
-        "powerpaste",
-        "advtable",
-        "advcode",
-        "editimage",
-        "advtemplate",
-        "mentions",
-        "tinycomments",
-        "tableofcontents",
-        "footnotes",
-        "mergetags",
-        "autocorrect",
-        "typography",
-        "inlinecss",
-        "markdown",
-        "importword",
-        "exportword",
-        "exportpdf",
+        "anchor", "autolink", "charmap", "link", "lists", 
+        "image", "media", "table", "emoticons"
       ],
-      toolbar:
-        "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
-      tinycomments_mode: "embedded",
-      tinycomments_author: "Author name",
-      mergetags_list: [
-        { value: "First.Name", title: "First Name" },
-        { value: "Email", title: "Email" },
-      ],
-      // ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
+      // 간소화된 툴바
+      toolbar: "undo redo | blocks | bold italic | link image media table | numlist bullist | emoticons | removeformat",
+      // 로딩 성능 개선을 위한 설정
+      skin: "oxide",
+      resize: true,
+      min_height: 300,
+      statusbar: false,
+      menubar: false,
+      branding: false,
+      // 성능 개선을 위한 설정
       setup: function(editor) {
         editor.on('change', function() {
           // hidden 필드에 내용 동기화
-          document.getElementById('policy_content_hidden').value = editor.getContent();
+          const hiddenField = document.getElementById('policy_content_hidden');
+          if (hiddenField) hiddenField.value = editor.getContent();
+        });
+        
+        // 초기화 완료 시 이벤트
+        editor.on('init', function() {
+          console.log('TinyMCE 초기화 완료');
         });
       }
     });
-  }
-
-  disconnect() {
-    // 컨트롤러 해제 시 TinyMCE 인스턴스 정리
-    if (typeof tinymce !== "undefined") {
-      // 특정 에디터 인스턴스만 정리
-      const editor = tinymce.get("tinymce-editor");
-      if (editor) {
-        editor.remove();
-        console.log("TinyMCE 에디터 인스턴스가 제거되었습니다.");
-      }
-
-      // 또는 모든 인스턴스 정리가 필요한 경우
-      // tinymce.remove('#tinymce-editor');
-    }
   }
 }
