@@ -2,6 +2,7 @@ class Views::Pages::Admin::Sidebar < Views::Base
   def initialize
     @admin_dashboard_path = "/admin"
     @admin_users_path = "/admin/users"
+    @admin_categories_path = "/admin/categories"
     @admin_polices_path = "/admin/policies"
     @admin_ip_whitelist_path = "/admin/ip-whitelist"
   end
@@ -32,6 +33,17 @@ class Views::Pages::Admin::Sidebar < Views::Base
           end
         end
         li do
+          a(href: @admin_categories_path,
+            class: "flex flex-col gap-2 text-xs items-center p-2 rounded-md #{current_path?(@admin_categories_path, start_with: true) && 'bg-primary/70 border-base-300 text-white' }") do
+            raw(<<~SVG.html_safe)
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13" />
+              </svg>
+            SVG
+            span { "카테고리" }
+          end
+        end
+        li do
           a(href: @admin_polices_path,
             class: "flex flex-col gap-2 text-xs items-center p-2 rounded-md #{current_path?(@admin_polices_path, start_with: true) && 'bg-primary/70 border-base-300 text-white' }") do
             raw(<<~SVG.html_safe)
@@ -47,7 +59,7 @@ class Views::Pages::Admin::Sidebar < Views::Base
             class: "flex flex-col gap-2 text-xs items-center p-2 rounded-md #{current_path?(@admin_ip_whitelist_path, start_with: true) && 'bg-primary/70 border-base-300 text-white' }") do
             raw(<<~SVG.html_safe)
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12a7.5 7.5 0 0 0 15 0m-15 0a7.5 7.5 0 1 1 15 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077 1.41-.513m14.095-5.13 1.41-.513M5.106 17.785l1.15-.964m11.49-9.642 1.149-.964M7.501 19.795l.75-1.3m7.5-12.99.75-1.3m-6.063 16.658.26-1.477m2.605-14.772.26-1.477m0 17.726-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205 12 12m6.894 5.785-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864-1.41-.513M4.954 9.435l-1.41-.514M12.002 12l-3.75 6.495" />
               </svg>
             SVG
             span { "접근관리" }

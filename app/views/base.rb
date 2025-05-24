@@ -6,6 +6,8 @@ class Views::Base < Phlex::HTML
   def initialize
   end
 
+  private
+
   def current_path?(path, options = {})
     rails_view_context = @_state&.instance_variable_get(:@user_context)&.fetch(:rails_view_context, nil)
     current_path = rails_view_context&.request&.path
@@ -19,6 +21,19 @@ class Views::Base < Phlex::HTML
     else
       # 그렇지 않으면 정확한 경로 일치 확인
       current_path == path
+    end
+  end
+
+  def date_format(date)
+    if date.nil? || !date.respond_to?(:strftime)
+      "-"
+    else
+      begin
+        date.strftime("%Y-%m-%d %H:%M:%S")
+      rescue StandardError => e
+        # 날짜 변환 중 오류가 발생하면 "-" 반환
+        "-"
+      end
     end
   end
 end
