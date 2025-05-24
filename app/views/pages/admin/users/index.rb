@@ -32,7 +32,7 @@ class Views::Pages::Admin::Users::Index < Views::Base
                   div(class: "avatar") do
                     div(class: "w-8 rounded") do
                       img(
-                        src: user[:image_url] ? user[:image_url] : "https://img.daisyui.com/images/profile/demo/superperson@192.webp",
+                        src: user[:image_url] ? user[:image_url] : "/icon.png",
                         alt: "Tailwind-CSS-Avatar-component")
                     end
                   end
