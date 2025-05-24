@@ -8,6 +8,14 @@ class Pages::Admin::UsersController < Pages::AdminController
   def show
     user = User.find(params[:id])
     user_result = user.to_detail
-    render Pages::Admin::Users::Show.new(user: user_result)
+
+    user_favorite_categories = user.favorite_categories
+    user_posts = user.posts.order(created_at: :desc).map(&:to_detail)
+
+    render Pages::Admin::Users::Show.new(
+      user: user_result,
+      favorite_categories: user_favorite_categories,
+      posts: user_posts
+    )
   end
 end
