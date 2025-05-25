@@ -25,6 +25,7 @@ Rails.application.routes.draw do
     get "categories", to: "admin/categories#index"
     get "categories/new", to: "admin/categories#new"
     post "categories", to: "admin/categories#create"
+    delete "categories/:id", to: "admin/categories#destroy"
 
     # 약관관리
     get "policies", to: "admin/policies#index"
