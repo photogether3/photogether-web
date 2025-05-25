@@ -21,6 +21,14 @@ Rails.application.routes.draw do
     get "users", to: "admin/users#index"
     get "users/:id", to: "admin/users#show"
 
+    # 카테고리관리
+    get "categories", to: "admin/categories#index"
+    get "categories/new", to: "admin/categories#new"
+    get "categories/:id/edit", to: "admin/categories#edit"
+    put "categories/:id", to: "admin/categories#update"
+    post "categories", to: "admin/categories#create"
+    delete "categories/:id", to: "admin/categories#destroy"
+
     # 약관관리
     get "policies", to: "admin/policies#index"
     get "policies/new", to: "admin/policies#new"
