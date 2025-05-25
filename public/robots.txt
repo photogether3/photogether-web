@@ -1,1 +1,8 @@
-# See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
+# public/robots.txt
+User-agent: *
+Disallow: /admin/
+Disallow: /admin
+Allow: /
+
+# 사이트맵 추가
+Sitemap: https://photogether.app/sitemap.xml
