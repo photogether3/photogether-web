@@ -82,3 +82,5 @@ gem "rack-cors"
 gem "kaminari", "~> 1.2", ">= 1.2.2"
 # Ruby 기반 HTML 작성 라이브러리
 gem "phlex-rails", "~> 2.2"
+# 사이트맵 생성 라이브러리
+gem "sitemap_generator"
