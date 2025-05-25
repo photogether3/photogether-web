@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   namespace :session, module: "pages" do
     get "login", to: "session#index"
     post "login", to: "session#login"
-    get "logout", to: "session#logout"
+    delete "logout", to: "session#logout"
   end
 
   # 인증된 회원 페이지
