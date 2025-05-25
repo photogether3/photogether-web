@@ -5,6 +5,18 @@ Rails.application.routes.draw do
   # 접근 거부 페이지
   get "access-denied", to: "pages/access#denied", as: :access_denied
 
+  # 인증 관련 페이지
+  namespace :session, module: "pages" do
+    get "login", to: "session#index"
+    post "login", to: "session#login"
+    delete "logout", to: "session#logout"
+  end
+
+  # 인증된 회원 페이지
+  namespace :users, module: "pages" do
+    get "me", to: "users#show", as: :users_me
+  end
+
   # 정책 라우트 설정
   namespace :policies, module: "pages" do
     get "data-deletion", to: "policies#data_deletion"
