@@ -9,6 +9,12 @@ Rails.application.routes.draw do
   namespace :session, module: "pages" do
     get "login", to: "session#index"
     post "login", to: "session#login"
+    get "logout", to: "session#logout"
+  end
+
+  # 인증된 회원 페이지
+  namespace :users, module: "pages" do
+    get "me", to: "users#show", as: :users_me
   end
 
   # 정책 라우트 설정

@@ -1,4 +1,8 @@
 class Pages::SessionController < PagesController
+  before_action :authenticate_user, except: [ :index, :login ]
+
+  helper_method :current_user
+
   def index
     credentials = flash[:credentials] || nil
     render Pages::Session::Login.new(credentials: credentials)
@@ -27,13 +31,35 @@ class Pages::SessionController < PagesController
       return redirect_to session_login_path, status: :see_other
     end
 
+    session[:user_id] = user.id
     flash[:notice] = "로그인에 성공하였습니다."
-    redirect_to session_login_path, status: :see_other
+    redirect_to "/users/me", status: :see_other
+  end
+
+  def logout
+    session.delete(:user_id)
+    flash[:notice] = "로그아웃 되었습니다."
+    redirect_to "/", status: :see_other
   end
 
   private
 
   def credentials_params
     params.require(:credentials).permit(:email, :password)
+  end
+
+  # 현재 로그인된 사용자 반환
+  def current_user
+    @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
+  end
+
+  # 로그인 필요 액션 검사
+  def authenticate_user
+    unless current_user
+      flash[:alert] = "로그인이 필요한 서비스입니다."
+      redirect_to session_login_path, status: :see_other
+      return false
+    end
+    true
   end
 end
