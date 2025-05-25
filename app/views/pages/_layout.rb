@@ -20,7 +20,7 @@ class Views::Pages::Layout < Views::Base
           span(class: "font-semibold text-primary") { "여러분의 의견" }
           span { "이 필요합니다. " }
 
-          a(href: "/feedback", class: "text-primary underline font-bold hover:text-primary-focus") { "피드백 남기기" }
+          a(href: "/users/me/feedbacks", class: "text-primary underline font-bold hover:text-primary-focus") { "피드백 남기기" }
         end
       end
 
