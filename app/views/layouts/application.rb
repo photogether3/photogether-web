@@ -16,6 +16,11 @@ class Views::Layouts::Application < Views::Base
         meta(name: "apple-mobile-web-app-capable", content: "yes")
         meta(name: "mobile-web-app-capable", content: "yes")
 
+        meta(name: "description", content: "포토게더(Photogether)는 사진 공유 및 앨범 관리 서비스입니다. 소중한 순간을 기록하고 가족, 친구들과 함께 공유하세요.")
+        meta(name: "keywords", content: "포토게더, photogether, 사진 공유, 앨범 관리, 사진첩, 포토 앨범")
+        meta(name: "language", content: "Korean")
+        meta(property: "og:locale", content: "ko_KR")
+
         # Rails 헬퍼 메소드
         csrf_meta_tags
         csp_meta_tag
