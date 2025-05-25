@@ -14,7 +14,8 @@ Rails.application.routes.draw do
 
   # 인증된 회원 페이지
   namespace :users, module: "pages" do
-    get "me", to: "users#show", as: :users_me
+    get "me", to: "users#show"
+    get "me/feedbacks", to: "users/feedbacks#index"
   end
 
   # 정책 라우트 설정
