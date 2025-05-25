@@ -1,5 +1,5 @@
-class Views::Pages::Admin::Categories::New < Views::Base
-  def initialize(category: nil)
+class Views::Pages::Admin::Categories::Edit < Views::Base
+  def initialize(category:)
     @category = category
   end
 
@@ -15,6 +15,6 @@ class Views::Pages::Admin::Categories::New < Views::Base
       end
       h2(class: "text-2xl") { "카테고리 추가" }
     end
-    render Views::Pages::Admin::Categories::Form.new(category: @category)
+    render Views::Pages::Admin::Categories::Form.new(category: @category, is_edit: true)
   end
 end

@@ -10,7 +10,6 @@ class Pages::Admin::CategoriesController < Pages::AdminController
   end
 
   def create
-    category_params = params.require(:category).permit(:name)
     result = Admin::Category::Create.new(category_params).call
 
     puts result.inspect
@@ -20,6 +19,36 @@ class Pages::Admin::CategoriesController < Pages::AdminController
     else
       flash[:alert] = result.error_message
       redirect_to admin_categories_new_path, category: category_params
+    end
+  end
+
+  def edit
+    category = Category.find_by(id: params[:id])
+
+    if category.nil?
+      flash[:alert] = "카테고리를 찾을 수 없습니다."
+      redirect_to admin_categories_path, status: :see_other
+    end
+
+    render Pages::Admin::Categories::Edit.new(category: category)
+  end
+
+  def update
+    category = Category.find_by(id: params[:id])
+
+    if category.nil?
+      flash[:alert] = "카테고리를 찾을 수 없습니다."
+      redirect_to admin_categories_path, status: :see_other
+    end
+
+    category.name = category_params[:name]
+
+    if category.save
+      flash[:notice] = "카테고리가 수정되었습니다."
+      redirect_to admin_categories_path, status: :see_other
+    else
+      flash[:alert] = "카테고리 수정 중 문제가 발생하였습니다."
+      redirect_to "/admin/categories/#{category.id}/edit", status: :see_other
     end
   end
 
@@ -38,5 +67,11 @@ class Pages::Admin::CategoriesController < Pages::AdminController
       flash[:alert] = "카테고리 삭제에 실패하였습니다."
       redirect_to admin_categories_path, status: :see_other
     end
+  end
+
+  private
+
+  def category_params
+    params.require(:category).permit(:name)
   end
 end
