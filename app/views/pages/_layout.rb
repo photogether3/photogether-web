@@ -52,8 +52,10 @@ class Views::Pages::Layout < Views::Base
           div(class: "mx-auto container max-w-5xl flex justify-between px-6") do
             div(class: "flex gap-2") do
               p(class: "mr-3") { "© 2025 AZA, Inc. All rights reserved." }
-              a(class: "text-primary") { "Terms" }
-              a(class: "text-primary") { "Privacy" }
+              a(href: "/policies/terms", class: "text-primary") { "서비스이용약관" }
+              a(href: "/policies/privacy", class: "text-primary") { "개인정보처리방침" }
+              a(href: "/policies/marketing", class: "text-primary") { "마케팅" }
+              a(href: "/policies/data-deletion", class: "text-primary") { "데이터삭제방침" }
             end
 
             a(href: "https://github.com/photogether3", class: "link link-hover flex items-center") do

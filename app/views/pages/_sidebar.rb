@@ -2,8 +2,8 @@ class Views::Pages::Sidebar < Views::Base
   def initialize
     @home_path = "/"
     @policies_data_deletion_path = "/policies/data-deletion"
-    @policies_terms_path = "/policies/1"
-    @policies_privacy_path = "/policies/2"
+    @policies_terms_path = "/policies/terms"
+    @policies_privacy_path = "/policies/privacy"
   end
 
   def view_template
