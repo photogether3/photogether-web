@@ -33,6 +33,7 @@ Rails.application.routes.draw do
     # 회원관리
     get "users", to: "admin/users#index"
     get "users/:id", to: "admin/users#show"
+    get "users/:user_id/posts/:post_id", to: "admin/users/posts#show"
 
     # 카테고리관리
     get "categories", to: "admin/categories#index"

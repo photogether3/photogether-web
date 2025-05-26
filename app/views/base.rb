@@ -3,8 +3,7 @@
 class Views::Base < Phlex::HTML
   include Phlex::Rails::Helpers
 
-  def initialize
-  end
+  register_element :turbo_frame
 
   private
 

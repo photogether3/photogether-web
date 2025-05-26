@@ -46,6 +46,7 @@ class Views::Layouts::Application < Views::Base
           yield
         end
 
+        # Flash 박스
         div(class: "fixed right-0 top-0 p-6 z-50") do
           if helpers.notice
             div(
@@ -72,6 +73,9 @@ class Views::Layouts::Application < Views::Base
                 span { helpers.alert }
               end
           end
+        end
+
+        turbo_frame(id: "modal_overlay") do
         end
       end
     end

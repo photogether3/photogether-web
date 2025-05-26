@@ -62,7 +62,10 @@ class Views::Pages::Admin::Users::Show < Views::Base
       div(class: "flex flex-wrap gap-4") do
         @posts.each do |post|
           # 카드 전체 컨테이너
-          div(class: "w-[calc(33.33%-1rem)] min-w-[200px] overflow-hidden flex flex-col") do
+          a(
+            href: "/admin/users/#{@user[:id]}/posts/#{post[:id]}",
+            data: { turbo_method: "get", turbo_frame: "modal_overlay" },
+            class: "w-[calc(33.33%-1rem)] min-w-[200px] overflow-hidden flex flex-col") do
             # 이미지 컨테이너 (aspect-square 유지)
             div(class: "aspect-square rounded-t-lg overflow-hidden") do
               img(
