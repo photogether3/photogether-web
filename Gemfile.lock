@@ -498,6 +498,7 @@ DEPENDENCIES
   brakeman
   capybara
   debug
+  faraday
   google-cloud-vision
   image_processing (>= 1.2)
   jbuilder
