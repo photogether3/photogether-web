@@ -8,7 +8,7 @@ class Views::Shared::Components::Modal < Views::Base
       # 오버레이
       div(
         data: { controller: "modal" },
-        class: "fixed inset-0 bg-base-content/50 z-50 overflow-y-auto py-10 px-4") do
+        class: "fixed inset-0 bg-base-content/50 z-50 overflow-y-auto py-20 px-4") do
         # 모달 박스
         div(class: "bg-base-100 w-full max-w-lg rounded-box mx-auto h-auto overflow-hidden") do
           # 해더박스
@@ -29,7 +29,7 @@ class Views::Shared::Components::Modal < Views::Base
             end
           end
           # 컨텐츠박스
-          div(class: "p-6 border-t border-base-300 border-dashed bg-base-100") do
+          div do
             yield
           end
         end
