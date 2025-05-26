@@ -12,6 +12,11 @@ Rails.application.routes.draw do
     delete "logout", to: "session#logout"
   end
 
+  namespace :kakao, module: "pages" do
+    get "login", to: "kakao#index"
+    get "redirect", to: "kakao#redirect"
+  end
+
   # 인증된 회원 페이지
   namespace :users, module: "pages" do
     get "me", to: "users#show"
