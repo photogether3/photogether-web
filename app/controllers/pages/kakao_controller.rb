@@ -2,8 +2,11 @@ class Pages::KakaoController < PagesController
   layout false
 
   def index
-    @javascript_key = Rails.application.credentials.dig(:kakao, :javascript_key)
-    @redirect_uri = kakao_redirect_url
+    client_id = Rails.application.credentials.dig(:kakao, :client_id)
+    redirect_uri = kakao_redirect_url
+    redirect_to "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=#{client_id}&redirect_uri=#{redirect_uri}",
+                status: :see_other,
+                allow_other_host: true  # 외부 호스트 리디렉션 허용
   end
 
   def redirect
