@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <title>카카오 로그인 완료</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      body { font-family: sans-serif; text-align: center; padding: 20px; }
+      .loading { display: inline-block; width: 30px; height: 30px; border: 3px solid #f3f3f3;
+          border-radius: 50%; border-top: 3px solid #3498db; animation: spin 1s linear infinite; }
+      @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+      .message { margin: 20px 0; }
+      .options { margin-top: 20px; display: none; }
+      .btn { display: inline-block; padding: 10px 15px; background: #3498db; color: white; 
+          text-decoration: none; border-radius: 4px; margin: 0 5px; }
+    </style>
+  </head>
+  <body>
+    <h2>카카오 인증 완료!</h2>
+    <div class="loading" id="loading"></div>
+    <p class="message">앱으로 돌아가는 중입니다...</p>
+    
+    <div class="options" id="options">
+      <p>앱이 열리지 않나요?</p>
+      <a href="<%= @app_scheme_url %>" class="btn">앱 다시 열기</a>
+      <a href="/" class="btn">웹으로 계속하기</a>
+    </div>
+    
+    <script>
+        // 앱이 실행되지 않으면 옵션 표시
+        setTimeout(function() {
+          document.getElementById('loading').style.display = 'none';
+          document.getElementById('options').style.display = 'block';
+        }, 2000);
+    </script>
+  </body>
+</html>
