@@ -76,6 +76,20 @@ class User < ApplicationRecord
     end
   end
 
+  # ------------------------------------------------------
+  # 소셜정보가 매칭되는지 확인
+  # ------------------------------------------------------
+  def social_match(provider, provider_id)
+    this.provider == provider && this.provider_id == provider_id
+  end
+
+  # ------------------------------------------------------
+  # 비밀번호가 필수인지 확인. 이메일 기반 로그인 계정들은 필수
+  # ------------------------------------------------------
+  def password_required?
+    provider.blank? || provider == "email"
+  end
+
   def to_detail(options = {})
     result = {
       id: id,
