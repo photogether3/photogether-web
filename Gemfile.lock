@@ -105,7 +105,7 @@ GEM
       irb (~> 1.10)
       reline (>= 0.3.8)
     dotenv (3.1.8)
-    drb (2.2.1)
+    drb (2.2.3)
     ed25519 (1.4.0)
     erb (5.0.1)
     erubi (1.13.1)
@@ -302,11 +302,12 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.5.9)
-    phlex (2.2.1)
+    phlex (2.3.1)
       zeitwerk (~> 2.7)
-    phlex-rails (2.2.0)
-      phlex (~> 2.2.1)
+    phlex-rails (2.3.0)
+      phlex (~> 2.3.0)
       railties (>= 7.1, < 9)
+      zeitwerk (~> 2.7)
     pp (0.6.2)
       prettyprint
     prettyprint (0.2.0)
@@ -348,7 +349,7 @@ GEM
       activesupport (= 8.0.2)
       bundler (>= 1.15.0)
       railties (= 8.0.2)
-    rails-dom-testing (2.2.0)
+    rails-dom-testing (2.3.0)
       activesupport (>= 5.0.0)
       minitest
       nokogiri (>= 1.6)
@@ -506,7 +507,7 @@ DEPENDENCIES
   kaminari (~> 1.2, >= 1.2.2)
   minitest-spec-rails
   pg
-  phlex-rails (~> 2.2)
+  phlex-rails (~> 2.3)
   propshaft
   puma (>= 5.0)
   rack-cors
