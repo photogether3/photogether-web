@@ -1839,43 +1839,103 @@ paths:
                       required:
                         - content
                         - isPublic
-                required:
-                  - id
-                  - title
-                  - content
-                  - imageUrl
-                  - collectionId
-                  - collection
-                  - category
-                  - metadataList
-              examples:
-                '1':
-                  summary: Success
-                  value:
-                    id: 3
-                    title: zowie jive over
-                    content: Sunt catena comminor
-                    imageUrl: >-
-                      https://storage.googleapis.com/photogether-d3c95.firebasestorage.app/2025%2F02%2F20%2Fcq4nfir4xiearvuymgm8mpr2.jpg
-                    images: [
-                      {
-                        "id": 12,
-                        "blur": "http://localhost:8000/rails/active_storage/representations/redirect/...",
-                        "grid": "http://localhost:8000/rails/active_storage/representations/redirect/...",
-                        "detail": "http://localhost:8000/rails/active_storage/representations/redirect/..."
-                      },
-                    ]
-                    collectionId: 2
-                    collection:
-                      id: 2
-                      title: 휴지통
-                    category: null
-                    metadataList:
-                      - content: Tremo demum quia atrocitas vero soluta vomer.
-                        isPublic: true
-                      - content: 다라라라랄람
-                        isPublic: true
-          headers: {}
+                  prevPost:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: integer
+                        description: 이전 게시물 ID
+                      images:
+                        type: object
+                        properties:
+                          blur:
+                            type: string
+                            format: uri
+                            description: 흐릿한(썸네일) 이미지 URL
+                          grid:
+                            type: string
+                            format: uri
+                            description: 그리드용 이미지 URL
+                          detail:
+                            type: string
+                            format: uri
+                            description: 디테일 이미지 URL
+                  nextPost:
+                    type: object
+                    nullable: true
+                    properties:
+                      id:
+                        type: integer
+                        description: 다음 게시물 ID
+                      images:
+                        type: object
+                        properties:
+                          blur:
+                            type: string
+                            format: uri
+                            description: 흐릿한(썸네일) 이미지 URL
+                          grid:
+                            type: string
+                            format: uri
+                            description: 그리드용 이미지 URL
+                          detail:
+                            type: string
+                            format: uri
+                            description: 디테일 이미지 URL
+              required:
+                - id
+                - title
+                - content
+                - imageUrl
+                - collectionId
+                - collection
+                - category
+                - metadataList
+            examples:
+              '1':
+                summary: Success
+                value:
+                  id: 3
+                  title: zowie jive over
+                  content: Sunt catena comminor
+                  imageUrl: >-
+                    https://storage.googleapis.com/photogether-d3c95.firebasestorage.app/2025%2F02%2F20%2Fcq4nfir4xiearvuymgm8mpr2.jpg
+                  images: [
+                    {
+                      "id": 12,
+                      "blur": "http://localhost:8000/rails/active_storage/representations/redirect/...",
+                      "grid": "http://localhost:8000/rails/active_storage/representations/redirect/...",
+                      "detail": "http://localhost:8000/rails/active_storage/representations/redirect/..."
+                    },
+                  ]
+                  collectionId: 2
+                  collection:
+                    id: 2
+                    title: 휴지통
+                  category: null
+                  metadataList:
+                    - content: Tremo demum quia atrocitas vero soluta vomer.
+                      isPublic: true
+                    - content: 다라라라랄람
+                      isPublic: true
+                  prevPost: {
+                    id: 2,
+                    images: {
+                      blur: "http://localhost:8000/rails/active_storage/representations/redirect/...",
+                      grid: "http://localhost:8000/rails/active_storage/representations/redirect/...",
+                      detail: "http://localhost:8000/rails/active_storage/representations/redirect/..."
+                    }
+                  }
+                  nextPost: {
+                    id: 4,
+                    images: {
+                      blur: "http://localhost:8000/rails/active_storage/representations/redirect/...",
+                      grid: "http://localhost:8000/rails/active_storage/representations/redirect/...",
+                      detail: "http://localhost:8000/rails/active_storage/representations/redirect/..."
+                    }
+                  }
+        headers: {}
       security:
         - bearer: []
   /v1/posts/move:
