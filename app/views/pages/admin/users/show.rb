@@ -1,8 +1,8 @@
 class Views::Pages::Admin::Users::Show < Views::Base
-  def initialize(user:, favorite_categories: [], posts: [])
+  def initialize(user:, favorite_categories: [], post_total: 0)
     @user = user
     @favorite_categories = favorite_categories
-    @posts = posts
+    @post_total = post_total
   end
 
   def view_template
@@ -58,41 +58,7 @@ class Views::Pages::Admin::Users::Show < Views::Base
       end
     end
     div(class: "flex flex-col gap-4 p-6 border-t border-dashed border-base-300") do
-      h3(class: "text-xl") { "게시물" }
-      div(class: "flex flex-wrap gap-4") do
-        @posts.each do |post|
-          # 카드 전체 컨테이너
-          a(
-            href: "/admin/users/#{@user[:id]}/posts/#{post[:id]}",
-            data: { turbo_method: "get", turbo_frame: "modal_overlay" },
-            class: "w-[calc(33.33%-1rem)] min-w-[200px] overflow-hidden flex flex-col") do
-            # 이미지 컨테이너 (aspect-square 유지)
-            div(class: "aspect-square rounded-t-lg overflow-hidden") do
-              img(
-                src: post.dig(:images, :grid),
-                class: "w-full h-full object-cover transition-transform hover:scale-105"
-              )
-            end
-            # 사진첩 정보 컨테이너
-            div(class: "flex items-center gap-2 bg-base-200 p-2 rounded-b-lg text-sm truncate") do
-              raw(<<~SVG.html_safe)
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  class="h-4 w-4 stroke-current">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
-                </svg>
-              SVG
-              span { post.dig(:collection, :title) }
-            end
-          end
-        end
-      end
+      h3(class: "text-xl") { "총 #{@post_total} 개의 게시물" }
     end
   end
 end

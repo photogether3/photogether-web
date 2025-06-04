@@ -10,12 +10,12 @@ class Pages::Admin::UsersController < Pages::AdminController
     user_result = user.to_detail
 
     user_favorite_categories = user.favorite_categories
-    user_posts = user.posts.order(created_at: :desc).map(&:to_detail)
+    post_total = user.posts.length
 
     render Pages::Admin::Users::Show.new(
       user: user_result,
       favorite_categories: user_favorite_categories,
-      posts: user_posts
+      post_total: post_total
     )
   end
 end
