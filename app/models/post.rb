@@ -1,6 +1,6 @@
 class Post < ApplicationRecord
   include Rails.application.routes.url_helpers
-  
+
   # -------------------------------------------------------------
   # 관계 설정
   # -------------------------------------------------------------
@@ -75,5 +75,70 @@ class Post < ApplicationRecord
       grid: image.variant(:grid),
       detail: image.variant(:detail)
     }
+  end
+
+  # -------------------------------------------------------------
+  # 이전/다음 포스트 조회 메서드
+  # -------------------------------------------------------------
+  def prev_post
+    Post.where(collection_id: collection_id, user_id: user_id)
+        .where("id < ?", id)
+        .order(id: :desc)
+        .first
+  end
+
+  def next_post
+    Post.where(collection_id: collection_id, user_id: user_id)
+        .where("id > ?", id)
+        .order(id: :asc)
+        .first
+  end
+
+  def prev_post_info
+    post = prev_post
+    return nil unless post
+
+    prev_data = {
+      id: post.id
+    }
+
+    # 이미지 URL 정보 추가
+    if post.image.attached?
+      variants = post.image_variants
+
+      prev_data[:images] = {
+        blur: variants[:blur] ? Rails.application.routes.url_helpers.url_for(variants[:blur]) : nil,
+        grid: variants[:grid] ? Rails.application.routes.url_helpers.url_for(variants[:grid]) : nil,
+        detail: variants[:detail] ? Rails.application.routes.url_helpers.url_for(variants[:detail]) : nil
+      }
+    else
+      prev_data[:images] = { blur: nil, grid: nil, detail: nil }
+    end
+
+    prev_data
+  end
+
+  def next_post_info
+    post = next_post
+    return nil unless post
+
+    next_data = {
+      id: post.id
+    }
+
+    # 이미지 URL 정보 추가
+    if post.image.attached?
+      variants = post.image_variants
+
+      next_data[:images] = {
+        blur: variants[:blur] ? Rails.application.routes.url_helpers.url_for(variants[:blur]) : nil,
+        grid: variants[:grid] ? Rails.application.routes.url_helpers.url_for(variants[:grid]) : nil,
+        detail: variants[:detail] ? Rails.application.routes.url_helpers.url_for(variants[:detail]) : nil
+      }
+    else
+      next_data[:images] = { blur: nil, grid: nil, detail: nil }
+    end
+
+    next_data
   end
 end
