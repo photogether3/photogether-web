@@ -3,3 +3,46 @@
 @plugin "daisyui" {
   themes: light --default, dark --prefersdark, cupcake, lemonade, forest, retro;
 }
+@plugin "daisyui/theme" {
+  name: "photogether-dark";
+  default: true; /* set as default */
+  prefersdark: false; /* set as default dark mode (prefers-color-scheme:dark) */
+  color-scheme: light; /* color of browser-provided UI */
+
+  --color-base-100: #000000;
+  --color-base-200: #000000;
+  --color-base-300: #000000;
+  --color-base-content: #FFFFFF;
+  --color-primary: #00AC69;
+  --color-primary-content: oklch(98% 0.01 240);
+  --color-secondary: #182B28;
+  --color-secondary-content: #99DEC3;
+  --color-accent: #E71825;
+  --color-accent-content: #FFFFFF;
+  --color-neutral:  #3C414D;
+  --color-neutral-content: #A0B5AE;
+  --color-info: oklch(70% 0.2 220);
+  --color-info-content: oklch(98% 0.01 220);
+  --color-success: oklch(65% 0.25 140);
+  --color-success-content: oklch(98% 0.01 140);
+  --color-warning: oklch(80% 0.25 80);
+  --color-warning-content: oklch(20% 0.05 80);
+  --color-error: #311A1F;
+  --color-error-content: #F1747C;
+
+  /* border radius */
+  --radius-selector: 1rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+
+  /* base sizes */
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+
+  /* border size */
+  --border: 1px;
+
+  /* effects */
+  --depth: 1;
+  --noise: 0;
+}
