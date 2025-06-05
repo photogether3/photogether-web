@@ -2,7 +2,8 @@ import { Application } from "@hotwired/stimulus";
 import { HelloController } from "./hello_controller";
 import { FlashController } from "./flash_controller";
 import { ModalController } from "./modal_controller";
-import { TinymceController} from "./tinymce_controller";
+import { TinymceController } from "./tinymce_controller";
+import { NotYetController } from "./not_yet_controller";
 
 const application = Application.start();
 
@@ -10,6 +11,7 @@ application.register("hello", HelloController);
 application.register("flash", FlashController);
 application.register("tinymce", TinymceController);
 application.register("modal", ModalController);
+application.register("not_yet", NotYetController);
 
 // 여러 경로에서 컨트롤러 파일 로드
 // const controllerPaths = {
@@ -18,7 +20,7 @@ application.register("modal", ModalController);
 // };
 
 // Object.entries(controllerPaths).forEach(([path, controller]) => {
-//   try { 
+//   try {
 //     // 파일 경로에서 컨트롤러 이름 추출 (예: hello_controller.js -> hello)
 //     const match = path.match(/\/([^/]+)_controller\.js$/);
 //     if (!match) {

@@ -2,14 +2,14 @@ class Views::Layouts::Application < Views::Base
   include Phlex::Rails::Layout
   include Phlex::Rails::Helpers::ContentFor
 
-  def initialize(layout:)
+  def initialize(layout: nil)
     # 레이아웃 컴포넌트 클래스 주입
     @layout = layout
   end
 
   def view_template
     doctype
-    html(data: { theme: "lemonade" }, lang: "ko") do
+    html(data: { theme: "photogether-dark" }, lang: "ko") do
       head do
         title { content_for(:title) || "포토게더" }
         meta(name: "viewport", content: "width=device-width,initial-scale=1")
@@ -42,8 +42,12 @@ class Views::Layouts::Application < Views::Base
       end
 
       body do
-        render @layout do
+        if @layout.nil?
           yield
+        else
+          render @layout do
+            yield
+          end
         end
 
         # Flash 박스
@@ -76,6 +80,9 @@ class Views::Layouts::Application < Views::Base
         end
 
         turbo_frame(id: "modal_overlay") do
+        end
+
+        turbo_frame(id: "not_yet") do
         end
       end
     end
