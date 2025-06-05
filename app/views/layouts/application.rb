@@ -81,6 +81,9 @@ class Views::Layouts::Application < Views::Base
 
         turbo_frame(id: "modal_overlay") do
         end
+
+        turbo_frame(id: "not_yet") do
+        end
       end
     end
   end

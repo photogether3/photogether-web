@@ -5,6 +5,9 @@ Rails.application.routes.draw do
   # 접근 거부 페이지
   get "access-denied", to: "pages/access#denied", as: :access_denied
 
+  # 이스터에그(미완료이벤트)
+  get "not-yet", to: "pages/not_yet#index"
+
   # 인증 관련 페이지
   namespace :session, module: "pages" do
     get "login", to: "session#index"
