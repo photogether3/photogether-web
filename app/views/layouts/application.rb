@@ -2,7 +2,7 @@ class Views::Layouts::Application < Views::Base
   include Phlex::Rails::Layout
   include Phlex::Rails::Helpers::ContentFor
 
-  def initialize(layout:)
+  def initialize(layout: nil)
     # 레이아웃 컴포넌트 클래스 주입
     @layout = layout
   end
@@ -42,8 +42,12 @@ class Views::Layouts::Application < Views::Base
       end
 
       body do
-        render @layout do
+        if @layout.nil?
           yield
+        else
+          render @layout do
+            yield
+          end
         end
 
         # Flash 박스

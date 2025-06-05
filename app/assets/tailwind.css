@@ -46,3 +46,12 @@
   --depth: 1;
   --noise: 0;
 }
+
+@layer components {
+  .pg-container {
+    @apply container mx-auto max-w-[1280px] px-4 h-full;
+  }
+  .pg-btn {
+    @apply btn rounded-[100px] shadow-none;
+  }
+}
