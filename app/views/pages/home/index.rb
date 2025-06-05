@@ -71,6 +71,9 @@ class Views::Pages::Home::Index < Views::Base
           # OCR 택스트
           img(src: "/images/landing/section01/item02.png", class: "absolute left-[116px] top-[211px] z-[0] w-[212px]")
 
+          # 토글박스 이미지
+          img(src: "/images/landing/section01/item06.png", class: "absolute right-[224px] top-[223px] z-[0] w-[136px]")
+
           # 휴대폰 이미지
           img(src: "/images/landing/section01/item04.png", class: "absolute left-[244px] top-[13px] z-[1] w-[985px] animate-float")
 
