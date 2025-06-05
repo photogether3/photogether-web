@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+@plugin "tailwindcss-motion";
 @plugin "daisyui" {
   themes: light --default, dark --prefersdark, cupcake, lemonade, forest, retro;
 }
@@ -9,9 +10,9 @@
   prefersdark: false; /* set as default dark mode (prefers-color-scheme:dark) */
   color-scheme: light; /* color of browser-provided UI */
 
-  --color-base-100: #000000;
-  --color-base-200: #000000;
-  --color-base-300: #000000;
+  --color-base-100: #1B1D21;
+  --color-base-200: #1B1D21;
+  --color-base-300: #1B1D21;
   --color-base-content: #FFFFFF;
   --color-primary: #00AC69;
   --color-primary-content: oklch(98% 0.01 240);
@@ -52,6 +53,24 @@
     @apply container mx-auto max-w-[1280px] px-4 h-full;
   }
   .pg-btn {
-    @apply btn rounded-[100px] shadow-none;
+    @apply btn rounded-[100px] shadow-none font-normal;
+  }
+}
+
+@layer utilities {
+  @keyframes float {
+    0% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-15px);
+    }
+    100% {
+      transform: translateY(0px);
+    }
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
   }
 }
