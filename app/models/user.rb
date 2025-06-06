@@ -28,12 +28,12 @@ class User < ApplicationRecord
   validates :password,
             presence: {
               message: "비밀번호를 입력해주세요.",
-              if: -> { new_record? }
+              if: -> { new_record? && password_required? }  # 조건 변경
             },
             format: {
               with: ValidationPatterns::PASSWORD_REGEX,
               message: "비밀번호는 8-50자 사이이며, 소문자, 숫자, 특수문자를 각각 하나 이상 포함해야 합니다.",
-              if: -> { password.present? }
+              if: -> { password.present? && password_required? }  # 조건 변경
             }
   validates :nickname,
             format: {
@@ -74,13 +74,6 @@ class User < ApplicationRecord
 
       self.save!
     end
-  end
-
-  # ------------------------------------------------------
-  # 소셜정보가 매칭되는지 확인
-  # ------------------------------------------------------
-  def social_match(provider, provider_id)
-    this.provider == provider && this.provider_id == provider_id
   end
 
   # ------------------------------------------------------

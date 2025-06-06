@@ -14,7 +14,11 @@ class Auth::SocialLogin
     return Result.failure("프로바이더 ID가 누락되었습니다.", "BAD_REQUEST") if @provider_id.nil?
     return Result.failure("이메일이 누락되었습니다.", "BAD_REQUEST") if @provider_email.nil?
 
-    user = User.find_by(email_address: @provider_email)
+    user = User.find_by(
+      email_address: @provider_email,
+      provider: @provider,
+      provider_id: @provider_id
+    )
 
     if user.nil?
       # 객체로 데이터 구성 후 URL 생성
@@ -30,23 +34,6 @@ class Auth::SocialLogin
     end
 
     tokens = Auth::TokenManager.issue_tokens(user)
-
-    if !user.social_match(@provider, @provider_id)
-      user.provider = @provider
-      user.provider_id = @provider_id
-      user.save
-
-      # 토큰 정보를 포함한 객체로 데이터 구성
-      params = {
-        code: "LOGIN_WITH_UPDATE",
-        accessToken: tokens[:access_token],
-        refreshToken: tokens[:refresh_token],
-        expiresIn: tokens[:expires_in]
-      }
-
-      app_scheme_url = build_app_scheme_url(params)
-      return Result.success(app_scheme_url)
-    end
 
     # 일반 로그인 성공 시
     params = {

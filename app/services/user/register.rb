@@ -20,7 +20,7 @@ class User::Register
     return Result.failure("비밀번호는 최소 8자, 최대 50자, 소문자, 숫자, 특수문자를 각각 하나 이상 포함") unless ValidationPatterns::PASSWORD_REGEX.match?(@password)
 
     # 필수 약관 검증
-    required_policy_validation = validate_required_policies
+    required_policy_validation = validate_required_policies(policy_ids: @policy_ids)
     return required_policy_validation if required_policy_validation.is_a?(Result)
 
     ActiveRecord::Base.transaction do

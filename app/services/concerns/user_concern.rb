@@ -20,12 +20,12 @@ module UserConcern
   end
 
   # 필수 약관 검증 메서드
-  def validate_required_policies
+  def validate_required_policies(policy_ids: [])
     # 활성화된 필수 약관 ID 목록 조회
     required_policy_ids = Policy.where(is_active: true, is_required: true).pluck(:id)
 
     # 사용자가 동의한 약관 ID 목록
-    user_agreed_policy_ids = @policy_ids.map(&:to_i)
+    user_agreed_policy_ids = policy_ids.map(&:to_i)
 
     # 필수 약관 중 사용자가 동의하지 않은 것이 있는지 확인
     missing_required_policies = required_policy_ids - user_agreed_policy_ids

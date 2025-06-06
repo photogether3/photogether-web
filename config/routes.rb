@@ -15,6 +15,7 @@ Rails.application.routes.draw do
     delete "logout", to: "session#logout"
   end
 
+  # 카카오 인증
   namespace :kakao, module: "pages" do
     get "login", to: "kakao#index"
     get "redirect", to: "kakao#redirect"
@@ -84,6 +85,9 @@ Rails.application.routes.draw do
       post "auth/otp/verify-and-login", to: "auth_api#verify_otp_with_generate_token"
       post "auth/refresh", to: "auth_api#refresh"
       delete "auth/logout", to: "auth_api#logout"
+
+      # social auth
+      post "social-auth/register", to: "social_auth_api#register"
 
       # user group
       get "users/emails/:email/duplicated", to: "user_api#is_email_taken", constraints: { email: /[^\/]+/ }
