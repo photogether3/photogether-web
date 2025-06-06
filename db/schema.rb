@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_27_014747) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_07_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -154,9 +154,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_27_014747) do
     t.string "otp", limit: 6
     t.datetime "otp_expiry_date"
     t.boolean "is_email_verified", default: false, null: false
-    t.string "provider"
+    t.string "provider", default: "email"
     t.string "provider_id"
-    t.index ["email_address"], name: "index_users_on_email_address", unique: true
+    t.index ["provider", "email_address"], name: "index_users_on_provider_and_email_address", unique: true
     t.index ["provider", "provider_id"], name: "index_users_on_provider_and_provider_id", unique: true
   end
 
