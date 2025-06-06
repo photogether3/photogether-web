@@ -16,6 +16,7 @@ class Views::Pages::Admin::Users::Index < Views::Base
             tr do
               th
               th { "프로필" }
+              th { "프로바이더" }
               th { "이메일" }
               th { "닉네임" }
               th { "이메일인증여부" }
@@ -36,6 +37,9 @@ class Views::Pages::Admin::Users::Index < Views::Base
                         alt: "Tailwind-CSS-Avatar-component")
                     end
                   end
+                end
+                td do
+                  user[:provider]
                 end
                 td do
                   a(href: "/admin/users/#{user[:id]}", class: "text-primary") { user[:email] }

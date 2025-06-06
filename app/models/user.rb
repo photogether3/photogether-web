@@ -19,12 +19,8 @@ class User < ApplicationRecord
   has_many :accepted_policies, through: :policy_acceptances, source: :policy
 
   # ------------------------------------------------------
-  # 유효성 검사 (이메일, 비밀번호, 닉네임)
+  # 유효성 검사 (비밀번호, 닉네임)
   # ------------------------------------------------------
-  validates :email_address,
-            presence: { message: "이메일 주소를 입력해주세요." },
-            uniqueness: { message: "이미 사용 중인 이메일 주소입니다." },
-            format: { with: ValidationPatterns::EMAIL_REGEX, message: "유효한 이메일 형식이 아닙니다." }
   validates :password,
             presence: {
               message: "비밀번호를 입력해주세요.",
@@ -91,7 +87,8 @@ class User < ApplicationRecord
       created_at: created_at,
       updated_at: updated_at,
       is_email_verified: is_email_verified,
-      email: email_address
+      email: email_address,
+      provider: provider
     }
 
     # 이미지 URL 추가 - 크롭된 250x250 프로필 이미지 사용
