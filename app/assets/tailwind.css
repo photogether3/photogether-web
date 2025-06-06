@@ -71,6 +71,6 @@
   }
   
   .animate-float {
-    animation: float 6s ease-in-out infinite;
+    animation: float 3.5s ease-in-out infinite;
   }
 }
