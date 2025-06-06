@@ -8,7 +8,7 @@ class Auth::Login
     return Result.failure("유효한 이메일을 입력해 주세요.", "INVALID_EMAIL") unless @email.match?(ValidationPatterns::EMAIL_REGEX)
     return Result.failure("비밀번호를 입력해 주세요.", "MISSING_PASSWORD") if @password.blank?
 
-    user = User.find_by(email_address: @email)
+    user = User.find_by(email_address: @email, provider: "email")
 
     err_msg = "아이디 또는 비밀번호를 찾을 수 없습니다."
     return Result.failure(err_msg, "INVALID_CREDENTIALS") unless user

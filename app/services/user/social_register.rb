@@ -9,28 +9,28 @@ class User::SocialRegister
   end
 
   def call
-    return Result.failure("프로바이더 타입이 누락되었습니다.", "BAD_REQUEST") if @provider.nil?
-    return Result.failure("프로바이더 ID가 누락되었습니다.", "BAD_REQUEST") if @provider_id.nil?
-    return Result.failure("이메일이 누락되었습니다.", "BAD_REQUEST") if @provider_email.nil?
+    return Result.failure("프로바이더 타입이 누락되었습니다.", "MISSING_PROVIDER") if @provider.blank?
+    return Result.failure("프로바이더 ID가 누락되었습니다.", "MISSING_PROVIDER_ID") if @provider_id.blank?
+    return Result.failure("이메일이 누락되었습니다.", "MISSING_EMAIL") if @provider_email.blank?
+    
+    # 이메일 + provider 중복 검사 (같은 프로바이더로 가입된 사용자가 있는지)
+    existing_user = User.find_by(email_address: @provider_email, provider: @provider)
+    if existing_user
+      return Result.failure("이미 해당 소셜 계정으로 가입한 사용자가 있습니다.", "USER_EXISTS")
+    end
 
     # 필수 약관 검증
     required_policy_validation = validate_required_policies(policy_ids: @policy_ids)
     return required_policy_validation if required_policy_validation.is_a?(Result)
 
-    has_user = User.find_by(
-      email_address: @provider_email,
-      provider: @provider,
-      provider_id: @provider_id
-    )
-    return Result.failure("이미 가입된 계정입니다.", "BAD_REQUEST") unless has_user.nil?
-
     ActiveRecord::Base.transaction do
       user = User.create!(
+        email_address: @provider_email,
         provider: @provider,
         provider_id: @provider_id,
-        email_address: @provider_email,
         role_id: 1,
         nickname: generate_random_nickname,
+        is_email_verified: true # 소셜 로그인은 이메일 인증 불필요
       )
 
       user.collections.create!([

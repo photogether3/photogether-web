@@ -27,6 +27,6 @@ class Pages::KakaoController < PagesController
 
     puts login_result.inspect
 
-    @login_data = login_result.data
+    @app_scheme_url = login_result.data
   end
 end

@@ -19,6 +19,12 @@ class User::Register
     return Result.failure("비밀번호를 입력해 주세요.") if @password.blank?
     return Result.failure("비밀번호는 최소 8자, 최대 50자, 소문자, 숫자, 특수문자를 각각 하나 이상 포함") unless ValidationPatterns::PASSWORD_REGEX.match?(@password)
 
+    # 이메일 + provider 중복 검사
+    existing_user = User.find_by(email_address: @email, provider: "email")
+    if existing_user
+      return Result.failure("해당 이메일로 이미 가입된 계정이 있습니다.", "EMAIL_EXISTS")
+    end
+
     # 필수 약관 검증
     required_policy_validation = validate_required_policies(policy_ids: @policy_ids)
     return required_policy_validation if required_policy_validation.is_a?(Result)
@@ -28,6 +34,7 @@ class User::Register
         email_address: @email,
         password: @password,
         password_confirmation: @password,
+        provider: "email",
         role_id: 1,
         nickname: generate_random_nickname,
       )
