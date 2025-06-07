@@ -12,7 +12,7 @@
 
   --color-base-100: #1B1D21;
   --color-base-200: #1B1D21;
-  --color-base-300: #1B1D21;
+  --color-base-300: black;
   --color-base-content: #FFFFFF;
   --color-primary: #00AC69;
   --color-primary-content: oklch(98% 0.01 240);
@@ -50,10 +50,10 @@
 
 @layer components {
   .pg-container {
-    @apply container mx-auto max-w-[1280px] px-4 h-full;
+    @apply container mx-auto max-w-[1280px];
   }
   .pg-btn {
-    @apply btn rounded-[100px] shadow-none font-normal;
+    @apply btn rounded-[100px] shadow-none font-normal p-[0.5em] h-auto;
   }
 }
 
