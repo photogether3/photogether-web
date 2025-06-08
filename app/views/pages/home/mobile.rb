@@ -74,28 +74,36 @@ class Views::Pages::Home::Mobile < Views::Base
             end
           end
 
-          # 포지션 박스
-          div(class: "relative h-[238px] sm:h-[600px] md:h-[853px] w-full sm:mt-4") do
-            # OCR 택스트
-            # img(src: "/images/landing/section01/item02.png", class: "absolute left-[5%] top-[211px] z-[0] w-[212px]")
+          div(class: "relative flex justify-center") do
+            # 단말기 이미지 박스
+            # 해당 박스를 기준으로 장식용 컨텐츠들 배치
+            div(class: "relative w-[300px] sm:w-[500px] md:w-[987px] translate-x-1/10") do
+              # 백그라운드 장식 1
+              img(src: "/images/landing/section01/item02.png",
+                  class: "absolute -left-8 top-14 sm:-left-20 sm:top-24 md:-left-28 md:top-48
+                  w-[60px] sm:w-[130px] md:w-[200px] object-contain")
 
-            # # 토글박스 이미지
-            # img(src: "/images/landing/section01/item06.png", class: "absolute right-[224px] top-[223px] z-[0] w-[136px]")
+              # 백그라운드 장식 2
+              img(src: "/images/landing/section01/item06.png",
+                  class: "absolute right-16 top-16 sm:right-16 sm:top-26 md:right-52 md:top-52
+                  w-[40px] sm:w-[100px] md:w-[136px] object-contain")
 
-            # 휴대폰 이미지
-            img(src: "/images/landing/section01/item04.png", class: "absolute left-[50%] translate-x-[-37%] -bottom-1 z-[1] h-full animate-float")
+              # 단말기 이미지
+              img(src: "/images/landing/section01/item04.png", class: "object-contain animate-float z-[1]")
 
-            # 휴대폰 하단 불투명 효과
-            div(class: "absolute w-full h-1/3 left-0 bottom-0 bg-gradient-to-t from-base-300 to-base-300/0 z-[2]") { }
+              # 포그라운드 장식 1
+              render Views::Pages::Home::Section01::Alert.new(
+                tw_class: "absolute left-[40%] top-[70%] translate-x-[-160%] translate-y-[-70%] z-[3]"
+              )
 
-            # 알림박스
-            render Views::Pages::Home::Section01::Alert.new(
-              x: "",
-              y: ""
-            )
+              # 하단 불투명 박스
+              div(class: "absolute w-full h-1/2 left-0 bottom-0 bg-gradient-to-t from-base-300 to-base-300/0 z-[2]")
 
-            # # 사진첩 정리 박스
-            # render Views::Pages::Home::Section01::BottomSheet.new
+              # 포그라운드 장식 2
+              render Views::Pages::Home::Section01::BottomSheet.new(
+                tw_class: "absolute left-[90%] bottom-0 translate-x-[-90%] z-[10]"
+              )
+            end
           end
         end
       end

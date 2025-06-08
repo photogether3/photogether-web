@@ -1,13 +1,11 @@
 class Views::Pages::Home::Section01::Alert < Views::Base
-  def initialize(x: "left-0", y: "top-0")
-    @x = x
-    @y = y
+  def initialize(tw_class: "")
+    @tw_class = tw_class
   end
 
   def view_template
-    div(class: "absolute #{@x} #{@y}
-        left-[50%] top-[70%] translate-x-[-160%] translate-y-[-70%]
-        border border-primary z-[3] p-[9px] sm:p-4 md:p-8
+    div(class: "#{@tw_class}
+        border border-primary p-[9px] sm:p-3 md:p-8
         rounded-sm sm:rounded-lg md:rounded-xl
       bg-[#1B1D21CC]/80 backdrop-blur-md") do
       div(class: "w-full flex justify-end") do
@@ -19,16 +17,16 @@ class Views::Pages::Home::Section01::Alert < Views::Base
       end
       div(class: "flex flex-col items-center gap-1 sm:gap-2 md:gap-3") do
         img(src: "/images/landing/section01/item05.png", class: "w-[28px] sm:w-[50px] md:w-[101px]")
-        strong(class: "text-[6px] sm:text-sm md:text-xl") { "택스트를 추출 합니다." }
-        div(class: "text-center text-[5px] sm:text-sm md:text-lg text-[#D8D8D8]") do
+        strong(class: "text-[6px] sm:text-[8px] md:text-xl") { "택스트를 추출 합니다." }
+        div(class: "text-center text-[5px] sm:text-[8px] md:text-lg text-[#D8D8D8]") do
           p { "업로드하신 이미지에서 텍스트를" }
           p { "자동으로 추출합니다." }
         end
         div(class: "mt-1 sm:mt-4 md:mt-5
             flex justify-between
             gap-1 sm:gap-2 md:gap-4 w-full") do
-          button(class: "pg-btn btn-neutral border-neutral-content flex-1 text-[5px] sm:text-xs md:text-sm") { "취소" }
-          button(class: "pg-btn btn-primary flex-1 text-[5px] sm:text-xs md:text-sm") { "확인" }
+          button(class: "pg-btn btn-neutral border-neutral-content flex-1 text-[5px] sm:text-[8px] md:text-sm") { "취소" }
+          button(class: "pg-btn btn-primary flex-1 text-[5px] sm:text-[8px] md:text-sm") { "확인" }
         end
       end
     end
