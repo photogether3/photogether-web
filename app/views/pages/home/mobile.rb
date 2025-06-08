@@ -20,16 +20,16 @@ class Views::Pages::Home::Mobile < Views::Base
 
     header do
       div(class: "bg-base-300/50 border-b border-primary") do
-        div(class: "pg-container flex justify-between items-center p-4 sm:pb-6 md:pb-7 md:py-5") do
+        div(class: "pg-container flex justify-between items-center p-4 sm:pb-6 lg:pb-7 lg:py-5") do
           raw(<<~SVG.html_safe)
-            <svg class="w-[134px] h-[34px] md:w-[224px] md:h-[58px]" viewBox="0 0 224 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg class="w-[134px] h-[34px] lg:w-[224px] lg:h-[58px]" viewBox="0 0 224 58" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M77.3982 6.23843C77.3982 9.6821 74.6185 12.4769 71.1934 12.4769C67.7683 12.4769 64.9885 9.6821 64.9885 6.23843C64.9885 2.79477 67.7683 0 71.1934 0C74.6185 0 77.3982 2.79477 77.3982 6.23843Z" fill="#00AC69"/>
               <path d="M215.706 34.8935C216.269 34.3024 217.035 34.0069 218.007 34.0069C218.48 34.0069 218.908 34.084 219.278 34.2318C219.655 34.386 219.949 34.5851 220.173 34.8357L223.579 30.4733C223.081 29.9465 222.499 29.5546 221.841 29.2911C221.183 29.0277 220.416 28.8928 219.54 28.8928C217.572 28.8928 216.019 29.4839 214.882 30.6596C213.744 31.8353 212.939 33.5058 212.466 35.6645L214.863 37.5469C214.863 36.3712 215.144 35.4846 215.706 34.8935ZM214.863 29.2719H209.099V47.5503H214.863V29.2719ZM201.808 47.1969C203.079 46.6829 204.166 45.8863 205.06 44.8069L201.878 41.6459C201.328 42.2756 200.696 42.7446 199.967 43.0529C199.245 43.3678 198.446 43.5219 197.571 43.5219C196.6 43.5219 195.756 43.3164 195.047 42.8987C194.338 42.4876 193.788 41.8901 193.398 41.1127C193.008 40.3353 192.817 39.4165 192.817 38.3693C192.817 37.3221 192.996 36.4162 193.36 35.6581C193.724 34.9064 194.235 34.3153 194.894 33.8913C195.552 33.4672 196.331 33.2488 197.232 33.2488C198.057 33.2488 198.76 33.4351 199.347 33.8142C199.935 34.1932 200.376 34.7265 200.677 35.4139C200.977 36.1014 201.137 36.9623 201.162 37.9902L203.629 36.3005L190.459 36.3776V40.3674L206.095 40.2903C206.223 39.8406 206.3 39.4294 206.338 39.0696C206.377 38.7034 206.396 38.35 206.396 37.9967C206.396 36.217 206 34.6365 205.201 33.2552C204.402 31.8739 203.316 30.801 201.948 30.0236C200.581 29.2462 198.983 28.8543 197.162 28.8543C195.341 28.8543 193.66 29.2654 192.184 30.0942C190.714 30.923 189.551 32.0602 188.701 33.4993C187.852 34.9449 187.43 36.564 187.43 38.3693C187.43 40.1747 187.864 41.8772 188.74 43.3356C189.615 44.7876 190.81 45.9248 192.331 46.7408C193.852 47.5567 195.596 47.9614 197.571 47.9614C199.117 47.9614 200.53 47.7045 201.801 47.1905M172.962 20.2451H167.199V47.5567H172.962V20.2451ZM185.008 47.5567V35.8572C185.008 34.4759 184.708 33.2681 184.113 32.2272C183.513 31.1864 182.682 30.3705 181.608 29.7794C180.535 29.1883 179.289 28.8928 177.87 28.8928C176.451 28.8928 175.276 29.1883 174.202 29.7794C173.129 30.3705 172.285 31.2057 171.678 32.2786C171.065 33.358 170.764 34.6108 170.764 36.0371L172.969 37.1293C172.969 36.4997 173.103 35.9536 173.378 35.4717C173.653 34.9963 174.023 34.6237 174.503 34.3603C174.975 34.0968 175.512 33.9683 176.113 33.9683C177.007 33.9683 177.761 34.2639 178.356 34.855C178.956 35.446 179.25 36.2042 179.25 37.1293V47.5503H185.014L185.008 47.5567ZM164.732 29.2719H150.776V34.1996H164.732V29.2719ZM160.617 21.7099H154.853V47.5503H160.617V21.7099ZM144.974 47.1969C146.245 46.6829 147.332 45.8863 148.226 44.8069L145.044 41.6459C144.494 42.2756 143.862 42.7446 143.133 43.0529C142.411 43.3678 141.612 43.5219 140.737 43.5219C139.766 43.5219 138.922 43.3164 138.213 42.8987C137.504 42.4876 136.954 41.8901 136.564 41.1127C136.181 40.3353 135.983 39.4165 135.983 38.3693C135.983 37.3221 136.162 36.4162 136.526 35.6581C136.89 34.9064 137.401 34.3153 138.059 33.8913C138.718 33.4672 139.497 33.2488 140.398 33.2488C141.223 33.2488 141.926 33.4351 142.513 33.8142C143.101 34.1932 143.542 34.7265 143.843 35.4139C144.143 36.1014 144.303 36.9623 144.328 37.9902L146.795 36.3005L133.625 36.3776V40.3674L149.261 40.2903C149.389 39.8406 149.466 39.4294 149.504 39.0696C149.543 38.7034 149.562 38.35 149.562 37.9967C149.562 36.217 149.166 34.6365 148.367 33.2552C147.568 31.8739 146.482 30.801 145.114 30.0236C143.74 29.2462 142.143 28.8543 140.322 28.8543C138.5 28.8543 136.82 29.2654 135.344 30.0942C133.874 30.923 132.711 32.0602 131.867 33.4993C131.018 34.9449 130.596 36.564 130.596 38.3693C130.596 40.1747 131.03 41.8772 131.906 43.3356C132.781 44.7876 133.976 45.9248 135.497 46.7408C137.018 47.5567 138.762 47.9614 140.737 47.9614C142.283 47.9614 143.696 47.7045 144.967 47.1905M122.359 46.3296C124.365 45.2117 125.937 43.5669 127.075 41.3825C128.212 39.1981 128.775 36.5318 128.775 33.3708V32.5035H114.895V37.5084L126.679 37.6947L122.749 35.0606C122.749 36.641 122.455 37.9967 121.867 39.121C121.279 40.2518 120.442 41.1062 119.362 41.6973C118.276 42.2884 116.972 42.5839 115.451 42.5839C113.93 42.5839 112.582 42.2242 111.413 41.511C110.237 40.7979 109.317 39.8149 108.646 38.5556C107.975 37.2964 107.636 35.8572 107.636 34.2318C107.636 32.6063 107.981 31.1286 108.665 29.8886C109.348 28.6487 110.307 27.6849 111.528 26.9911C112.748 26.3036 114.135 25.9567 115.681 25.9567C117.1 25.9567 118.391 26.2394 119.554 26.8048C120.717 27.3701 121.707 28.2054 122.525 29.304L126.564 25.2435C125.343 23.7916 123.797 22.6415 121.924 21.7999C120.052 20.9582 117.982 20.5406 115.713 20.5406C113.745 20.5406 111.905 20.894 110.192 21.5943C108.486 22.2946 106.978 23.2647 105.687 24.5111C104.39 25.7511 103.38 27.1967 102.658 28.835C101.936 30.4797 101.572 32.2786 101.572 34.2318C101.572 36.1849 101.93 37.9581 102.639 39.6093C103.348 41.2669 104.326 42.7189 105.578 43.9717C106.824 45.2245 108.288 46.2075 109.975 46.9271C111.655 47.6402 113.47 48 115.419 48C118.039 48 120.352 47.441 122.359 46.3231" fill="#00AC69"/>
               <path d="M87.5068 42.1728C86.8806 41.8194 86.3949 41.3118 86.0499 40.6501C85.6984 39.9883 85.5259 39.2302 85.5259 38.3757C85.5259 37.5726 85.6984 36.8466 86.0499 36.1913C86.4013 35.5424 86.8869 35.0284 87.5068 34.6686C88.1266 34.3024 88.8423 34.1225 89.6411 34.1225C90.4399 34.1225 91.1428 34.3024 91.7563 34.6686C92.3697 35.0349 92.849 35.536 93.2004 36.172C93.5519 36.8081 93.7244 37.5469 93.7244 38.3693C93.7244 39.1917 93.5583 39.9819 93.2196 40.6437C92.8809 41.3118 92.4017 41.8194 91.7818 42.1663C91.1556 42.5197 90.4463 42.6932 89.6475 42.6932C88.8487 42.6932 88.1394 42.5197 87.5132 42.1663M94.7277 46.6894C96.223 45.8349 97.4115 44.6913 98.2806 43.2457C99.156 41.8065 99.5906 40.1682 99.5906 38.3372C99.5906 36.5061 99.156 34.9449 98.2806 33.5058C97.4051 32.0666 96.2166 30.9294 94.7085 30.1007C93.2004 29.2719 91.507 28.8607 89.6411 28.8607C87.7752 28.8607 86.0115 29.2783 84.5162 30.1199C83.0209 30.9616 81.8387 32.0923 80.9824 33.525C80.1198 34.9578 79.6916 36.5575 79.6916 38.3436C79.6916 40.1297 80.1262 41.7808 81.0016 43.2328C81.8771 44.6848 83.0592 45.8413 84.5545 46.6958C86.0498 47.5503 87.7496 47.9743 89.6411 47.9743C91.5326 47.9743 93.2324 47.5503 94.7277 46.6958M78.3817 29.2719H64.4256V34.1996H78.3817V29.2719ZM74.2664 21.7099H68.5025V47.5503H74.2664V21.7099ZM51.0318 42.1728C50.4056 41.8194 49.9199 41.3118 49.5748 40.6501C49.2234 39.9883 49.0508 39.2302 49.0508 38.3757C49.0508 37.5726 49.2234 36.8466 49.5748 36.1913C49.9263 35.5424 50.4119 35.0284 51.0318 34.6686C51.658 34.3024 52.3673 34.1225 53.1661 34.1225C53.9649 34.1225 54.6678 34.3024 55.2812 34.6686C55.8947 35.0349 56.374 35.536 56.719 36.172C57.0705 36.8081 57.243 37.5469 57.243 38.3693C57.243 39.1917 57.0769 39.9819 56.7382 40.6437C56.3995 41.3118 55.9203 41.8194 55.3004 42.1663C54.6742 42.5197 53.9649 42.6932 53.1661 42.6932C52.3673 42.6932 51.658 42.5197 51.0318 42.1663M58.2527 46.6894C59.748 45.8349 60.9301 44.6913 61.8056 43.2457C62.681 41.8065 63.1156 40.1682 63.1156 38.3372C63.1156 36.5061 62.681 34.9449 61.8056 33.5058C60.9301 32.0666 59.7416 30.9294 58.2335 30.1007C56.7254 29.2719 55.032 28.8607 53.1661 28.8607C51.3002 28.8607 49.5365 29.2783 48.0412 30.1199C46.5459 30.9616 45.3637 32.0923 44.5074 33.525C43.6448 34.9578 43.2166 36.5575 43.2166 38.3436C43.2166 40.1297 43.6512 41.7808 44.5266 43.2328C45.4021 44.6848 46.5842 45.8413 48.0795 46.6958C49.5748 47.5503 51.2746 47.9743 53.1661 47.9743C55.0576 47.9743 56.7574 47.5503 58.2527 46.6958M28.7301 20.2451H22.9662V47.5567H28.7301V20.2451ZM40.782 47.5567V35.8572C40.782 34.4759 40.4816 33.2681 39.8874 32.2272C39.2867 31.1864 38.456 30.3705 37.3824 29.7794C36.3089 29.1883 35.0628 28.8928 33.6442 28.8928C32.2256 28.8928 31.0498 29.1883 29.9762 29.7794C28.9027 30.3705 28.0592 31.1993 27.4521 32.2786C26.8387 33.358 26.5319 34.6108 26.5319 36.0435L28.7429 37.1357C28.7429 36.5126 28.8771 35.96 29.1519 35.4782C29.4267 35.0027 29.7973 34.6301 30.2766 34.3667C30.7494 34.1033 31.2862 33.9748 31.8869 33.9748C32.7815 33.9748 33.5355 34.2703 34.1298 34.8614C34.7305 35.4525 35.0244 36.2106 35.0244 37.1357V47.5567H40.7884H40.782ZM5.91089 20.9968H0V47.5567H5.91089V20.9968ZM11.0741 37.8874C12.742 37.8874 14.2628 37.5469 15.6175 36.8723C16.9786 36.1977 18.0522 35.2212 18.8382 33.9555C19.6242 32.6898 20.014 31.1929 20.014 29.4582C20.014 27.7235 19.6242 26.1944 18.8382 24.9223C18.0522 23.6566 16.9786 22.6865 15.6175 22.0055C14.2564 21.3309 12.742 20.9904 11.0741 20.9904H4.52423V25.6162H10.2115C10.9336 25.6162 11.5917 25.7575 12.1732 26.0466C12.7611 26.3358 13.2276 26.7662 13.5791 27.3444C13.9305 27.9227 14.1031 28.623 14.1031 29.4518C14.1031 30.2805 13.9305 30.9423 13.5791 31.5205C13.2276 32.0988 12.7611 32.5292 12.1732 32.8183C11.5854 33.1074 10.9336 33.2488 10.2115 33.2488H4.52423V37.8746H11.0741V37.8874Z" fill="white"/>
             </svg>
           SVG
 
-          a(class: "btn-primary pg-btn flex items-center gap-1 text-sm sm:text-md md:text-lg",
+          a(class: "btn-primary pg-btn flex items-center gap-1 text-sm sm:text-md lg:text-lg",
             href: "/not-yet", data: { turbo_method: "get", turbo_frame: "not_yet" }) do
             span { "다운로드 앱" }
             raw(<<~SVG.html_safe)
@@ -43,10 +43,10 @@ class Views::Pages::Home::Mobile < Views::Base
     end
 
     section do
-      div(class: "px-4 bg-gradient-to-b from-base-300/30 to-base-300 overflow-hidden") do
+      div(class: "px-4 bg-gradient-to-b from-base-300/30 to-base-300 overflow-hidden border-b border-[#A6A6A6]") do
         div(class: "pg-container") do
-          div(class: "flex flex-col gap-3 mt-10 sm:mt-12 md:mt-16") do
-            div(class: "text-[28px] sm:text-4xl md:text-[50px] md:leading-[150%] font-bold text-center") do
+          div(class: "flex flex-col gap-3 mt-10 sm:mt-12 lg:mt-16") do
+            div(class: "text-[28px] sm:text-4xl lg:text-[50px] lg:leading-[150%] font-bold text-center") do
               h2 { "캡처만 하면 쇼핑 준비 끝!" }
               h2 { "쇼핑 비서 ‘포토게더’" }
             end
@@ -64,12 +64,12 @@ class Views::Pages::Home::Mobile < Views::Base
           end
 
           div(class: "flex justify-center py-10 sm:py-14") do
-            div(class: "flex gap-2 sm:gap-6 md:gap-10") do
+            div(class: "flex gap-2 sm:gap-6 lg:gap-10") do
               a(href: "/not-yet", data: { turbo_method: "get", turbo_frame: "not_yet" }) do
-                img(src: "/images/landing/section01/appstore.png", class: "w-[97px] h-[28px] sm:w-[120px] sm:h-[35px] md:w-[180px] md:h-[50px]")
+                img(src: "/images/landing/section01/appstore.png", class: "w-[97px] h-[28px] sm:w-[120px] sm:h-[35px] lg:w-[180px] lg:h-[50px]")
               end
               a(href: "/not-yet", data: { turbo_method: "get", turbo_frame: "not_yet" }) do
-                img(src: "/images/landing/section01/googleplay.png", class: "w-[97px] h-[28px] sm:w-[120px] sm:h-[35px] md:w-[180px] md:h-[50px]")
+                img(src: "/images/landing/section01/googleplay.png", class: "w-[97px] h-[28px] sm:w-[120px] sm:h-[35px] lg:w-[180px] lg:h-[50px]")
               end
             end
           end
@@ -77,16 +77,16 @@ class Views::Pages::Home::Mobile < Views::Base
           div(class: "relative flex justify-center") do
             # 단말기 이미지 박스
             # 해당 박스를 기준으로 장식용 컨텐츠들 배치
-            div(class: "relative w-[300px] sm:w-[500px] md:w-[987px] translate-x-1/10") do
+            div(class: "relative w-[300px] sm:w-[500px] lg:w-[987px] translate-x-1/10") do
               # 백그라운드 장식 1
               img(src: "/images/landing/section01/item02.png",
-                  class: "absolute -left-8 top-14 sm:-left-20 sm:top-24 md:-left-28 md:top-48
-                  w-[60px] sm:w-[130px] md:w-[200px] object-contain")
+                  class: "absolute -left-8 top-14 sm:-left-20 sm:top-24 lg:-left-28 lg:top-48
+                  w-[60px] sm:w-[130px] lg:w-[200px] object-contain")
 
               # 백그라운드 장식 2
               img(src: "/images/landing/section01/item06.png",
-                  class: "absolute right-16 top-16 sm:right-16 sm:top-26 md:right-52 md:top-52
-                  w-[40px] sm:w-[100px] md:w-[136px] object-contain")
+                  class: "absolute right-16 top-16 sm:right-16 sm:top-26 lg:right-52 lg:top-52
+                  w-[40px] sm:w-[100px] lg:w-[136px] object-contain")
 
               # 단말기 이미지
               img(src: "/images/landing/section01/item04.png", class: "object-contain animate-float z-[1]")
@@ -103,6 +103,148 @@ class Views::Pages::Home::Mobile < Views::Base
               render Views::Pages::Home::Section01::BottomSheet.new(
                 tw_class: "absolute left-[90%] bottom-0 translate-x-[-90%] z-[10]"
               )
+            end
+          end
+        end
+      end
+    end
+
+    section do
+      div(class: "border-b border-[#A6A6A6]") do
+        div(class: "pg-container") do
+          # 상단 텍스트 영역
+          div(class: "px-4") do
+            div(class: "flex flex-col gap-[10px] py-10
+                lg:w-full lg:flex-row-reverse lg:justify-between lg:py-30") do
+              div(class: "flex items-center gap-8") do
+                div(class: "w-[32px] lg:w-[52px]") do
+                  img(src: "/images/landing/section02/item01.png", class: "w-full")
+                end
+                div(class: "text-xl lg:text-4xl font-bold leading-[150%]") do
+                  p { "텍스트를 자동으로 추출하고," }
+                  p { "필요할 땐 바로 꺼내보세요." }
+                end
+              end
+              div(class: "flex items-center gap-8") do
+                div(class: "w-[32px] lg:hidden") do
+                end
+                div(class: "text-sm lg:text-lg leading-[150%] text-[#C6C6C6]") do
+                  p { "캡처한 이미지 속 텍스트를 자동으로 읽고," }
+                  p { "태그와 폴더로 알아서 정리해두니까" }
+                  p { "나중엔 검색만으로 쉽게 다시 찾을 수 있어요." }
+                end
+              end
+            end
+          end
+
+          # 이미지 영역
+          div(class: "flex gap-2 lg:gap-6 w-full overflow-x-auto pl-4 lg:p-none") do
+            div(class: "min-w-[160px]") do
+              img(src: "/images/landing/section02/item02.png", class: "object-contain")
+            end
+            div(class: "min-w-[160px]") do
+              img(src: "/images/landing/section02/item03.png", class: "object-contain")
+            end
+            div(class: "min-w-[160px]") do
+              img(src: "/images/landing/section02/item04.png", class: "object-contain")
+            end
+          end
+
+          div(class: "py-20 px-4") do
+            # 상단 텍스트 영역
+            div(class: "flex flex-col gap-[10px] py-10
+                lg:w-full lg:flex-row lg:justify-between lg:items-end lg:pt-45 lg:pb-0") do
+              div(class: "flex items-center lg:flex-col lg:items-start gap-8") do
+                div(class: "w-[32px] lg:w-[52px]") do
+                  img(src: "/images/landing/section02/item05.png", class: "w-full")
+                end
+                div(class: "text-xl lg:text-4xl font-bold leading-[150%]") do
+                  p { "캡처로 시작해요." }
+                  p { "정리는 우리가 알아서 할게요." }
+                end
+              end
+              div(class: "flex items-center gap-8") do
+                div(class: "w-[32px] lg:hidden") do
+                end
+                div(class: "text-sm lg:text-lg leading-[150%] text-[#C6C6C6]") do
+                  p { "지금 시작하면 스크린샷이" }
+                  p { "깔끔하게 정리되기 시작합니다." }
+
+                  div(class: "hidden lg:flex justify-end mt-[28px]") do
+                    a(class: "flex items-center gap-1 pg-btn btn-primary",
+                    href: "/not-yet", data: { turbo_method: "get", turbo_frame: "not_yet" }) do
+                      span { "다운로드 앱" }
+                      raw(<<~SVG.html_safe)
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path fill-rule="evenodd" clip-rule="evenodd" d="M16.445 7.0051C16.7187 7.25139 16.7409 7.67292 16.4946 7.94661L10.4952 14.6133C10.3688 14.7538 10.1887 14.834 9.9997 14.834C9.8107 14.834 9.63058 14.7538 9.50415 14.6133L3.50415 7.94663C3.25784 7.67296 3.28003 7.25143 3.5537 7.00513C3.82738 6.75882 4.2489 6.78101 4.49521 7.05468L9.99965 13.1707L15.5035 7.05471C15.7498 6.78102 16.1713 6.75881 16.445 7.0051Z" fill="white"/>
+                        </svg>
+                      SVG
+                    end
+                  end
+                end
+              end
+            end
+
+            # 이미지 영역 (모바일용)
+            div(class: "flex items-end justify-between mt-10 sm:hidden") do
+              div(class: "w-[188px] relative") do
+                img(src: "/images/landing/section02/item07.png", class: "object-contain")
+              end
+              div(class: "flex flex-col gap-[13px]") do
+                # 이벤트박스
+                div(class: "flex flex-col gap-1 border border-primary bg-base-300 rounded-xl
+                    p-2 w-[150px]") do
+                  div(class: "flex justify-between items-center") do
+                    p(class: "text-[10px] font-bold") { "스크린샷을 찍어주세요." }
+
+                    div(class: "flex items-center justify-center rounded-full bg-secondary text-secondary-content border border-primary
+                      text-[9px] w-[20px] h-[20px]") do
+                      "01"
+                    end
+                  end
+                  p(class: "text-[10px] text-[#C6C6C6]") { "지금 화면을 캡처하거나, 이미 앨범에 저장된 스크린샷을 불러와도 괜찮아요." }
+                end
+
+                # 컨트롤러 박스
+                div(class: "flex gap-[13px]") do
+                  # 네비게이터 표시등
+                  div(class: "flex justify-center items-center gap-[2px] p-[13px] bg-[#2A2C34] rounded-2xl border border-white/20") do
+                    div(class: "bg-primary rounded-full w-[12px] h-[5px]")
+                    div(class: "bg-[#515867] rounded-full w-[5px] h-[5px]")
+                    div(class: "bg-[#515867] rounded-full w-[5px] h-[5px]")
+                    div(class: "bg-[#515867] rounded-full w-[5px] h-[5px]")
+                  end
+
+                  div(class: "flex gap-2") do
+                    div(class: "rounded-full border border-primary bg-secondary w-[32px] h-[32px] p-1") do
+                      raw(<<~SVG.html_safe)
+                        <svg class="text-secondary-content translate-x-[-1px]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                        </svg>
+                      SVG
+                    end
+                    div(class: "rounded-full border border-primary bg-secondary w-[32px] h-[32px] p-1") do
+                      raw(<<~SVG.html_safe)
+                        <svg class="text-secondary-content translate-x-[1px]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                        </svg>
+                      SVG
+                    end
+                  end
+                end
+              end
+            end
+            # 이미지 영역 (데스크탑용)
+            div(class: "hidden sm:flex w-[1104px] h-[727px] gap-[80px] items-end") do
+              div(class: "w-[671px] h-[464px] border") do
+                div(class: "text-3xl line-through") do
+                  "상당히 귀찮은 영역(귀찮은 일 미루깃)"
+                end
+              end
+
+              div(class: "h-full relative") do
+                img(src: "/images/landing/section02/item07.png", class: "object-contain")
+              end
             end
           end
         end

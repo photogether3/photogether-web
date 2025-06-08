@@ -4,24 +4,24 @@ class Views::Pages::Home::Section01::BottomSheet < Views::Base
   end
 
   def view_template
-    div(class: "#{@tw_class} border border-primary border-b-0 rounded-t-md md:rounded-t-2xl bg-[#1B1D21CC]/80 backdrop-blur-md w-[110px] sm:w-[200px] md:w-[360px]") do
+    div(class: "#{@tw_class} border border-primary border-b-0 rounded-t-md lg:rounded-t-2xl bg-[#1B1D21CC]/80 backdrop-blur-md w-[110px] sm:w-[200px] lg:w-[360px]") do
       div(class: "flex justify-center items-center p-1 sm:p-2") do
-        div(class: "md:w-[109px] h-[1px] sm:h-[2px] md:h-[4px] rounded-[12px] bg-[#E4E4E4]") { }
+        div(class: "lg:w-[109px] h-[1px] sm:h-[2px] lg:h-[4px] rounded-[12px] bg-[#E4E4E4]") { }
       end
-      div(class: "flex justify-between p-1 sm:p-2 md:p-5 border-b border-[#FFFFFF33]/20") do
-        p(class: "text-[5px] sm:text-sm md:text-xl font-bold") { "수행할 동작 선택" }
+      div(class: "flex justify-between p-1 sm:p-2 lg:p-5 border-b border-[#FFFFFF33]/20") do
+        p(class: "text-[5px] sm:text-sm lg:text-xl font-bold") { "수행할 동작 선택" }
         raw(<<~SVG.html_safe)
-          <svg class="w-[4px] sm:w-[14px] md:w-[24px]" viewBox="0 0 26 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg class="w-[4px] sm:w-[14px] lg:w-[24px]" viewBox="0 0 26 25" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd" clip-rule="evenodd" d="M19.598 4.77711C19.9154 4.45973 20.43 4.45971 20.7474 4.77708C21.0648 5.09445 21.0648 5.60902 20.7474 5.92641L14.0097 12.6645L20.7514 19.4066C21.0687 19.7239 21.0687 20.2385 20.7513 20.5559C20.4339 20.8733 19.9194 20.8732 19.602 20.5559L12.8604 13.8139L6.11883 20.5559C5.80146 20.8732 5.28688 20.8733 4.9695 20.5559C4.65211 20.2385 4.65209 19.7239 4.96946 19.4066L11.7111 12.6645L4.97343 5.92641C4.65606 5.60902 4.65608 5.09445 4.97346 4.77708C5.29085 4.45971 5.80542 4.45973 6.12279 4.77711L12.8604 11.5151L19.598 4.77711Z" fill="white"/>
           </svg>
         SVG
       end
-      div(class: "px-1 sm:px-2 md:px-5 flex flex-col w-full") do
-        div(class: "sm:py-2 md:py-5 border-b border-[#FFFFFF33]/20") do
-          button(class: "pg-btn btn-primary w-full text-[5px] sm:text-xs md:text-base") do
+      div(class: "px-1 sm:px-2 lg:px-5 flex flex-col w-full") do
+        div(class: "sm:py-2 lg:py-5 border-b border-[#FFFFFF33]/20") do
+          button(class: "pg-btn btn-primary w-full text-[5px] sm:text-xs lg:text-base") do
             div do
               raw(<<~SVG.html_safe)
-              <svg class="w-[5px] sm:w-3 md:w-5" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg class="w-[5px] sm:w-3 lg:w-5" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M3.80127 3.00195C3.42724 3.00195 3.12402 3.30517 3.12402 3.6792V9.09719C3.12402 9.47123 3.42724 9.77444 3.80127 9.77444H9.21926C9.5933 9.77444 9.89651 9.47123 9.89651 9.09719V3.6792C9.89651 3.30517 9.5933 3.00195 9.21926 3.00195H3.80127ZM4.47852 8.41994V4.35645H8.54201V8.41994H4.47852ZM12.2666 3.00195C11.8925 3.00195 11.5893 3.30517 11.5893 3.6792V9.09719C11.5893 9.47123 11.8925 9.77444 12.2666 9.77444H17.6845C18.0586 9.77444 18.3618 9.47123 18.3618 9.09719V3.6792C18.3618 3.30517 18.0586 3.00195 17.6845 3.00195H12.2666ZM12.9438 8.41994V4.35645H17.0073V8.41994H12.9438ZM11.5893 12.1455C11.5893 11.7714 11.8925 11.4682 12.2666 11.4682H17.6845C18.0586 11.4682 18.3618 11.7714 18.3618 12.1455V17.5635C18.3618 17.9375 18.0586 18.2407 17.6845 18.2407H12.2666C11.8925 18.2407 11.5893 17.9375 11.5893 17.5635V12.1455ZM12.9438 12.8227V16.8862H17.0073V12.8227H12.9438ZM3.80127 11.4682C3.42724 11.4682 3.12402 11.7714 3.12402 12.1455V17.5635C3.12402 17.9375 3.42724 18.2407 3.80127 18.2407H9.21926C9.5933 18.2407 9.89651 17.9375 9.89651 17.5635V12.1455C9.89651 11.7714 9.5933 11.4682 9.21926 11.4682H3.80127ZM4.47852 16.8862V12.8227H8.54201V16.8862H4.47852Z" fill="white"/>
               </svg>
             SVG
@@ -29,11 +29,11 @@ class Views::Pages::Home::Section01::BottomSheet < Views::Base
             span { "사진첩 정리" }
           end
         end
-        div(class: "sm:py-2 md:py-5 border-b border-[#FFFFFF33]/20") do
-          button(class: "pg-btn btn-secondary border-primary w-full text-[5px] sm:text-xs md:text-base") do
+        div(class: "sm:py-2 lg:py-5 border-b border-[#FFFFFF33]/20") do
+          button(class: "pg-btn btn-secondary border-primary w-full text-[5px] sm:text-xs lg:text-base") do
             div do
               raw(<<~SVG.html_safe)
-                <svg class="w-[5px] sm:w-3 md:w-5" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-[5px] sm:w-3 lg:w-5" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path fill-rule="evenodd" clip-rule="evenodd" d="M14.497 2.80969C14.7615 2.54521 15.1903 2.54521 15.4548 2.80969L18.841 6.19593C18.968 6.32294 19.0394 6.4952 19.0394 6.67482C19.0394 6.85444 18.968 7.0267 18.841 7.15371L11.222 14.7728C11.0949 14.8998 10.9227 14.9711 10.7431 14.9711H7.35683C6.98279 14.9711 6.67958 14.6679 6.67958 14.2939V10.9076C6.67958 10.728 6.75093 10.5557 6.87794 10.4287L14.497 2.80969ZM14.9759 4.24635L13.394 5.82826L15.8224 8.25673L17.4043 6.67482L14.9759 4.24635ZM14.8647 9.2145L12.4362 6.78603L8.03408 11.1882V13.6166H10.4625L14.8647 9.2145ZM4.64783 4.64307C4.55432 4.64307 4.47852 4.71888 4.47852 4.81239V17.0029C4.47852 17.0964 4.55432 17.1722 4.64783 17.1722H16.8383C16.9318 17.1722 17.0076 17.0964 17.0076 17.0029V11.0769C17.0076 10.7029 17.3108 10.3997 17.6849 10.3997C18.0589 10.3997 18.3621 10.7029 18.3621 11.0769V17.0029C18.3621 17.8444 17.6799 18.5267 16.8383 18.5267H4.64783C3.80626 18.5267 3.12402 17.8444 3.12402 17.0029V4.81239C3.12402 3.97081 3.80626 3.28858 4.64783 3.28858H10.5731C10.9471 3.28858 11.2503 3.59179 11.2503 3.96583C11.2503 4.33986 10.9471 4.64307 10.5731 4.64307H4.64783Z" fill="#99DEC3"/>
                 </svg>
               SVG
@@ -41,11 +41,11 @@ class Views::Pages::Home::Section01::BottomSheet < Views::Base
             span { "사진첩 수정" }
           end
         end
-        div(class: "sm:py-2 md:py-5") do
-          button(class: "pg-btn btn-error border-accent w-full text-[5px] sm:text-xs md:text-base") do
+        div(class: "sm:py-2 lg:py-5") do
+          button(class: "pg-btn btn-error border-accent w-full text-[5px] sm:text-xs lg:text-base") do
             div do
               raw(<<~SVG.html_safe)
-                <svg class="w-[5px] sm:w-3 md:w-5" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-[5px] sm:w-3 lg:w-5" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M5.66394 16.1172C5.66394 17.0485 6.42585 17.8104 7.35707 17.8104H14.1296C15.0608 17.8104 15.8227 17.0485 15.8227 16.1172V6.97438C15.8227 6.41333 15.3679 5.95851 14.8068 5.95851H6.67982C6.11877 5.95851 5.66394 6.41333 5.66394 6.97438V16.1172ZM7.35707 7.9056C7.35707 7.76534 7.47077 7.65163 7.61103 7.65163H13.8756C14.0158 7.65163 14.1296 7.76534 14.1296 7.9056V15.8633C14.1296 16.0035 14.0158 16.1172 13.8756 16.1172H7.61103C7.47077 16.1172 7.35707 16.0035 7.35707 15.8633V7.9056ZM14.1271 3.41883C13.8576 3.41883 13.5992 3.3118 13.4087 3.12128L13.1573 2.86981C12.9667 2.67929 12.7083 2.57227 12.4389 2.57227H9.04769C8.77827 2.57227 8.51988 2.67929 8.32936 2.86981L8.07789 3.12128C7.88738 3.3118 7.62898 3.41883 7.35956 3.41883H5.66394C5.1964 3.41883 4.81738 3.79784 4.81738 4.26539V4.26539C4.81738 4.73293 5.1964 5.11195 5.66394 5.11195H15.8227C16.2902 5.11195 16.6692 4.73293 16.6692 4.26539V4.26539C16.6692 3.79784 16.2902 3.41883 15.8227 3.41883H14.1271Z" fill="#F1747C"/>
                 </svg>
               SVG
