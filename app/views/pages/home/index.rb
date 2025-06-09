@@ -169,7 +169,8 @@ class Views::Pages::Home::Index < Views::Base
                   render Views::Pages::Home::StepBox.new(
                     title: "스크린샷을 찍어주세요.",
                     step: "01",
-                    content: "지금 화면을 캡처하거나, 이미 앨범에 저장된 스크린샷을 불러와도 괜찮아요."
+                    content: "지금 화면을 캡처하거나, 이미 앨범에 저장된 스크린샷을 불러와도 괜찮아요.",
+                    active: true
                   )
 
                   # 컨트롤러 박스
