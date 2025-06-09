@@ -1,4 +1,4 @@
-class Views::Pages::Home::Section01::Alert < Views::Base
+class Views::Pages::Home::Alert < Views::Base
   def initialize(tw_class: "")
     @tw_class = tw_class
   end

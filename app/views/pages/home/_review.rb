@@ -1,4 +1,4 @@
-class Views::Pages::Home::Section03::Review < Views::Base
+class Views::Pages::Home::Review < Views::Base
   def initialize(reviewer: "리뷰어", rating: 5, content: "컨텐츠")
     @reviewer = reviewer
     @rating = rating

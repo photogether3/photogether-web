@@ -11,6 +11,10 @@ export class ModalController extends Controller {
   }
 
   onClose() {
-    this.element.remove();  
+    this.element.classList.add("motion-opacity-out-0");
+
+    this.element.addEventListener('animationend', () => {
+      this.element.remove();
+    }, { once: true })
   }
 }
