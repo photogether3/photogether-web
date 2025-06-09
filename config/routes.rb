@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
   # 메인 페이지 라우트 설정
   root "pages/home#index"
-  get "mobile", to: "pages/home#index_mobile"
 
   # 접근 거부 페이지
   get "access-denied", to: "pages/access#denied", as: :access_denied
