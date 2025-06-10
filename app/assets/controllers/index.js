@@ -4,6 +4,7 @@ import { FlashController } from "./flash_controller";
 import { ModalController } from "./modal_controller";
 import { TinymceController } from "./tinymce_controller";
 import { NotYetController } from "./not_yet_controller";
+import { DynamicScrollGradientController} from "./dynamic_scroll_gradient_controller";
 
 const application = Application.start();
 
@@ -12,6 +13,7 @@ application.register("flash", FlashController);
 application.register("tinymce", TinymceController);
 application.register("modal", ModalController);
 application.register("not_yet", NotYetController);
+application.register("dynamic-scroll-gradient", DynamicScrollGradientController);
 
 // 여러 경로에서 컨트롤러 파일 로드
 // const controllerPaths = {
