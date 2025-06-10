@@ -3,8 +3,14 @@ class Api::V1::PostApiController < ApiController
   before_action :authenticate_user!
 
   def index
-    puts params
     result = Post::Index.new(@current_user.id, params).call
+    render_result(result)
+  end
+
+  def index_images
+    puts "Index Images API called with params:"
+    puts "#{params.inspect}"
+    result = Post::IndexImages.new(@current_user.id, params).call
     render_result(result)
   end
 

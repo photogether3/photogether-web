@@ -65,6 +65,20 @@ class Post < ApplicationRecord
   end
 
   # -------------------------------------------------------------
+  # id와 이미지만 조회
+  # -------------------------------------------------------------
+  def to_index_image
+    {
+      id: id,
+      images: {
+        blur: image.attached? ? Rails.application.routes.url_helpers.url_for(image.variant(:blur)) : nil,
+        grid: image.attached? ? Rails.application.routes.url_helpers.url_for(image.variant(:grid)) : nil,
+        detail: image.attached? ? Rails.application.routes.url_helpers.url_for(image.variant(:detail)) : nil
+      }
+    }
+  end
+
+  # -------------------------------------------------------------
   # 이미지 변형 메서드
   # -------------------------------------------------------------
   def image_variants
