@@ -117,6 +117,7 @@ Rails.application.routes.draw do
 
       # post group
       get "posts", to: "post_api#index"
+      get "posts/images", to: "post_api#index_images"
       get "posts/:id", to: "post_api#show"
       post "posts", to: "post_api#create"
       put "posts/:id", to: "post_api#update"
