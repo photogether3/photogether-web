@@ -1,0 +1,9 @@
+.hidden-scrollbar {
+  -ms-overflow-style: none; /* IE 및 Edge에서 스크롤바 숨김 */
+  scrollbar-width: none; /* Firefox에서 스크롤바 숨김 */
+}
+
+.hidden-scrollbar::-webkit-scrollbar {
+  display: none; /* 스크롤바 자체를 숨김 */
+  /* 또는 width: 0; 으로 너비를 0으로 만들 수도 있습니다. */
+}

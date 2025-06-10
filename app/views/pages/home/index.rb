@@ -120,7 +120,7 @@ class Views::Pages::Home::Index < Views::Base
             end
 
             # 이미지 영역
-            div(class: "flex gap-2 lg:gap-6 w-full overflow-x-auto pl-4 lg:p-none") do
+            div(class: "flex gap-2 lg:gap-6 w-full overflow-x-auto pl-4 lg:p-none hidden-scrollbar") do
               div(class: "min-w-[160px]") do
                 img(src: "/images/landing/section02/item02.png", class: "object-contain")
               end
@@ -240,10 +240,10 @@ class Views::Pages::Home::Index < Views::Base
       end
 
       section do
-        div(class: "bg-black py-[40px] lg:py-[80px] px-4 border-y border-[#A6A6A6]") do
+        div(class: "bg-black py-[40px] lg:py-[80px] border-y border-[#A6A6A6]") do
           div(class: "pg-container") do
             div(class: "flex flex-col gap-[40px] lg:flex-row lg:justify-between lg:gap-0") do
-              div(class: "flex items-start gap-[30px] lg:flex-col lg:gap-[16px]") do
+              div(class: "flex items-start gap-[30px] lg:flex-col lg:gap-[16px] px-4") do
                 img(src: "/images/landing/section03/item01.png", class: "w-[32px] lg:w-[52px] object-contain")
                 div(class: "text-xl lg:text-3xl leading-[150%] font-bold") do
                   p { "실제로 써본 사용자들이" }
@@ -251,7 +251,7 @@ class Views::Pages::Home::Index < Views::Base
                 end
               end
 
-              div(class: "flex gap-[16px] lg:gap-[22px] overflow-x-auto") do
+              div(class: "flex gap-[16px] lg:gap-[22px] overflow-x-auto hidden-scrollbar pl-4") do
                 render Views::Pages::Home::Review.new(
                   reviewer: "Oh******",
                   content: "원래 스크린샷을 엄청 자주 찍는 편인데, 막상 나중에 뭘 위해 찍었는지 기억도 안 나고 찾기도 어려웠어요. 포토게더는 그런 스크린샷들을 텍스트로 추출해서 정리해주고, 폴더로 구분해서 저장해주니까 진짜 유용해요. 특히 폴더를 제가 원하는 대로 만들 수 있어서 나만의 정리 방식으로 쓸 수 있다는 게"
