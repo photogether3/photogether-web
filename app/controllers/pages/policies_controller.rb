@@ -1,4 +1,8 @@
 class Pages::PoliciesController < PagesController
+  layout -> { Layouts::Application.new(
+    layout: Pages::Policies::Layout.new
+  ) }
+
   def show
     kind = params[:kind]
     policy = Policy.where(kind: kind).order(version: :desc).first

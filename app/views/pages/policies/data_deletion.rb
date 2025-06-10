@@ -1,6 +1,6 @@
 class Views::Pages::Policies::DataDeletion < Views::Base
   def view_template
-    div(class: "p-10") do
+    div() do
       h1(class: "mb-6 text-2xl font-bold") { "포토게더(Photogether) 데이터 및 계정 삭제 정책" }
 
       # 개요 섹션

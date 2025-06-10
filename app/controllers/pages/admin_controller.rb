@@ -2,7 +2,7 @@ class Pages::AdminController < PagesController
   before_action :check_ip_whitelist
 
   layout -> { Layouts::Application.new(
-    layout: Pages::Layout.new(
+    layout: Pages::Admin::Layout.new(
       nav_component: Pages::Admin::Sidebar.new
     )
   ) }
