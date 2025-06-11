@@ -12,7 +12,7 @@ class Views::Pages::Home::Review < Views::Base
           img(src: "/images/landing/section03/item02.png", class: "w-[32px] lg:w-[60px] object-contain")
         end
         div do
-          h2(class: "text-[14px] lg:text-xl") { @reviewer }
+          h2(class: "text-[14px] lg:text-xl font-bold") { @reviewer }
           div(class: "flex items-center gap-1 lg:gap-2") do
             @rating.times do
               raw(<<~SVG.html_safe)
