@@ -15,6 +15,18 @@ export class ModalController extends Controller {
 
     this.element.addEventListener('animationend', () => {
       this.element.remove();
-    }, { once: true })
+    }, { once: true });
+  }
+
+  // 오버레이 클릭 처리
+  onOverlayClick(event) {
+    if (event.target === this.element) {
+      this.onClose();
+    }
+  }
+
+  // 모달 클릭 시 이벤트 전파 방지
+  onModalClick(event) {
+    event.stopPropagation();
   }
 }

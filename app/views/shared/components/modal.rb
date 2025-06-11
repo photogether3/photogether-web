@@ -5,12 +5,16 @@ class Views::Shared::Components::Modal < Views::Base
 
   def view_template
     turbo_frame(id: "modal_overlay") do
-      # 오버레이
+      # 오버레이 - 클릭 이벤트 추가
       div(
-        data: { controller: "modal" },
+        data: {
+          controller: "modal",
+          action: "click->modal#onOverlayClick"
+        },
         class: "fixed inset-0 bg-base-300/50 z-50 overflow-y-auto py-20 px-4 motion-preset-fade-lg") do
-        # 모달 박스
-        div(class: "bg-base-100 max-w-[560px] rounded-box mx-auto h-auto overflow-hidden motion-preset-slide-up") do
+        div(
+          class: "bg-base-100 max-w-[560px] rounded-box mx-auto h-auto overflow-hidden motion-preset-slide-up",
+          data: { action: "click->modal#onModalClick" }) do  # 모달 클릭 이벤트 추가
           # 해더박스
           div(class: "p-6 flex items-center justify-between") do
             # 타이틀
