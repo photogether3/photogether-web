@@ -15,7 +15,7 @@ class Views::Pages::Home::QrContent < Views::Base
           p(class: "font-bold text-lg") { "#{@store_text} QR코드" }
           p(class: "text-[#C6C6C6]") { "휴대폰 카메라를 이용하여 QR코드를 스캔해주세요." }
         end
-        div(class: "bg-primary-content p-5 rounded-md") do
+        div(class: "rounded-md overflow-hidden") do
           img(src: @qr_image_src, class: "w-[380px] object-contain")
         end
         img(src: @store_image_src, class: "w-[97px] sm:w-[120px] lg:w-[180px] object-contain")
