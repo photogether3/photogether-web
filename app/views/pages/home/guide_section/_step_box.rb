@@ -1,4 +1,4 @@
-class Views::Pages::Home::StepBox < Views::Base
+class Views::Pages::Home::GuideSection::StepBox < Views::Base
   def initialize(
     title: "스크린샷을 찍어주세요",
     step: "01",
