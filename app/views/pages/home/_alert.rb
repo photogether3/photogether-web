@@ -15,14 +15,14 @@ class Views::Pages::Home::Alert < Views::Base
           </svg>
         SVG
       end
-      div(class: "flex flex-col items-center gap-1 sm:gap-2 lg:gap-3") do
+      div(class: "flex flex-col items-center gap-1 sm:gap-2 lg:gap-[10px]") do
         img(src: "/images/landing/section01/item05.png", class: "w-[28px] sm:w-[50px] lg:w-[101px]")
         strong(class: "text-[6px] sm:text-[8px] lg:text-xl") { "택스트를 추출 합니다." }
         div(class: "text-center text-[5px] sm:text-[8px] lg:text-lg text-[#D8D8D8]") do
           p { "업로드하신 이미지에서 텍스트를" }
           p { "자동으로 추출합니다." }
         end
-        div(class: "mt-1 sm:mt-4 lg:mt-5
+        div(class: "mt-1
             flex justify-between
             gap-1 sm:gap-2 lg:gap-4 w-full") do
           button(class: "pg-btn btn-neutral border-neutral-content flex-1 text-[5px] sm:text-[8px] lg:text-sm") { "취소" }
