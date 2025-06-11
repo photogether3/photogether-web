@@ -4,7 +4,8 @@ class Views::Pages::Home::DropDown < Views::Base
   end
 
   def view_template
-    details(class: "dropdown dropdown-end") do
+    details(class: "dropdown dropdown-end",
+            data: { "dropdown-target": "dropdown" }) do
       summary(class: "btn-primary pg-btn flex items-center gap-1 text-sm sm:text-md lg:text-lg") do
         span { @summary }
         raw(<<~SVG.html_safe)

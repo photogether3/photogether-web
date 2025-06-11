@@ -1,6 +1,7 @@
 class Views::Pages::Layout < Views::Base
   def view_template
-    div(class: "flex flex-col h-screen motion-preset-fade-lg") do
+    div(data: { controller: "dropdown" },
+        class: "flex flex-col h-screen motion-preset-fade-lg") do
       # 상단 피드백 알림 영역
       nav(class: "bg-secondary text-secondary-content hidden sm:block") do
         div(class: "pg-container") do
