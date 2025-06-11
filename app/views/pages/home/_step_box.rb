@@ -16,7 +16,11 @@ class Views::Pages::Home::StepBox < Views::Base
   def view_template
     unless @dummy
       a(href: "/mobile-frame-step?step=#{@step}",
-        data: { turbo_frame: "mobile_frame_step" },
+        data: {
+          turbo_frame: "mobile_frame_step",
+          "step-active-target": "step",
+          action: "step-active#changeStep"
+        },
         class: "flex flex-col gap-1 border #{@border} bg-base-300 rounded-xl
           p-2 w-[150px] lg:w-[323px] lg:p-[24px] lg:gap-3") do
         div(class: "flex justify-between items-center") do

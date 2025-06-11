@@ -6,6 +6,7 @@ import { TinymceController } from "./tinymce_controller";
 import { NotYetController } from "./not_yet_controller";
 import { DynamicScrollGradientController } from "./dynamic_scroll_gradient_controller";
 import { DropdownController } from "./dropdown_controller";
+import { StepActiveController } from "./step_active_controller";
 
 const application = Application.start();
 
@@ -18,10 +19,8 @@ application.register(
   "dynamic-scroll-gradient",
   DynamicScrollGradientController
 );
-application.register(
-  "dropdown",
-  DropdownController
-);
+application.register("dropdown", DropdownController);
+application.register("step-active", StepActiveController);
 
 // 여러 경로에서 컨트롤러 파일 로드
 // const controllerPaths = {

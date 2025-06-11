@@ -176,7 +176,8 @@ class Views::Pages::Home::Index < Views::Base
             end
             # 이미지 영역 (데스크탑용)
             div(class: "hidden sm:flex w-[1104px] gap-[80px] items-end") do
-              div(class: "w-[700px] h-[464px] flex flex-wrap gap-[25px]") do
+              div(data: { controller: "step-active" },
+                  class: "w-[700px] h-[464px] flex flex-wrap gap-[25px]") do
                 render Views::Pages::Home::StepBox.new(dummy: true)
                 render Views::Pages::Home::StepBox.new(
                   title: "스크린샷을 찍어주세요.",
