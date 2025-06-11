@@ -202,8 +202,11 @@ class Views::Pages::Home::Index < Views::Base
                 )
               end
 
-              div(class: "h-full") do
+              div(class: "h-full relative") do
                 img(src: "/images/landing/section02/item07.png", class: "object-contain")
+                div(class: "absolute left-0 top-0 w-full h-full border border-blue-500") do
+                  render Views::Pages::Home::MobileFrame::Step01.new
+                end
               end
             end
           end
