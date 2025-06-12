@@ -2,8 +2,6 @@ import { Controller } from "@hotwired/stimulus";
 
 export class TinymceController extends Controller {
   connect() {
-    console.log('init tinymce');
-    
     // 이미 존재하는 인스턴스 제거 - 초기화 전에 항상 수행
     if (typeof tinymce !== "undefined" && tinymce.get("tinymce-editor")) {
       tinymce.get("tinymce-editor").remove();

@@ -1,16 +1,14 @@
 import { Application } from "@hotwired/stimulus";
-import { HelloController } from "./hello_controller";
-import { FlashController } from "./flash_controller";
-import { ModalController } from "./modal_controller";
-import { TinymceController } from "./tinymce_controller";
-import { NotYetController } from "./not_yet_controller";
-import { DynamicScrollGradientController } from "./dynamic_scroll_gradient_controller";
-import { DropdownController } from "./dropdown_controller";
-import { StepActiveController } from "./step_active_controller";
+import { DropdownController } from "./pages/home/dropdown_controller";
+import { DynamicScrollGradientController } from "./pages/home/dynamic_scroll_gradient_controller";
+import { MobileGuideController } from "./pages/home/mobile_guide_controller";
+import { FlashController } from "./shared/flash_controller";
+import { ModalController } from "./shared/modal_controller";
+import { NotYetController } from "./shared/not_yet_controller";
+import { TinymceController } from "./shared/tinymce_controller";
 
 const application = Application.start();
 
-application.register("hello", HelloController);
 application.register("flash", FlashController);
 application.register("tinymce", TinymceController);
 application.register("modal", ModalController);
@@ -20,7 +18,7 @@ application.register(
   DynamicScrollGradientController
 );
 application.register("dropdown", DropdownController);
-application.register("step-active", StepActiveController);
+application.register("mobile-guide", MobileGuideController);
 
 // 여러 경로에서 컨트롤러 파일 로드
 // const controllerPaths = {

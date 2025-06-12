@@ -5,14 +5,14 @@ class Pages::HomeController < PagesController
 
   # 모바일 프레임 내의 페이지 전환
   def mobile_frame_step
-    step = params[:step] || "01"
-    if step == "01"
+    step = params[:step] || "1"
+    if step == "1"
       render Pages::Home::GuideSection::MobileFrame::Step01.new
-    elsif step == "02"
+    elsif step == "2"
       render Pages::Home::GuideSection::MobileFrame::Step02.new
-    elsif step == "03"
+    elsif step == "3"
       render Pages::Home::GuideSection::MobileFrame::Step03.new
-    elsif step == "04"
+    elsif step == "4"
       render Pages::Home::GuideSection::MobileFrame::Step04.new
     else
       render Pages::Home::GuideSection::MobileFrame::Step01.new

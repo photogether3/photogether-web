@@ -2,8 +2,6 @@ import { Controller } from "@hotwired/stimulus";
 
 export class NotYetController extends Controller {
   connect() {
-    console.log("NotYet controller connected");
-    
     // 초기 상태: 오른쪽에 위치 (화면 밖에서 시작)
     this.element.style.transform = "translateX(100%)";
     this.element.style.opacity = "0";
