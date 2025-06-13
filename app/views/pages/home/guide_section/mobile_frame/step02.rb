@@ -4,11 +4,18 @@ class Views::Pages::Home::GuideSection::MobileFrame::Step02 < Views::Base
       div(class: "flex justify-end text-primary text-[8px] md:text-base underline") do
         "건너뛰기"
       end
-      div(class: "px-4 md:px-8") do
-        div(data: {
-          controller: "lottie",
-          "lottie-file-name-value": "onb2"
-        }, class: "md:h-[400px]")
+      # 로티 컨테이너 (높이 고정값은 수정님한테 맞게 ㄱ)
+      div(class: "px-4 md:px-8 relative flex justify-center md:h-[400px]") do
+        # 로티 배경 이미지
+        img(src: "/images/landing/section02/item09.png")
+        # 로티 감싸는 앱솔루트
+        div(class: "absolute inset-0") do
+          # 요거 로티 컨테이너
+          div(data: {
+            controller: "lottie",
+            "lottie-file-name-value": "a"
+          }, class: "h-[180px] md:h-[400px]")
+        end
       end
       div(class: "flex justify-center") do
         div(class: "flex justify-center items-center gap-[2px] p-[5px] md:p-[13px] bg-[#2A2C34] rounded-2xl border border-white/20") do
