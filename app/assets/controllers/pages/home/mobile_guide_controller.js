@@ -81,6 +81,8 @@ export class MobileGuideController extends Controller {
    * 모바일 프레임 내의 페이지 변경
    */
   #onChangeFrame() {
+    // 2025-06-13: 해당 방법은 랜딩페이지처럼 정적 콘텐츠를 랜더링 방법으로는 적절하지 않은것 같음
+    // (서버를 한번 찍고 오니 비교적 더 느린게 채감이됨)
     // 이 방식은 url까지 변경시킴. 현재 내 요구사항을 만족하지 않음
     // 찾아보니 해당 방식은 turbo drive 방식으로 페이지까지 변경하는 기능이 맞음
     // Turbo.visit(`mobile-frame-step?step=${this.currentStepValue}`, {
@@ -89,8 +91,18 @@ export class MobileGuideController extends Controller {
     // });
 
     // 해당 방식이 자바스크립트에서 터보 프레임을 업데이트하는 방식
-    const turboFrame = this.mobileFrameTarget.querySelector("turbo-frame");
-    turboFrame.src = `mobile-frame-step?step=${this.currentStepValue}`;
+    // const turboFrame = this.mobileFrameTarget.querySelector("turbo-frame");
+    // turboFrame.src = `mobile-frame-step?step=${this.currentStepValue}`;
+
+    // html에 미리 페이지들을 모두 그려놓고 css로 토글하는 방식 사용
+    let index = this.currentStepValue - 1;
+    this.mobileFrameTarget.childNodes.forEach((e, i) => {
+      if (i === index) {
+        e.classList.remove("hidden");
+      } else {
+        e.classList.add("hidden");
+      }
+    });
   }
 
   /**

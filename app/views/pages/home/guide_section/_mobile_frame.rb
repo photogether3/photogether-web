@@ -1,7 +1,6 @@
 class Views::Pages::Home::GuideSection::MobileFrame < Views::Base
   def view_template
-    div(data: { "mobile-guide-target": "mobileFrame" },
-        class: "relative
+    div(class: "relative
                 w-[180px] h-[352px]
                 lg:w-[360px] lg:h-[728px]") do
       div(class: "absolute inset-0 p-1") do
@@ -10,7 +9,12 @@ class Views::Pages::Home::GuideSection::MobileFrame < Views::Base
             md:rounded-[50px]") do
           div(class: "px-2 md:px-4") do
             div(class: "h-6 md:h-16")
-            render Views::Pages::Home::GuideSection::MobileFrame::Step01.new
+            div(data: { "mobile-guide-target": "mobileFrame" }) do
+              render Views::Pages::Home::GuideSection::MobileFrame::Step01.new
+              render Views::Pages::Home::GuideSection::MobileFrame::Step02.new
+              render Views::Pages::Home::GuideSection::MobileFrame::Step03.new
+              render Views::Pages::Home::GuideSection::MobileFrame::Step04.new
+            end
           end
         end
       end
