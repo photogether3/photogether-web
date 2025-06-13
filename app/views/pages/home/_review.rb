@@ -6,7 +6,7 @@ class Views::Pages::Home::Review < Views::Base
   end
 
   def view_template
-    div(class: "border border-primary rounded-[20px] p-[16px] lg:p-[24px] min-w-[200px] w-[200px] lg:w-[323px]") do
+    div(class: "border border-primary bg-secondary rounded-[20px] p-[16px] lg:p-[24px] min-w-[200px] w-[200px] lg:w-[323px]") do
       div(class: "flex items-center gap-[12px]") do
         div do
           img(src: "/images/landing/section03/item02.png", class: "w-[32px] lg:w-[60px] object-contain")
