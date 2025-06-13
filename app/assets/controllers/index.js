@@ -6,6 +6,7 @@ import { FlashController } from "./shared/flash_controller";
 import { ModalController } from "./shared/modal_controller";
 import { NotYetController } from "./shared/not_yet_controller";
 import { TinymceController } from "./shared/tinymce_controller";
+import { LottieController } from "./shared/lottie_controller";
 
 const application = Application.start();
 
@@ -19,6 +20,7 @@ application.register(
 );
 application.register("dropdown", DropdownController);
 application.register("mobile-guide", MobileGuideController);
+application.register("lottie", LottieController);
 
 // 여러 경로에서 컨트롤러 파일 로드
 // const controllerPaths = {

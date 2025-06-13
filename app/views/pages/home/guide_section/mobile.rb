@@ -8,10 +8,10 @@ class Views::Pages::Home::GuideSection::Mobile < Views::Base
           "mobile-guide-platform-value": "mobile"
         },
         class: "flex items-end justify-between mt-10 sm:hidden") do
-      div(class: "w-[188px] relative") do
+      div(class: "w-[188px] relative z-10") do
         render Views::Pages::Home::GuideSection::MobileFrame.new
       end
-      div(class: "flex flex-col gap-[13px]") do
+      div(class: "flex flex-col gap-[13px] z-50") do
         div(data: { "mobile-guide-target": "stepBoxContainer" }) do
           render Views::Pages::Home::GuideSection::StepBox.new(
             title: "스크린샷을 찍어주세요.",

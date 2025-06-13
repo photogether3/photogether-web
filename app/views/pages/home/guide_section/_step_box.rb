@@ -15,7 +15,7 @@ class Views::Pages::Home::GuideSection::StepBox < Views::Base
           action: "click->mobile-guide#onClickStep"
         },
         class: "step-box flex flex-col gap-1 border border-primary bg-base-300 rounded-xl
-        p-2 w-[150px] lg:w-[323px] lg:p-[24px] lg:gap-3 cursor-pointer") do
+        p-2 w-[150px] lg:w-[323px] lg:p-[24px] lg:gap-3 cursor-pointer hover:bg-secondary") do
       div(class: "flex justify-between items-center") do
         p(data: { id: "title" },
           class: "text-[10px] lg:text-xl font-bold") { @title }

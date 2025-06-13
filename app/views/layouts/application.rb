@@ -39,6 +39,9 @@ class Views::Layouts::Application < Views::Base
 
         # TinyMCE 스크립트
         script(src: "https://cdn.tiny.cloud/1/g7rvccst0a48ydu2wia7fbtgab2h5usfhw0ggzseok12l0wq/tinymce/7/tinymce.min.js", referrerpolicy: "origin")
+
+        # 로티스크립트
+        script(src: "https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js", integrity: "sha512-jEnuDt6jfecCjthQAJ+ed0MTVA++5ZKmlUcmDGBv2vUI/REn6FuIdixLNnQT+vKusE2hhTk2is3cFvv5wA+Sgg==", crossorigin: "anonymous", referrerpolicy: "no-referrer")
       end
 
       body do
